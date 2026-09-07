@@ -30,7 +30,7 @@ public class AuthenticationService {
                 .prenom(register.getPrenom())
                 .email(register.getEmail())
                 .password(passwordEncoder.encode(register.getPassword()))
-                .role(Role.CLIENT)
+                .role(Role.USER)
                 .build();
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
