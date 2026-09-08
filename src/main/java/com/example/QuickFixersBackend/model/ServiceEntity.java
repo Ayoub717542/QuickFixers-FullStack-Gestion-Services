@@ -1,5 +1,6 @@
 package com.example.QuickFixersBackend.model;
 
+import com.example.QuickFixersBackend.enums.ServiceStatut;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Service {
+@Table(name = "services")
+public class ServiceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,7 +25,9 @@ public class Service {
 
     private String dureeEstimee;
 
-    private boolean statut;
+    @Enumerated(EnumType.STRING)
+    private ServiceStatut statut;
+
 
     @OneToMany(mappedBy = "service")
     private List<Ticket> tickets;

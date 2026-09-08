@@ -28,6 +28,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**"
                         ).permitAll()
+                        .requestMatchers("/login", "/error").permitAll()
                 .anyRequest().authenticated()
         )
                 .sessionManagement(session ->

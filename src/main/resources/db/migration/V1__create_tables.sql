@@ -8,7 +8,7 @@ CREATE TABLE users (
                        field VARCHAR(50)
 );
 
-CREATE TABLE service (
+CREATE TABLE serviceEntity (
                          id BIGINT AUTO_INCREMENT PRIMARY KEY,
                          nom VARCHAR(255),
                          disponible BOOLEAN,

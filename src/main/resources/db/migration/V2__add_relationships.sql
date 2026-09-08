@@ -7,7 +7,7 @@ ALTER TABLE ticket
 
 ALTER TABLE ticket
     ADD CONSTRAINT fk_ticket_service
-        FOREIGN KEY (service_id) REFERENCES service(id);
+        FOREIGN KEY (service_id) REFERENCES serviceEntity(id);
 
 ALTER TABLE payment
     ADD COLUMN ticket_id BIGINT;

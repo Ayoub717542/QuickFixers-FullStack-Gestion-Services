@@ -32,7 +32,7 @@ public class Ticket {
     private double prix;
 
     @ManyToOne
-    @JoinColumn(name = "service_id", nullable = false)
-    private Service service;
+    @JoinColumn(name = "service_id")
+    private ServiceEntity service;
 
 }

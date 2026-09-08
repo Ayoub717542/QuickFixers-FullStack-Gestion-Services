@@ -1,16 +1,16 @@
 package com.example.QuickFixersBackend.DTO;
-import com.example.QuickFixersBackend.enums.Statut;
+import com.example.QuickFixersBackend.enums.ServiceStatut;
 import lombok.*;
 
-import java.time.LocalDate;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ServiceRequistDTO {
-    private String  titre;
+    private String nom;
     private String description;
-    private Statut statut;
-    private LocalDate dateCreation;
+    private double prix;
+    private String dureeEstimee;
+    private ServiceStatut statut;
 }
