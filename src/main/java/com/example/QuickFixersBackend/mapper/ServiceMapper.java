@@ -1,7 +1,7 @@
 package com.example.QuickFixersBackend.mapper;
-import com.example.QuickFixersBackend.DTO.ServiceRequistDTO;
-import com.example.QuickFixersBackend.DTO.ServiceResponseDTO;
-import com.example.QuickFixersBackend.model.ServiceEntity;
+import com.example.QuickFixersBackend.dto.service.ServiceRequistDTO;
+import com.example.QuickFixersBackend.dto.service.ServiceResponseDTO;
+import com.example.QuickFixersBackend.entity.ServiceEntity;
 import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ServiceMapper {

@@ -1,10 +1,10 @@
 package com.example.QuickFixersBackend.services.serviceImpl;
 
-import com.example.QuickFixersBackend.DTO.ServiceRequistDTO;
-import com.example.QuickFixersBackend.DTO.ServiceResponseDTO;
+import com.example.QuickFixersBackend.dto.service.ServiceRequistDTO;
+import com.example.QuickFixersBackend.dto.service.ServiceResponseDTO;
 import com.example.QuickFixersBackend.enums.ServiceStatut;
 import com.example.QuickFixersBackend.mapper.ServiceMapper;
-import com.example.QuickFixersBackend.model.ServiceEntity;
+import com.example.QuickFixersBackend.entity.ServiceEntity;
 import com.example.QuickFixersBackend.repository.ServiceRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.ServiceInterface;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +32,7 @@ public class ServiceImpl implements ServiceInterface {
         serviceEntity.setDureeEstimee(String.valueOf(serviceRequistDTO.getDureeEstimee()));
         serviceEntity.setPrix(serviceRequistDTO.getPrix());
         serviceEntity.setStatut(serviceRequistDTO.getStatut());
+        serviceEntity.setType(serviceRequistDTO.getType());
 
         ServiceEntity modifieService = serviceRepository.save(serviceEntity);
 

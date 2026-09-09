@@ -1,8 +1,6 @@
-package com.example.QuickFixersBackend.DTO;
+package com.example.QuickFixersBackend.dto.ticket;
 
 import com.example.QuickFixersBackend.enums.Statut;
-import com.example.QuickFixersBackend.model.ServiceEntity;
-import com.example.QuickFixersBackend.model.User;
 
 
 import lombok.*;
@@ -14,13 +12,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TicketResponseDTO {
-
     private Long id;
-    private String  titre;
+    private String titre;
     private String description;
     private Statut statut;
     private LocalDate dateCreation;
-    private User assignedTo;
     private double prix;
-    private ServiceEntity serviceEntity;
+    private Long assignedToId;
+    private Long serviceId;
 }

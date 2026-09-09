@@ -1,8 +1,8 @@
-package com.example.QuickFixersBackend.Auth;
+package com.example.QuickFixersBackend.auth;
 
-import com.example.QuickFixersBackend.DTO.AuthenticationRequestDTO;
-import com.example.QuickFixersBackend.DTO.AuthenticationResponceDTO;
-import com.example.QuickFixersBackend.DTO.RegisterRequoestDTO;
+import com.example.QuickFixersBackend.dto.auth.AuthenticationRequestDTO;
+import com.example.QuickFixersBackend.dto.auth.AuthenticationResponceDTO;
+import com.example.QuickFixersBackend.dto.auth.RegisterRequoestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

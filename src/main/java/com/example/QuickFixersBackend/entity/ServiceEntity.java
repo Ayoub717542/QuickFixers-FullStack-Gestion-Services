@@ -1,6 +1,7 @@
-package com.example.QuickFixersBackend.model;
+package com.example.QuickFixersBackend.entity;
 
 import com.example.QuickFixersBackend.enums.ServiceStatut;
+import com.example.QuickFixersBackend.enums.ServiceType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,16 @@ public class ServiceEntity {
     @Enumerated(EnumType.STRING)
     private ServiceStatut statut;
 
+    @Enumerated(EnumType.STRING)
+    private ServiceType type;
+
 
     @OneToMany(mappedBy = "service")
     private List<Ticket> tickets;
+
+    @ManyToOne
+    private User createdBy;
+
+    @ManyToOne
+    private User assignedTo;
 }

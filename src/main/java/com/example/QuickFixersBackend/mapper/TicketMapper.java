@@ -1,8 +1,8 @@
 package com.example.QuickFixersBackend.mapper;
 
-import com.example.QuickFixersBackend.DTO.TicketRequestDTO;
-import com.example.QuickFixersBackend.DTO.TicketResponseDTO;
-import com.example.QuickFixersBackend.model.Ticket;
+import com.example.QuickFixersBackend.dto.ticket.TicketRequestDTO;
+import com.example.QuickFixersBackend.dto.ticket.TicketResponseDTO;
+import com.example.QuickFixersBackend.entity.Ticket;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

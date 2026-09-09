@@ -1,5 +1,6 @@
-package com.example.QuickFixersBackend.DTO;
+package com.example.QuickFixersBackend.dto.service;
 import com.example.QuickFixersBackend.enums.ServiceStatut;
+import com.example.QuickFixersBackend.enums.ServiceType;
 import lombok.*;
 
 
@@ -13,4 +14,6 @@ public class ServiceRequistDTO {
     private double prix;
     private String dureeEstimee;
     private ServiceStatut statut;
+    private ServiceType type;
+
 }

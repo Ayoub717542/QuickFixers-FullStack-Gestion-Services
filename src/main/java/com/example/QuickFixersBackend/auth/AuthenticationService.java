@@ -1,10 +1,10 @@
-package com.example.QuickFixersBackend.Auth;
+package com.example.QuickFixersBackend.auth;
 
-import com.example.QuickFixersBackend.DTO.AuthenticationRequestDTO;
-import com.example.QuickFixersBackend.DTO.AuthenticationResponceDTO;
-import com.example.QuickFixersBackend.DTO.RegisterRequoestDTO;
+import com.example.QuickFixersBackend.dto.auth.AuthenticationRequestDTO;
+import com.example.QuickFixersBackend.dto.auth.AuthenticationResponceDTO;
+import com.example.QuickFixersBackend.dto.auth.RegisterRequoestDTO;
 import com.example.QuickFixersBackend.enums.Role;
-import com.example.QuickFixersBackend.model.User;
+import com.example.QuickFixersBackend.entity.User;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.security.JwtService;
 import lombok.RequiredArgsConstructor;

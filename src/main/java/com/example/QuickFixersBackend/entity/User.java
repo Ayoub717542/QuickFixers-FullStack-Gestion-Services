@@ -1,7 +1,6 @@
-package com.example.QuickFixersBackend.model;
+package com.example.QuickFixersBackend.entity;
 
 import com.example.QuickFixersBackend.enums.Role;
-import com.example.QuickFixersBackend.enums.ServiceType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,9 +30,6 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @Enumerated(EnumType.STRING)
-    private ServiceType field;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

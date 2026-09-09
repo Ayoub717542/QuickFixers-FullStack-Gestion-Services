@@ -1,4 +1,4 @@
-package com.example.QuickFixersBackend.DTO;
+package com.example.QuickFixersBackend.dto.auth;
 
 import lombok.*;
 

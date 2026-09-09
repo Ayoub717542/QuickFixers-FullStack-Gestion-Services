@@ -1,7 +1,7 @@
 package com.example.QuickFixersBackend.services.serviceInterfce;
 
-import com.example.QuickFixersBackend.DTO.ServiceRequistDTO;
-import com.example.QuickFixersBackend.DTO.ServiceResponseDTO;
+import com.example.QuickFixersBackend.dto.service.ServiceRequistDTO;
+import com.example.QuickFixersBackend.dto.service.ServiceResponseDTO;
 
 import com.example.QuickFixersBackend.enums.ServiceStatut;
 import org.springframework.data.domain.Page;

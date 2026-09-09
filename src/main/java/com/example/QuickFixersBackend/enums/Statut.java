@@ -1,8 +1,8 @@
 package com.example.QuickFixersBackend.enums;
 
 public enum Statut {
-    OPEN,
-    IN_PROGRESS,
-    RESOLVED,
-    CLOSED
+    OUVERT,
+    EN_COURS,
+    RESOLU,
+    FERME
 }

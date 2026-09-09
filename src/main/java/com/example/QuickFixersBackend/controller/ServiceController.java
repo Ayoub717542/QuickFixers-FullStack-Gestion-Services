@@ -1,7 +1,7 @@
 package com.example.QuickFixersBackend.controller;
 
-import com.example.QuickFixersBackend.DTO.ServiceRequistDTO;
-import com.example.QuickFixersBackend.DTO.ServiceResponseDTO;
+import com.example.QuickFixersBackend.dto.service.ServiceRequistDTO;
+import com.example.QuickFixersBackend.dto.service.ServiceResponseDTO;
 import com.example.QuickFixersBackend.enums.ServiceStatut;
 import com.example.QuickFixersBackend.repository.ServiceRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.ServiceInterface;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 public class ServiceController {
 
     private final ServiceInterface serviceInterface;
-    private final ServiceRepository serviceRepository;
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/ajouterService")
