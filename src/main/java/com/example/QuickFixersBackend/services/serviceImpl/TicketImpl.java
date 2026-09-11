@@ -27,9 +27,25 @@ public class TicketImpl implements TicketInterface {
     @Override
     public TicketResponseDTO ajouterTeckit(TicketRequestDTO ticketRequestDTO) {
         Ticket ticket = ticketMapper.toEntity(ticketRequestDTO);
+
+        User createdBy = userRepository.findById(ticketRequestDTO.getCreatedById())
+                .orElseThrow(() -> new RuntimeException("user not found"));
+
+        ServiceEntity service = serviceRepository.findById(ticketRequestDTO.getServiceId())
+                .orElseThrow(() -> new RuntimeException("service not found"));
+        if (ticketRequestDTO.getAssignedToId() != null) {
+            User assignedTo = userRepository.findById(ticketRequestDTO.getAssignedToId())
+                    .orElseThrow(() -> new RuntimeException("assigned user not found"));
+            ticket.setAssignedTo(assignedTo);
+        }
+        ticket.setCreatedBy(createdBy);
+        ticket.setService(service);
+
+
         ticket.setStatut(Statut.OUVERT);
         return ticketMapper.toDto(ticketRepository.save(ticket));
     }
+
         @Override
         public TicketResponseDTO modifieTeckit(Long id, TicketRequestDTO ticketRequestDTO){
             Ticket ticket = ticketRepository.findById(id).orElseThrow(()-> new RuntimeException("ticket Not Found"));
@@ -58,7 +74,6 @@ public class TicketImpl implements TicketInterface {
     public TicketResponseDTO consulterTeckit(Long id) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket Not Found"));
-
         return ticketMapper.toDto(ticket);
     }
 

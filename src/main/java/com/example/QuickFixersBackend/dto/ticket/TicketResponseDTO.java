@@ -20,4 +20,5 @@ public class TicketResponseDTO {
     private double prix;
     private Long assignedToId;
     private Long serviceId;
+    private Long createdById;
 }

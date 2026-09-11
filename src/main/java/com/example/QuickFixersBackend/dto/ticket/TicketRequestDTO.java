@@ -4,6 +4,8 @@ import com.example.QuickFixersBackend.enums.Statut;
 
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -13,6 +15,8 @@ public class TicketRequestDTO {
     private String description;
     private Statut statut;
     private double prix;
+    private LocalDate dateCreation;
     private Long assignedToId;
     private Long serviceId;
+    private Long createdById;
 }

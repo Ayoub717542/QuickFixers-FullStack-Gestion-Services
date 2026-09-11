@@ -20,12 +20,6 @@ public class ServiceEntity {
 
     private String nom;
 
-    private String description;
-
-    private double prix;
-
-    private String dureeEstimee;
-
     @Enumerated(EnumType.STRING)
     private ServiceStatut statut;
 

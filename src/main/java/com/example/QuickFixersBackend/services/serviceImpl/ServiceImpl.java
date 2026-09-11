@@ -28,9 +28,6 @@ public class ServiceImpl implements ServiceInterface {
     public ServiceResponseDTO modifierService(Long id, ServiceRequistDTO serviceRequistDTO) {
         ServiceEntity serviceEntity = serviceRepository.findById(id).orElseThrow(()-> new RuntimeException("Service not found"));
         serviceEntity.setNom(serviceRequistDTO.getNom());
-        serviceEntity.setDescription(serviceRequistDTO.getDescription());
-        serviceEntity.setDureeEstimee(String.valueOf(serviceRequistDTO.getDureeEstimee()));
-        serviceEntity.setPrix(serviceRequistDTO.getPrix());
         serviceEntity.setStatut(serviceRequistDTO.getStatut());
         serviceEntity.setType(serviceRequistDTO.getType());
 

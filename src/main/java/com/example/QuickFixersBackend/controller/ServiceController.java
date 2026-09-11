@@ -3,7 +3,7 @@ package com.example.QuickFixersBackend.controller;
 import com.example.QuickFixersBackend.dto.service.ServiceRequistDTO;
 import com.example.QuickFixersBackend.dto.service.ServiceResponseDTO;
 import com.example.QuickFixersBackend.enums.ServiceStatut;
-import com.example.QuickFixersBackend.repository.ServiceRepository;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.example.QuickFixersBackend.services.serviceInterfce.ServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("api/service")
 public class ServiceController {
 
