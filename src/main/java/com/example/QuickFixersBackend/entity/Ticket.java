@@ -6,11 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
+@Table(name="ticket")
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,8 +21,9 @@ public class Ticket {
 
     private String  titre;
     private String description;
-    private LocalDate dateCreation;
-    private double prix;
+
+    @Column(updatable = false)
+    private LocalDateTime dateCreation;
 
     @Enumerated(EnumType.STRING)
     private Statut statut;

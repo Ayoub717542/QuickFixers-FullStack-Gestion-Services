@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ServiceInterface  {
-     ServiceResponseDTO ajouterService(ServiceRequistDTO serviceRequistDTO);
+     ServiceResponseDTO ajouterService(ServiceRequistDTO serviceRequistDTO , String email);
      ServiceResponseDTO modifierService(Long id, ServiceRequistDTO serviceRequistDTO);
      void supprimerService (Long id);
      Page<ServiceResponseDTO> listerServices(Pageable pageable);

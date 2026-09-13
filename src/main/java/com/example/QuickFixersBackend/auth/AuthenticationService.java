@@ -3,8 +3,11 @@ package com.example.QuickFixersBackend.auth;
 import com.example.QuickFixersBackend.dto.auth.AuthenticationRequestDTO;
 import com.example.QuickFixersBackend.dto.auth.AuthenticationResponceDTO;
 import com.example.QuickFixersBackend.dto.auth.RegisterRequoestDTO;
+import com.example.QuickFixersBackend.dto.support.CreateSupportRequestDTO;
+import com.example.QuickFixersBackend.dto.user.UserResponseDTO;
 import com.example.QuickFixersBackend.enums.Role;
 import com.example.QuickFixersBackend.entity.User;
+import com.example.QuickFixersBackend.mapper.UserMapper;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ public class AuthenticationService {
     private  final UserRepository userRepository;
     private  final PasswordEncoder passwordEncoder;
     private  final JwtService jwtService;
+    private  final UserMapper userMapper;
 
     private  final AuthenticationManager authenticationManager;
 
@@ -39,6 +43,9 @@ public class AuthenticationService {
                 .userEmail(user.getEmail())
                 .build();
     }
+
+
+
 
     public @Nullable AuthenticationResponceDTO login(AuthenticationRequestDTO authenticationRequestDTO) {
         authenticationManager.authenticate(

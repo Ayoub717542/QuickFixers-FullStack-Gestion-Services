@@ -5,17 +5,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name="paiement")
 public class Paiement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double montant;
+    private BigDecimal montant;
 
     @Enumerated(EnumType.STRING)
     private PaiementStatut statut = PaiementStatut.EN_ATTENTE;
@@ -25,4 +27,8 @@ public class Paiement {
     @ManyToOne
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

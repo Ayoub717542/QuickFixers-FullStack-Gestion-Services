@@ -2,6 +2,7 @@ package com.example.QuickFixersBackend.services.serviceImpl;
 
 import com.example.QuickFixersBackend.dto.ticket.TicketRequestDTO;
 import com.example.QuickFixersBackend.dto.ticket.TicketResponseDTO;
+import com.example.QuickFixersBackend.enums.Role;
 import com.example.QuickFixersBackend.enums.Statut;
 import com.example.QuickFixersBackend.mapper.TicketMapper;
 import com.example.QuickFixersBackend.entity.ServiceEntity;
@@ -11,10 +12,14 @@ import com.example.QuickFixersBackend.repository.ServiceRepository;
 import com.example.QuickFixersBackend.repository.TicketRepository;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.TicketInterface;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -24,46 +29,32 @@ public class TicketImpl implements TicketInterface {
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
+
     @Override
-    public TicketResponseDTO ajouterTeckit(TicketRequestDTO ticketRequestDTO) {
+    public TicketResponseDTO ajouterTeckit(TicketRequestDTO ticketRequestDTO , Long serviceId, String email) {
         Ticket ticket = ticketMapper.toEntity(ticketRequestDTO);
 
-        User createdBy = userRepository.findById(ticketRequestDTO.getCreatedById())
-                .orElseThrow(() -> new RuntimeException("user not found"));
+        User createdBy = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        ServiceEntity service = serviceRepository.findById(ticketRequestDTO.getServiceId())
+        ServiceEntity service = serviceRepository.findById(serviceId)
                 .orElseThrow(() -> new RuntimeException("service not found"));
-        if (ticketRequestDTO.getAssignedToId() != null) {
-            User assignedTo = userRepository.findById(ticketRequestDTO.getAssignedToId())
-                    .orElseThrow(() -> new RuntimeException("assigned user not found"));
-            ticket.setAssignedTo(assignedTo);
-        }
+
         ticket.setCreatedBy(createdBy);
         ticket.setService(service);
-
-
         ticket.setStatut(Statut.OUVERT);
+        ticket.setDateCreation(LocalDateTime.now());
+
         return ticketMapper.toDto(ticketRepository.save(ticket));
     }
 
-        @Override
+    @Override
+    @Transactional
         public TicketResponseDTO modifieTeckit(Long id, TicketRequestDTO ticketRequestDTO){
             Ticket ticket = ticketRepository.findById(id).orElseThrow(()-> new RuntimeException("ticket Not Found"));
 
             ticket.setTitre(ticketRequestDTO.getTitre());
             ticket.setDescription(ticketRequestDTO.getDescription());
-            ticket.setPrix(ticketRequestDTO.getPrix());
-            ticket.setStatut(ticketRequestDTO.getStatut());
-
-            User user = userRepository.findById(ticketRequestDTO.getAssignedToId())
-                    .orElseThrow(() -> new RuntimeException("User Not Found"));
-
-            ticket.setAssignedTo(user);
-
-            ServiceEntity service = serviceRepository.findById(ticketRequestDTO.getServiceId())
-                    .orElseThrow(() -> new RuntimeException("Service Not Found"));
-
-            ticket.setService(service);
 
             Ticket savedTicket = ticketRepository.save(ticket);
 
@@ -89,6 +80,10 @@ public class TicketImpl implements TicketInterface {
                 .orElseThrow(() -> new RuntimeException("Ticket Not Found"));
         User support = userRepository.findById(supportId)
                 .orElseThrow(() -> new RuntimeException("Support Not Found"));
+
+        if (support.getRole() != Role.SUPPORT) {
+            throw new RuntimeException("User is not a support");
+        }
 
         ticket.setAssignedTo(support);
 

@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -30,9 +32,10 @@ public class ServiceEntity {
     @OneToMany(mappedBy = "service")
     private List<Ticket> tickets;
 
-    @ManyToOne
-    private User createdBy;
+    private BigDecimal prix;
 
     @ManyToOne
-    private User assignedTo;
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
 }

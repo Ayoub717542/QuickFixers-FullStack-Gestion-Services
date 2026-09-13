@@ -8,10 +8,11 @@ CREATE TABLE users (
                        field VARCHAR(50)
 );
 
-CREATE TABLE serviceEntity (
+CREATE TABLE services (
                          id BIGINT AUTO_INCREMENT PRIMARY KEY,
                          nom VARCHAR(255),
                          disponible BOOLEAN,
+                        prix DOUBLE,
                          type VARCHAR(50)
 );
 
@@ -21,11 +22,10 @@ CREATE TABLE ticket (
                         description TEXT,
                         statut VARCHAR(50),
                         date_creation DATETIME,
-                        assigned_to BIGINT,
-                        prix DOUBLE
+                        assigned_to BIGINT
 );
 
-CREATE TABLE payment (
+CREATE TABLE paiement (
                          id BIGINT AUTO_INCREMENT PRIMARY KEY,
                          montant DOUBLE,
                          statut VARCHAR(50),

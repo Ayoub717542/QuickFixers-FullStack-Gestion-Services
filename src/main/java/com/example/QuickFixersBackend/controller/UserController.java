@@ -1,14 +1,19 @@
 package com.example.QuickFixersBackend.controller;
 
+import com.example.QuickFixersBackend.auth.AuthenticationService;
+import com.example.QuickFixersBackend.dto.support.CreateSupportRequestDTO;
+import com.example.QuickFixersBackend.dto.user.UserRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserResponseDTO;
 import com.example.QuickFixersBackend.enums.Role;
 import com.example.QuickFixersBackend.services.serviceInterfce.UserInterface;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -47,4 +52,18 @@ public class UserController {
     public void supprimerUser(@PathVariable Long id){
         userInterface.supprimerUser(id);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/ajouterUser")
+    public ResponseEntity<UserResponseDTO> ajouterUnUser(@Valid @RequestBody UserRequestDTO userRequestDTO){
+        return ResponseEntity.ok(userInterface.ajouterUnUser(userRequestDTO));
+    }
+
+    @PostMapping("/Ajoutersupport")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserResponseDTO> createSupport(@Valid @RequestBody CreateSupportRequestDTO dto) {
+        UserResponseDTO created = userInterface.createSupportAccount(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
 }

@@ -14,4 +14,7 @@ public class ServiceResponseDTO {
     private String nom;
     private ServiceStatut statut;
     private ServiceType type;
+
+    private Long createdById;
+    private Long assignedToId;
 }

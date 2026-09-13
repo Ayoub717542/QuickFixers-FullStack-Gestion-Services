@@ -2,10 +2,13 @@ package com.example.QuickFixersBackend.services.serviceImpl;
 
 import com.example.QuickFixersBackend.dto.service.ServiceRequistDTO;
 import com.example.QuickFixersBackend.dto.service.ServiceResponseDTO;
+import com.example.QuickFixersBackend.dto.user.UserResponseDTO;
+import com.example.QuickFixersBackend.entity.User;
 import com.example.QuickFixersBackend.enums.ServiceStatut;
 import com.example.QuickFixersBackend.mapper.ServiceMapper;
 import com.example.QuickFixersBackend.entity.ServiceEntity;
 import com.example.QuickFixersBackend.repository.ServiceRepository;
+import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.ServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,10 +20,18 @@ import org.springframework.stereotype.Service;
 public class ServiceImpl implements ServiceInterface {
     private final ServiceRepository serviceRepository;
     private final ServiceMapper serviceMapper;
+    private final UserRepository userRepository;
+
     @Override
-    public ServiceResponseDTO ajouterService(ServiceRequistDTO serviceRequistDTO) {
+    public ServiceResponseDTO ajouterService(ServiceRequistDTO serviceRequistDTO,String email) {
+
+        User createdBy = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         ServiceEntity service = serviceMapper.toEntity(serviceRequistDTO);
         service.setStatut(ServiceStatut.ACTIVE);
+        service.setCreatedBy(createdBy);
+
         return serviceMapper.toDto(serviceRepository.save(service));
     }
 
