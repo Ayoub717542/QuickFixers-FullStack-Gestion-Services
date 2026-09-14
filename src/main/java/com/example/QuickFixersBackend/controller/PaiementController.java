@@ -25,9 +25,13 @@ public class PaiementController {
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @PostMapping("/effectuerPaiement")
-    public ResponseEntity<PaiementResponseDTO> effectuerPaiement(@RequestBody PaiementRequestDTO paiementRequestDTO){
-        return ResponseEntity.ok(paiementInterface.creerPaiement(paiementRequestDTO));
+    public ResponseEntity<PaiementResponseDTO> effectuerPaiement(
+            @RequestBody PaiementRequestDTO paiementRequestDTO,
+            @AuthenticationPrincipal User user
+    ){
+        return ResponseEntity.ok(paiementInterface.creerPaiement(paiementRequestDTO,user.getEmail()));
     }
+
     @PreAuthorize(("hasAnyRole('ADMIN','USER')"))
     @GetMapping("/paimentHistorique")
     public  ResponseEntity<Page<PaiementResponseDTO>> paimentHistorique(
@@ -44,6 +48,11 @@ public class PaiementController {
 
         return ResponseEntity.ok(rs);
 
+    }
+    @GetMapping("/countPaiement")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<Long> getUsers(){
+        return ResponseEntity.ok(paiementInterface.countPayments());
     }
 
 

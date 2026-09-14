@@ -58,5 +58,11 @@ public class ServiceController {
     @PatchMapping("/modefieStatut/{id}")
     public ResponseEntity<ServiceResponseDTO> modefieStatut(@PathVariable Long id , @RequestBody ServiceStatut statut){
     return  ResponseEntity.ok(serviceInterface.updateStatus(id,statut));
+
 }
+    @GetMapping("/countServices")
+    @PreAuthorize("hasAnyRole('ADMIN','USER','SUPPORT')")
+    public ResponseEntity<Long> getUsers(){
+        return ResponseEntity.ok(serviceInterface.countServices());
+    }
 }

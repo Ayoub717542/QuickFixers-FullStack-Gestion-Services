@@ -14,4 +14,5 @@ public class PaiementResponseDTO {
     private PaiementStatut statut;
     private LocalDateTime dateCreation;
     private Long ticketId;
+    private String email;
 }

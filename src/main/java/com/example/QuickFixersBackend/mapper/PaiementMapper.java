@@ -8,8 +8,9 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface PaiementMapper {
-    @Mapping(target = "ticket", ignore = true) // set manually in service, needs a repository lookup
+    @Mapping(target = "ticket", ignore = true)
     Paiement toEntity(PaiementRequestDTO dto);
     @Mapping(source = "ticket.id", target = "ticketId")
+    @Mapping(source = "user.email" , target = "email")
     PaiementResponseDTO toDto(Paiement payment);
 }

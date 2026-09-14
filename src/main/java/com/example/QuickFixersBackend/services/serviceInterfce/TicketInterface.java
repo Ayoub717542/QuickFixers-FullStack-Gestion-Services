@@ -15,5 +15,6 @@ public interface TicketInterface {
      TicketResponseDTO modifierStatut(Long ticketId, Statut statut);
      Page<TicketResponseDTO> filtrerParStatut(Statut statut,Pageable pageable);
      Page<TicketResponseDTO> rechercherTickets(String recherche, Pageable pageable);
+    long countTickets();
 
 }

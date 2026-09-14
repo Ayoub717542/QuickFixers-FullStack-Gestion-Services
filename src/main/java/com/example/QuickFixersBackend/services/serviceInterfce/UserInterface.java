@@ -14,4 +14,5 @@ public interface UserInterface {
    Page<UserResponseDTO> listerUsers(Pageable pageable);
    void supprimerUser(Long id);
    UserResponseDTO createSupportAccount(CreateSupportRequestDTO dto);
+   long countUsers();
 }

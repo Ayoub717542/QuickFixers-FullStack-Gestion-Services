@@ -108,4 +108,9 @@ public class TicketImpl implements TicketInterface {
         return ticketRepository.searchedTicket(recherche,pageable)
                 .map(ticketMapper::toDto);
     }
+
+    @Override
+    public long countTickets() {
+        return ticketRepository.count();
+    }
 }

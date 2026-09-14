@@ -71,5 +71,10 @@ public class ServiceImpl implements ServiceInterface {
         serviceEntity.setStatut(statut);
         return serviceMapper.toDto(serviceRepository.save(serviceEntity));
     }
+
+    @Override
+    public long countServices() {
+        return serviceRepository.count();
+    }
 }
 

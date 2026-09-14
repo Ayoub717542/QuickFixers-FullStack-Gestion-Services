@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/users")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
-
 public class UserController {
 
     private final UserInterface userInterface;
@@ -63,6 +62,12 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> createSupport(@Valid @RequestBody CreateSupportRequestDTO dto) {
         UserResponseDTO created = userInterface.createSupportAccount(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @GetMapping("/countUsers")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Long> getUsers(){
+        return ResponseEntity.ok(userInterface.countUsers());
     }
 
 }

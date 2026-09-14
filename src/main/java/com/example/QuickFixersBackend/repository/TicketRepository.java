@@ -10,10 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.data.domain.Pageable;
 
-import java.util.Optional;
 
-public interface TicketRepository extends JpaRepository<Ticket,Integer> {
-    Optional<Ticket> findById(Long id );
+
+public interface TicketRepository extends JpaRepository<Ticket,Long> {
     Page<Ticket> findAll(Pageable pageable);
     Page<Ticket> findByStatut(Statut statut, Pageable pageable);
 
@@ -21,5 +20,6 @@ public interface TicketRepository extends JpaRepository<Ticket,Integer> {
     Page<Ticket> searchedTicket(String searchedTicket,Pageable pageable);
     Page<Ticket> findByCreatedBy(User user, Pageable pageable);
 
-
+    @Override
+    long count();
 }

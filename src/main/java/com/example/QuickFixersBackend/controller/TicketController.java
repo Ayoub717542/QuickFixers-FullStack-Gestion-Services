@@ -115,4 +115,11 @@ public class TicketController {
                 : Sort.by(sortBy).descending();
         return PageRequest.of(pageNumber - 1, pageSize, sort);
     }
+
+    @GetMapping("/countTickets")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<Long> getUsers(){
+        return ResponseEntity.ok(ticketInterface.countTickets());
+    }
+
 }

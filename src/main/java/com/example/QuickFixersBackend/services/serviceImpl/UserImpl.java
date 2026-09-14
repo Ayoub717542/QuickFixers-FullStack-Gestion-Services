@@ -68,4 +68,9 @@ public record UserImpl(UserRepository userRepository, UserMapper userMapper, Pas
 
         return userMapper.toDto(userRepository.save(support));
     }
+
+    @Override
+    public long countUsers() {
+        return userRepository.count();
+    }
 }

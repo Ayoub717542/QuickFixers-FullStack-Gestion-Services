@@ -4,10 +4,12 @@ import com.example.QuickFixersBackend.dto.paiement.PaiementRequestDTO;
 import com.example.QuickFixersBackend.dto.paiement.PaiementResponseDTO;
 import com.example.QuickFixersBackend.entity.Paiement;
 import com.example.QuickFixersBackend.entity.Ticket;
+import com.example.QuickFixersBackend.entity.User;
 import com.example.QuickFixersBackend.enums.PaiementStatut;
 import com.example.QuickFixersBackend.mapper.PaiementMapper;
 import com.example.QuickFixersBackend.repository.PaiementRepository;
 import com.example.QuickFixersBackend.repository.TicketRepository;
+import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.PaiementInterface;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +26,19 @@ public class PaiementImpl implements PaiementInterface {
     private final TicketRepository ticketRepository;
     private final PaiementMapper paiementMapper;
     private final PaiementRepository paiementRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public PaiementResponseDTO creerPaiement(PaiementRequestDTO paiementRequestDTO) {
+    public PaiementResponseDTO creerPaiement(PaiementRequestDTO paiementRequestDTO, String email) {
         Ticket ticket = ticketRepository.findById(paiementRequestDTO.getTicketId())
                 .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
+
+        User userEmail = userRepository.findByEmail(email).orElseThrow(()-> new RuntimeException("email not found"));
 
         Paiement payment = paiementMapper.toEntity(paiementRequestDTO);
         payment.setTicket(ticket);
         payment.setDateCreation(LocalDateTime.now());
+        payment.setUser(userEmail);
 
         boolean success=true;
         if(success){
@@ -50,6 +56,10 @@ public class PaiementImpl implements PaiementInterface {
                 .map(paiementMapper::toDto);
     }
 
+    @Override
+    public long countPayments() {
+        return paiementRepository.count();
+    }
 
 
 }
