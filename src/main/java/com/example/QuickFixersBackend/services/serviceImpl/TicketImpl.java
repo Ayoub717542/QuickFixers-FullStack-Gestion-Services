@@ -18,8 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +45,10 @@ public class TicketImpl implements TicketInterface {
         ticket.setStatut(Statut.OUVERT);
         ticket.setDateCreation(LocalDateTime.now());
 
+        List<User> supports = userRepository.findSupportOrderByOpenTicketsAsc(service.getType());
+        User support = supports.isEmpty() ? null : supports.get(0);
+        ticket.setAssignedTo(support);
+
         return ticketMapper.toDto(ticketRepository.save(ticket));
     }
 
@@ -69,27 +73,16 @@ public class TicketImpl implements TicketInterface {
     }
 
     @Override
-    public Page<TicketResponseDTO> listerTeckits(Pageable pageable) {
-        return ticketRepository.findAll(pageable)
-                .map(ticketMapper::toDto);
-    }
+    public Page<TicketResponseDTO> listerTeckits(User user, Pageable pageable) {
+        Page<Ticket> tickets;
 
-    @Override
-    public TicketResponseDTO assignerTicket(Long ticketId, Long supportId) {
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket Not Found"));
-        User support = userRepository.findById(supportId)
-                .orElseThrow(() -> new RuntimeException("Support Not Found"));
-
-        if (support.getRole() != Role.SUPPORT) {
-            throw new RuntimeException("User is not a support");
+        if (user.getRole() == Role.ADMIN) {
+            tickets = ticketRepository.findAll(pageable);
+        } else {
+            tickets = ticketRepository.findByCreatedBy(user, pageable);
         }
 
-        ticket.setAssignedTo(support);
-
-        Ticket savedTicket = ticketRepository.save(ticket);
-
-        return ticketMapper.toDto(savedTicket);
+        return tickets.map(ticketMapper::toDto);
     }
 
     @Override

@@ -12,6 +12,7 @@ Ticket toEntity(TicketRequestDTO dto);
 @Mapping(source = "assignedTo.id" ,target = "assignedToId")
 @Mapping(source = "service.id" ,target = "serviceId")
 @Mapping(source = "createdBy.id", target = "createdById")
+@Mapping(target = "prix", source = "service.prix")
 TicketResponseDTO toDto (Ticket ticket);
 
 }

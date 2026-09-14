@@ -31,7 +31,8 @@ public class TicketController {
     public ResponseEntity<TicketResponseDTO> ajouterTicket(
             @PathVariable Long serviceId,
             @Valid  @RequestBody TicketRequestDTO ticketRequestDTO,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal User user
+    ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ticketInterface.ajouterTeckit(ticketRequestDTO, serviceId, user.getUsername())
         );
@@ -61,27 +62,16 @@ public class TicketController {
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Page<TicketResponseDTO>> listerTickets(
+            @AuthenticationPrincipal User user,
             @RequestParam (defaultValue = "1") int pageNumber,
             @RequestParam (defaultValue = "5") int pageSize,
             @RequestParam (defaultValue = "dateCreation") String sortBy,
             @RequestParam (defaultValue = "asc") String  sortDir
 
     ) {
-        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(pageNumber-1,pageSize,sort);
-        Page<TicketResponseDTO> rs = ticketInterface.listerTeckits(pageable);
+        Pageable pageable = creerPageable(pageNumber-1,pageSize, sortBy, sortDir);
+        Page<TicketResponseDTO> rs = ticketInterface.listerTeckits(user,pageable);
         return ResponseEntity.ok(rs);
-    }
-
-    @PatchMapping("/assigner/{ticketId}/{supportId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<TicketResponseDTO> assignerTicket(
-            @PathVariable Long ticketId,
-            @PathVariable Long supportId) {
-
-        return ResponseEntity.ok(
-                ticketInterface.assignerTicket(ticketId, supportId)
-        );
     }
 
     @PatchMapping("/statut/{ticketId}/{statut}")
@@ -100,8 +90,7 @@ public class TicketController {
             @RequestParam (defaultValue = "asc") String  sortDir
     )
     {
-        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(pageNumber-1,pageSize,sort);
+        Pageable pageable = creerPageable(pageNumber-1,pageSize, sortBy, sortDir);
         Page<TicketResponseDTO> rs = ticketInterface.filtrerParStatut(statut,pageable);
         return ResponseEntity.ok(rs);
     }
@@ -115,9 +104,15 @@ public class TicketController {
             @RequestParam (defaultValue = "dateCreation") String sortBy,
             @RequestParam (defaultValue = "asc") String  sortDir
             ) {
-        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(pageNumber-1,pageSize,sort);
+        Pageable pageable = creerPageable(pageNumber-1,pageSize, sortBy, sortDir);
         Page<TicketResponseDTO> rs = ticketInterface.rechercherTickets(recherche,pageable);
         return ResponseEntity.ok(rs);
+    }
+
+    private Pageable creerPageable(int pageNumber, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        return PageRequest.of(pageNumber - 1, pageSize, sort);
     }
 }

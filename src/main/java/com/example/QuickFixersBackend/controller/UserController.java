@@ -1,6 +1,5 @@
 package com.example.QuickFixersBackend.controller;
 
-import com.example.QuickFixersBackend.auth.AuthenticationService;
 import com.example.QuickFixersBackend.dto.support.CreateSupportRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserResponseDTO;

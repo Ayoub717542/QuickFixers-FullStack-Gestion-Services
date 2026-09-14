@@ -22,6 +22,7 @@ public class Ticket {
     private String  titre;
     private String description;
 
+
     @Column(updatable = false)
     private LocalDateTime dateCreation;
 
@@ -31,6 +32,8 @@ public class Ticket {
     @ManyToOne(optional = true)
     @JoinColumn(name = "assigned_to")
     private User assignedTo;
+
+    private BigDecimal prix;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
