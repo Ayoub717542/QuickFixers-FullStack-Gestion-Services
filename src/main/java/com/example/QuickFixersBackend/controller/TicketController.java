@@ -63,7 +63,7 @@ public class TicketController {
     public ResponseEntity<Page<TicketResponseDTO>> listerTickets(
             @RequestParam (defaultValue = "1") int pageNumber,
             @RequestParam (defaultValue = "5") int pageSize,
-            @RequestParam (defaultValue = "id") String sortBy,
+            @RequestParam (defaultValue = "dateCreation") String sortBy,
             @RequestParam (defaultValue = "asc") String  sortDir
 
     ) {
@@ -84,26 +84,40 @@ public class TicketController {
         );
     }
 
-    @PatchMapping("/statut/{ticketId}")
+    @PatchMapping("/statut/{ticketId}/{statut}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<TicketResponseDTO> modifierStatut(@PathVariable Long ticketId, @RequestBody Statut statut) {
+    public ResponseEntity<TicketResponseDTO> modifierStatut(@PathVariable Long ticketId, @PathVariable Statut statut) {
         return ResponseEntity.ok(ticketInterface.modifierStatut(ticketId, statut));
     }
 
     @GetMapping("/statut/{statut}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<Page<TicketResponseDTO>> filtrerParStatut(@PathVariable Statut statut, Pageable pageable) {
-        return ResponseEntity.ok(ticketInterface.filtrerParStatut(statut, pageable));
+    public ResponseEntity<Page<TicketResponseDTO>> filtrerParStatut(
+            @PathVariable Statut statut,
+            @RequestParam (defaultValue = "1") int pageNumber,
+            @RequestParam (defaultValue = "5") int pageSize,
+            @RequestParam (defaultValue = "dateCreation") String sortBy,
+            @RequestParam (defaultValue = "asc") String  sortDir
+    )
+    {
+        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNumber-1,pageSize,sort);
+        Page<TicketResponseDTO> rs = ticketInterface.filtrerParStatut(statut,pageable);
+        return ResponseEntity.ok(rs);
     }
 
     @GetMapping("/recherche")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Page<TicketResponseDTO>> rechercherTickets(
             @RequestParam String recherche,
-            Pageable pageable) {
-
-        return ResponseEntity.ok(
-                ticketInterface.rechercherTickets(recherche, pageable)
-        );
+            @RequestParam (defaultValue = "1") int pageNumber,
+            @RequestParam (defaultValue = "5") int pageSize,
+            @RequestParam (defaultValue = "dateCreation") String sortBy,
+            @RequestParam (defaultValue = "asc") String  sortDir
+            ) {
+        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNumber-1,pageSize,sort);
+        Page<TicketResponseDTO> rs = ticketInterface.rechercherTickets(recherche,pageable);
+        return ResponseEntity.ok(rs);
     }
 }

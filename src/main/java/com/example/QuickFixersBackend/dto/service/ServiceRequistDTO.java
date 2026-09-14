@@ -3,6 +3,8 @@ import com.example.QuickFixersBackend.enums.ServiceStatut;
 import com.example.QuickFixersBackend.enums.ServiceType;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 
 @Getter
 @Setter
@@ -12,4 +14,5 @@ public class ServiceRequistDTO {
     private String nom;
     private ServiceStatut statut;
     private ServiceType type;
+    private BigDecimal prix;
 }
