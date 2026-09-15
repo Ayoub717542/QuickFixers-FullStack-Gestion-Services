@@ -10,8 +10,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @Controller
@@ -27,10 +26,6 @@ public class MessageController {
         messagingTemplate.convertAndSend(
                 "/topic/ticket." + message.getTicketId(),
                 responseDTO);
-    }
-    @PostMapping("/test")
-    public MessageResponseDTO test(@RequestBody MessageRequestDTO message, @AuthenticationPrincipal User user) {
-        return messageInterface.createMessage(message,user.getEmail());
     }
 
 }
