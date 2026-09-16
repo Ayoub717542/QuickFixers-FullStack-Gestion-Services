@@ -62,6 +62,7 @@ public class PaiementImpl implements PaiementInterface {
             return paiementRepository.findByUser(user, pageable)
                     .map(paiementMapper::toDto);
         }
+
         throw new RuntimeException("Access denied");
     }
 

@@ -43,8 +43,6 @@ public class AuthenticationService {
     }
 
 
-
-
     public @Nullable AuthenticationResponceDTO login(AuthenticationRequestDTO authenticationRequestDTO) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

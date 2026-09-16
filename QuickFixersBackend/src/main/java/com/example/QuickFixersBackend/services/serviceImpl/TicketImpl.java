@@ -122,7 +122,6 @@ public class TicketImpl implements TicketInterface {
             ).map(ticketMapper::toDto);
         }
 
-
         return ticketRepository.findByCreatedByAndStatut(user, statut, pageable)
                 .map(ticketMapper::toDto);
     }

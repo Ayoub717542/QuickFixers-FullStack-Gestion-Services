@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/ticket")
 @SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class TicketController {
     private final TicketInterface ticketInterface;
 
@@ -39,7 +41,7 @@ public class TicketController {
     }
 
     @PutMapping("/modifier/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPPORT')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPPORT','USER')")
     public ResponseEntity<TicketResponseDTO> modifierTicket(
             @PathVariable Long id,
             @RequestBody TicketRequestDTO ticketRequestDTO) {
@@ -68,7 +70,7 @@ public class TicketController {
             @RequestParam (defaultValue = "asc") String  sortDir
 
     ) {
-        Pageable pageable = creerPageable(pageNumber-1,pageSize, sortBy, sortDir);
+        Pageable pageable = creerPageable(pageNumber,pageSize, sortBy, sortDir);
         Page<TicketResponseDTO> rs = ticketInterface.listerTeckits(user,pageable);
         return ResponseEntity.ok(rs);
     }
@@ -90,7 +92,7 @@ public class TicketController {
             @RequestParam (defaultValue = "asc") String  sortDir
     )
     {
-        Pageable pageable = creerPageable(pageNumber-1,pageSize, sortBy, sortDir);
+        Pageable pageable = creerPageable(pageNumber,pageSize, sortBy, sortDir);
         Page<TicketResponseDTO> rs = ticketInterface.filtrerParStatut(user,statut,pageable);
         return ResponseEntity.ok(rs);
     }
@@ -105,7 +107,7 @@ public class TicketController {
             @RequestParam (defaultValue = "dateCreation") String sortBy,
             @RequestParam (defaultValue = "asc") String  sortDir
             ) {
-        Pageable pageable = creerPageable(pageNumber-1,pageSize, sortBy, sortDir);
+        Pageable pageable = creerPageable(pageNumber,pageSize, sortBy, sortDir);
         Page<TicketResponseDTO> rs = ticketInterface.rechercherTickets(user,recherche,pageable);
         return ResponseEntity.ok(rs);
     }

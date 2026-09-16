@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,11 +20,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 @RequestMapping("api/service")
+@EnableMethodSecurity
+
 public class ServiceController {
 
     private final ServiceInterface serviceInterface;
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/ajouterService")
     public ResponseEntity<ServiceResponseDTO> ajouterService(@RequestBody ServiceRequistDTO serviceRequistDTO , Authentication authentication){
         return ResponseEntity.ok(serviceInterface.ajouterService(serviceRequistDTO,authentication.getName()));
