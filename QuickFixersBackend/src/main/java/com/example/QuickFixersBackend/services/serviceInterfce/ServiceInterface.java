@@ -14,5 +14,5 @@ public interface ServiceInterface  {
      Page<ServiceResponseDTO> listerServices(Pageable pageable);
      ServiceResponseDTO consulterUnService(Long id);
      ServiceResponseDTO updateStatus(Long id, ServiceStatut statut);
-    long countServices();
+     long countServices();
 }

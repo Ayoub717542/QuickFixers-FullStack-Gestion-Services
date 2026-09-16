@@ -119,8 +119,10 @@ public class TicketController {
 
     @GetMapping("/countTickets")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<Long> countTickets(){
-        return ResponseEntity.ok(ticketInterface.countTickets());
+    public ResponseEntity<Long> countTickets(
+            @AuthenticationPrincipal User user
+    ){
+        return ResponseEntity.ok(ticketInterface.countTickets(user));
     }
 
 }

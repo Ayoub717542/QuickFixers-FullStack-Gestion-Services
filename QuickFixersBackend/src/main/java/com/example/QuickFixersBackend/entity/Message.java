@@ -22,7 +22,7 @@ public class Message {
     private LocalDateTime dateEnvoi = LocalDateTime.now();
 
     @ManyToOne
-    @JoinColumn(name = "sender_email", nullable = false)
+    @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
 
     @ManyToOne
