@@ -1,0 +1,16 @@
+package com.example.QuickFixersBackend.mapper;
+
+import com.example.QuickFixersBackend.dto.paiement.PaiementRequestDTO;
+import com.example.QuickFixersBackend.dto.paiement.PaiementResponseDTO;
+import com.example.QuickFixersBackend.entity.Paiement;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+@Mapper(componentModel = "spring")
+public interface PaiementMapper {
+    @Mapping(target = "ticket", ignore = true)
+    Paiement toEntity(PaiementRequestDTO dto);
+    @Mapping(source = "ticket.id", target = "ticketId")
+    @Mapping(source = "user.email" , target = "email")
+    PaiementResponseDTO toDto(Paiement payment);
+}
