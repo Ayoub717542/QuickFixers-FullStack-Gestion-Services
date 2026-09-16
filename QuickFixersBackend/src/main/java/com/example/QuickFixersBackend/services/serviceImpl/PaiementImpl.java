@@ -6,6 +6,7 @@ import com.example.QuickFixersBackend.entity.Paiement;
 import com.example.QuickFixersBackend.entity.Ticket;
 import com.example.QuickFixersBackend.entity.User;
 import com.example.QuickFixersBackend.enums.PaiementStatut;
+import com.example.QuickFixersBackend.enums.Role;
 import com.example.QuickFixersBackend.mapper.PaiementMapper;
 import com.example.QuickFixersBackend.repository.PaiementRepository;
 import com.example.QuickFixersBackend.repository.TicketRepository;
@@ -51,17 +52,27 @@ public class PaiementImpl implements PaiementInterface {
     }
 
     @Override
-    public Page<PaiementResponseDTO> paimentHistorique(Long userId, Pageable pageable) {
-        return paiementRepository.findByUserId(userId,pageable)
-                .map(paiementMapper::toDto);
+    public Page<PaiementResponseDTO> paimentHistorique(User user, Pageable pageable) {
+        if (user.getRole() == Role.ADMIN) {
+            return paiementRepository.findAll(pageable)
+                    .map(paiementMapper::toDto);
+        }
+
+        if (user.getRole() == Role.USER) {
+            return paiementRepository.findByUser(user, pageable)
+                    .map(paiementMapper::toDto);
+        }
+        throw new RuntimeException("Access denied");
     }
 
     @Override
-    public long countPayments() {
-        return paiementRepository.count();
-    }
-
-    public long countUserPayments(User user){
-        return paiementRepository.findByUser(user) ;
+    public long countPayments(User user) {
+        if (user.getRole() == Role.ADMIN) {
+            return paiementRepository.count();
+        }
+        if(user.getRole() == Role.USER){
+            return paiementRepository.countByUser(user);
+        }
+        throw new RuntimeException("Access denied");
     }
 }

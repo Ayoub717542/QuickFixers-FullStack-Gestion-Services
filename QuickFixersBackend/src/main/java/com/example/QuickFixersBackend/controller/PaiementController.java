@@ -44,21 +44,16 @@ public class PaiementController {
     ){
         Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable= PageRequest.of(pageNumber-1,pageSize,sort);
-        Page<PaiementResponseDTO> rs = paiementInterface.paimentHistorique(user.getId(),pageable);
+        Page<PaiementResponseDTO> rs = paiementInterface.paimentHistorique(user,pageable);
 
         return ResponseEntity.ok(rs);
 
     }
-    @GetMapping("/countPaiement")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Long> countPaiements(){
-        return ResponseEntity.ok(paiementInterface.countPayments());
-    }
 
-    @GetMapping("/countUserPaiement")
+    @GetMapping("/paiements")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<Long> userCountPaiements(@AuthenticationPrincipal User user){
-        return ResponseEntity.ok(paiementInterface.countUserPayments(user));
+        return ResponseEntity.ok(paiementInterface.countPayments(user));
     }
 
 

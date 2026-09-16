@@ -2,6 +2,7 @@ package com.example.QuickFixersBackend.repository;
 
 import com.example.QuickFixersBackend.entity.Paiement;
 import com.example.QuickFixersBackend.entity.User;
+import com.example.QuickFixersBackend.enums.PaiementStatut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,14 +11,16 @@ import org.springframework.data.repository.query.Param;
 
 
 public interface PaiementRepository  extends JpaRepository<Paiement,Long> {
-
-    @Query("SELECT p from Paiement p where p.ticket.createdBy.id = :userId order by p.dateCreation DESC ")
-    Page<Paiement> findByUserId(@Param("userId") Long userId, Pageable pageable);
-
+    Page<Paiement> findByStatut(PaiementStatut statut, Pageable pageable);
+    Page<Paiement> findByUser(User user,Pageable pageable);
     @Override
     long count();
 
-    @Query("SELECT count(p) FROM Paiement p WHERE p.user = :user")
-    long findByUser(@Param("user") User user);
+    long countByUser(User user);
+
+    long countByStatut(PaiementStatut statut);
+
+//    @Query("SELECT count(p) FROM Paiement p WHERE p.user = :user")
+//    long findByUser(@Param("user") User user);
 
 }

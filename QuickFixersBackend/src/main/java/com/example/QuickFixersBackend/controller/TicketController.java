@@ -39,7 +39,7 @@ public class TicketController {
     }
 
     @PutMapping("/modifier/{id}")
-    @PreAuthorize("hasAnyRole('SUPPORT')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPPORT')")
     public ResponseEntity<TicketResponseDTO> modifierTicket(
             @PathVariable Long id,
             @RequestBody TicketRequestDTO ticketRequestDTO) {
@@ -74,14 +74,15 @@ public class TicketController {
     }
 
     @PatchMapping("/statut/{ticketId}/{statut}")
-    @PreAuthorize("hasRole('SUPPORT')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPPORT')")
     public ResponseEntity<TicketResponseDTO> modifierStatut(@PathVariable Long ticketId, @PathVariable Statut statut) {
         return ResponseEntity.ok(ticketInterface.modifierStatut(ticketId, statut));
     }
 
     @GetMapping("/statut/{statut}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER','SUPPORT')")
     public ResponseEntity<Page<TicketResponseDTO>> filtrerParStatut(
+            @AuthenticationPrincipal User user,
             @PathVariable Statut statut,
             @RequestParam (defaultValue = "1") int pageNumber,
             @RequestParam (defaultValue = "5") int pageSize,
@@ -90,7 +91,7 @@ public class TicketController {
     )
     {
         Pageable pageable = creerPageable(pageNumber-1,pageSize, sortBy, sortDir);
-        Page<TicketResponseDTO> rs = ticketInterface.filtrerParStatut(statut,pageable);
+        Page<TicketResponseDTO> rs = ticketInterface.filtrerParStatut(user,statut,pageable);
         return ResponseEntity.ok(rs);
     }
 
@@ -118,7 +119,7 @@ public class TicketController {
 
     @GetMapping("/countTickets")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<Long> getUsers(){
+    public ResponseEntity<Long> countTickets(){
         return ResponseEntity.ok(ticketInterface.countTickets());
     }
 

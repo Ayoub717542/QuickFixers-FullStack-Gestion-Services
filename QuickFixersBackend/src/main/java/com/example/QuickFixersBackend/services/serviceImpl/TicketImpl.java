@@ -53,7 +53,6 @@ public class TicketImpl implements TicketInterface {
     }
 
     @Override
-    @Transactional
         public TicketResponseDTO modifieTeckit(Long id, TicketRequestDTO ticketRequestDTO){
             Ticket ticket = ticketRepository.findById(id).orElseThrow(()-> new RuntimeException("ticket Not Found"));
 
@@ -69,12 +68,16 @@ public class TicketImpl implements TicketInterface {
     public TicketResponseDTO consulterTeckit(Long id, User user) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket Not Found"));
-
-        if (!ticket.getAssignedTo().getEmail().equals(user.getEmail())) {
-            throw new RuntimeException("Access denied");
+        if (user.getRole() == Role.ADMIN) {
+            return ticketMapper.toDto(ticket);
         }
-
-        return ticketMapper.toDto(ticket);
+        if (ticket.getCreatedBy() != null && ticket.getCreatedBy().getEmail().equals(user.getEmail())) {
+            return ticketMapper.toDto(ticket);
+        }
+        if (ticket.getAssignedTo() != null && ticket.getAssignedTo().getEmail().equals(user.getEmail())) {
+            return ticketMapper.toDto(ticket);
+        }
+        throw new RuntimeException("Access denied");
     }
 
     @Override
@@ -85,6 +88,10 @@ public class TicketImpl implements TicketInterface {
             tickets = ticketRepository.findAll(pageable);
         } else {
             tickets = ticketRepository.findByCreatedBy(user, pageable);
+        }
+
+        if (user.getRole() == Role.SUPPORT) {
+            return ticketRepository.findByAssignedTo(user , pageable).map(ticketMapper::toDto);
         }
 
         return tickets.map(ticketMapper::toDto);
@@ -103,8 +110,20 @@ public class TicketImpl implements TicketInterface {
     }
 
     @Override
-    public Page<TicketResponseDTO> filtrerParStatut(Statut statut,Pageable pageable) {
-        return ticketRepository.findByStatut(statut, pageable)
+    public Page<TicketResponseDTO> filtrerParStatut(User user,Statut statut,Pageable pageable) {
+        if (user.getRole() == Role.ADMIN) {
+            return ticketRepository.findByStatut(statut, pageable)
+                    .map(ticketMapper::toDto);
+        }
+
+        if (user.getRole() == Role.SUPPORT) {
+            return ticketRepository.findByAssignedToAndStatut(
+                    user, statut, pageable
+            ).map(ticketMapper::toDto);
+        }
+
+
+        return ticketRepository.findByCreatedByAndStatut(user, statut, pageable)
                 .map(ticketMapper::toDto);
     }
 
@@ -131,7 +150,16 @@ public class TicketImpl implements TicketInterface {
     }
 
     @Override
-    public long countTickets() {
-        return ticketRepository.count();
+    public long countTickets(User user) {
+        if (user.getRole() == Role.ADMIN) {
+            return ticketRepository.count();
+        }
+        if (user.getRole() == Role.SUPPORT) {
+            return ticketRepository.countByAssignedTo(user);
+        }
+        if(user.getRole() == Role.USER){
+            return ticketRepository.countByCreatedBy(user);
+        }
+        throw new RuntimeException("Access denied");
     }
 }
