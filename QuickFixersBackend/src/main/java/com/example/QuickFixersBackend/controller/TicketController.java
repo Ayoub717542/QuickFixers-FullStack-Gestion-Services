@@ -27,7 +27,7 @@ public class TicketController {
     private final TicketInterface ticketInterface;
 
     @PostMapping("/{serviceId}/tickets")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<TicketResponseDTO> ajouterTicket(
             @PathVariable Long serviceId,
             @Valid  @RequestBody TicketRequestDTO ticketRequestDTO,
@@ -35,11 +35,11 @@ public class TicketController {
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ticketInterface.ajouterTeckit(ticketRequestDTO, serviceId, user.getUsername())
-        );
+                );
     }
 
     @PutMapping("/modifier/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('SUPPORT')")
     public ResponseEntity<TicketResponseDTO> modifierTicket(
             @PathVariable Long id,
             @RequestBody TicketRequestDTO ticketRequestDTO) {
@@ -50,17 +50,16 @@ public class TicketController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER','SUPPORT')")
     public ResponseEntity<TicketResponseDTO> consulterTicket(
-            @PathVariable Long id) {
-
+            @PathVariable Long id, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(
-                ticketInterface.consulterTeckit(id)
+                ticketInterface.consulterTeckit(id,user)
         );
     }
 
-    @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/tickets")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPPORT', 'USER')")
     public ResponseEntity<Page<TicketResponseDTO>> listerTickets(
             @AuthenticationPrincipal User user,
             @RequestParam (defaultValue = "1") int pageNumber,
@@ -75,7 +74,7 @@ public class TicketController {
     }
 
     @PatchMapping("/statut/{ticketId}/{statut}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SUPPORT')")
     public ResponseEntity<TicketResponseDTO> modifierStatut(@PathVariable Long ticketId, @PathVariable Statut statut) {
         return ResponseEntity.ok(ticketInterface.modifierStatut(ticketId, statut));
     }
@@ -96,8 +95,9 @@ public class TicketController {
     }
 
     @GetMapping("/recherche")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPPORT', 'USER')")
     public ResponseEntity<Page<TicketResponseDTO>> rechercherTickets(
+            @AuthenticationPrincipal User user,
             @RequestParam String recherche,
             @RequestParam (defaultValue = "1") int pageNumber,
             @RequestParam (defaultValue = "5") int pageSize,
@@ -105,7 +105,7 @@ public class TicketController {
             @RequestParam (defaultValue = "asc") String  sortDir
             ) {
         Pageable pageable = creerPageable(pageNumber-1,pageSize, sortBy, sortDir);
-        Page<TicketResponseDTO> rs = ticketInterface.rechercherTickets(recherche,pageable);
+        Page<TicketResponseDTO> rs = ticketInterface.rechercherTickets(user,recherche,pageable);
         return ResponseEntity.ok(rs);
     }
 

@@ -23,7 +23,7 @@ import org.springframework.data.domain.Pageable;
 public class PaiementController {
     private final PaiementInterface paiementInterface;
 
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/effectuerPaiement")
     public ResponseEntity<PaiementResponseDTO> effectuerPaiement(
             @RequestBody PaiementRequestDTO paiementRequestDTO,
@@ -32,7 +32,7 @@ public class PaiementController {
         return ResponseEntity.ok(paiementInterface.creerPaiement(paiementRequestDTO,user.getEmail()));
     }
 
-    @PreAuthorize(("hasAnyRole('ADMIN','USER')"))
+    @PreAuthorize(("hasRole('ADMIN')"))
     @GetMapping("/paimentHistorique")
     public  ResponseEntity<Page<PaiementResponseDTO>> paimentHistorique(
             @AuthenticationPrincipal User user,
@@ -50,9 +50,15 @@ public class PaiementController {
 
     }
     @GetMapping("/countPaiement")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<Long> getUsers(){
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<Long> countPaiements(){
         return ResponseEntity.ok(paiementInterface.countPayments());
+    }
+
+    @GetMapping("/countUserPaiement")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<Long> userCountPaiements(@AuthenticationPrincipal User user){
+        return ResponseEntity.ok(paiementInterface.countUserPayments(user));
     }
 
 

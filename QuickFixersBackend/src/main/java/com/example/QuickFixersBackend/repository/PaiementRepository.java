@@ -1,6 +1,7 @@
 package com.example.QuickFixersBackend.repository;
 
 import com.example.QuickFixersBackend.entity.Paiement;
+import com.example.QuickFixersBackend.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,5 +16,8 @@ public interface PaiementRepository  extends JpaRepository<Paiement,Long> {
 
     @Override
     long count();
+
+    @Query("SELECT count(p) FROM Paiement p WHERE p.user = :user")
+    long findByUser(@Param("user") User user);
 
 }

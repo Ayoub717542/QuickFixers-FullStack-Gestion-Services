@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.data.repository.query.Param;
 
 
 public interface TicketRepository extends JpaRepository<Ticket,Long> {
@@ -19,6 +19,13 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
     @Query("SELECT t From Ticket t where t.titre Like %:searchedTicket%")
     Page<Ticket> searchedTicket(String searchedTicket,Pageable pageable);
     Page<Ticket> findByCreatedBy(User user, Pageable pageable);
+
+    @Query(" SELECT t FROM Ticket t  WHERE t.assignedTo = :user AND t.titre LIKE %:recherche%")
+    Page<Ticket> searchedAssignedTickets(@Param("recherche") String recherche, @Param("user") User user, Pageable pageable);
+
+    @Query(" SELECT t FROM Ticket t WHERE t.createdBy = :user AND t.titre LIKE %:recherche%")
+    Page<Ticket> searchedUserTickets(@Param("recherche") String recherche, @Param("user") User user, Pageable pageable);
+
 
     @Override
     long count();

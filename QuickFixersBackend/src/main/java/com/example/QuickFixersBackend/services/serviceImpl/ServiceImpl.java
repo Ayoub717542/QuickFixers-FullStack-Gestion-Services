@@ -74,7 +74,7 @@ public class ServiceImpl implements ServiceInterface {
 
     @Override
     public long countServices() {
-        return serviceRepository.count();
+        return serviceRepository.countByStatut_Active();
     }
 }
 

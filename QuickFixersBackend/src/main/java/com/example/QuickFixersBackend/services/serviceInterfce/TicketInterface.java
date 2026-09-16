@@ -10,11 +10,11 @@ import org.springframework.data.domain.Page;
 public interface TicketInterface {
     TicketResponseDTO ajouterTeckit(TicketRequestDTO ticketRequestDTO , Long serviceId, String email);
      TicketResponseDTO modifieTeckit(Long id , TicketRequestDTO ticketRequestDTO);
-     TicketResponseDTO consulterTeckit(Long id);
+     TicketResponseDTO consulterTeckit(Long id,User user);
      Page<TicketResponseDTO> listerTeckits(User user,Pageable pageable);
      TicketResponseDTO modifierStatut(Long ticketId, Statut statut);
      Page<TicketResponseDTO> filtrerParStatut(Statut statut,Pageable pageable);
-     Page<TicketResponseDTO> rechercherTickets(String recherche, Pageable pageable);
+     Page<TicketResponseDTO> rechercherTickets(User user,String recherche, Pageable pageable);
     long countTickets();
 
 }

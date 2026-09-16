@@ -61,5 +61,7 @@ public class PaiementImpl implements PaiementInterface {
         return paiementRepository.count();
     }
 
-
+    public long countUserPayments(User user){
+        return paiementRepository.findByUser(user) ;
+    }
 }

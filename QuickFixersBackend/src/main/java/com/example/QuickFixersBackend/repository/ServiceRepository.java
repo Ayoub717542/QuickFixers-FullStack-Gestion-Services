@@ -8,6 +8,5 @@ import java.util.Optional;
 
 public interface ServiceRepository extends JpaRepository<ServiceEntity,Long> {
     Page<ServiceEntity> findAll(Pageable pageable);
-    @Override
-    long count();
+    long countByStatut_Active();
 }

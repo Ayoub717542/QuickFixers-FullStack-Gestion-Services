@@ -66,9 +66,14 @@ public class TicketImpl implements TicketInterface {
         }
 
     @Override
-    public TicketResponseDTO consulterTeckit(Long id) {
+    public TicketResponseDTO consulterTeckit(Long id, User user) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket Not Found"));
+
+        if (!ticket.getAssignedTo().getEmail().equals(user.getEmail())) {
+            throw new RuntimeException("Access denied");
+        }
+
         return ticketMapper.toDto(ticket);
     }
 
@@ -104,9 +109,25 @@ public class TicketImpl implements TicketInterface {
     }
 
     @Override
-    public Page<TicketResponseDTO> rechercherTickets(String recherche, Pageable pageable) {
-        return ticketRepository.searchedTicket(recherche,pageable)
-                .map(ticketMapper::toDto);
+    public Page<TicketResponseDTO> rechercherTickets(User user,String recherche, Pageable pageable) {
+        if (user.getRole() == Role.ADMIN) {
+            return ticketRepository.searchedTicket(recherche, pageable)
+                    .map(ticketMapper::toDto);
+        }
+        if (user.getRole() == Role.SUPPORT) {
+            return ticketRepository.searchedAssignedTickets(
+                    recherche, user, pageable
+            ).map(ticketMapper::toDto);
+        }
+
+        if (user.getRole() == Role.USER) {
+            return ticketRepository.searchedUserTickets(recherche, user, pageable)
+                    .map(ticketMapper::toDto);
+        }
+
+        return ticketRepository.searchedUserTickets(
+                recherche, user, pageable
+        ).map(ticketMapper::toDto);
     }
 
     @Override

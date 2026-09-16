@@ -29,12 +29,12 @@ public class ServiceController {
         return ResponseEntity.ok(serviceInterface.ajouterService(serviceRequistDTO,authentication.getName()));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/supprimerService/{id}")
     public void supprimerService(@PathVariable Long id){
         serviceInterface.supprimerService(id);
     }
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("listerServices")
     public  ResponseEntity<Page<ServiceResponseDTO>> listerServices(
             @RequestParam (defaultValue = "1") int pageNumber,
@@ -48,7 +48,7 @@ public class ServiceController {
         return  ResponseEntity.ok(rs);
     }
 
-@PreAuthorize("hasAnyRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/consulterUnService/{id}")
     public ResponseEntity<ServiceResponseDTO> consulterUnService(@PathVariable Long id){
         return  ResponseEntity.ok(serviceInterface.consulterUnService(id));
@@ -60,9 +60,10 @@ public class ServiceController {
     return  ResponseEntity.ok(serviceInterface.updateStatus(id,statut));
 
 }
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/countServices")
-    @PreAuthorize("hasAnyRole('ADMIN','USER','SUPPORT')")
-    public ResponseEntity<Long> getUsers(){
+    public ResponseEntity<Long> countServices(){
         return ResponseEntity.ok(serviceInterface.countServices());
     }
+
 }
