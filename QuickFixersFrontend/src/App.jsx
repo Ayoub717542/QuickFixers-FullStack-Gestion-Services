@@ -1,8 +1,11 @@
+import { ToastContainer } from "react-toastify";
+
 function App() {
     return (
-        <div>
-            <h1>QuickFixers</h1>
-        </div>
+        <>
+
+            <ToastContainer />
+        </>
     );
 }
 
