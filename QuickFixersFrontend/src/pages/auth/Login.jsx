@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { api } from "../../api/api";
+import { axiosApi } from "../../api/axiosApi.js";
 import { toast } from "react-toastify";
 import { getUserRole } from "../../utils/auth.js";
 import { Wrench, Mail, Lock, ArrowRight } from "lucide-react";
@@ -16,7 +16,7 @@ function Login() {
         setLoginError(null);
 
         try {
-            const response = await api.post("/auth/login", data);
+            const response = await axiosApi.post("/auth/login", data);
             localStorage.setItem("token", response.data.token);
             const role = getUserRole();
             console.log("User role:", role);

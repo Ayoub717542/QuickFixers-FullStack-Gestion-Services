@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { api } from "../../api/api";
+import { axiosApi } from "../../api/axiosApi.js";
 import { toast } from "react-toastify";
 import { Wrench, User, Mail, Lock, ArrowRight } from "lucide-react";
 
@@ -13,7 +13,7 @@ function Register() {
     const handleRegister = async (data) => {
         setRegisterError(null);
         try {
-            await api.post("/auth/register", data);
+            await axiosApi.post("/auth/register", data);
             toast.success("Inscription réussie !");
             navigate("/login");
         } catch (error) {
@@ -35,9 +35,7 @@ function Register() {
             </div>
 
             <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
-
                 <form onSubmit={handleSubmit(handleRegister)}>
-
                     <div className="mb-4">
                         <label htmlFor="nom" className="block text-xs font-semibold text-gray-700 mb-2">Nom</label>
                         <div className="relative">
@@ -65,24 +63,12 @@ function Register() {
                         </div>
                         {errors.prenom && (<p className="text-red-500 text-xs mt-1">{errors.prenom.message}</p>)}
                     </div>
-
-                    {/* Email */}
                     <div className="mb-4">
-
-                        <label
-                            htmlFor="email"
-                            className="block text-xs font-semibold text-gray-700 mb-2"
-                        >
+                        <label htmlFor="email" className="block text-xs font-semibold text-gray-700 mb-2">
                             Adresse Email
                         </label>
-
                         <div className="relative">
-
-                            <Mail
-                                size={15}
-                                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                            />
-
+                            <Mail size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
                             <input
                                 type="email"
                                 id="email"
@@ -96,53 +82,24 @@ function Register() {
                                 })}
                                 className="w-full h-10 pl-9 pr-3 border border-orange-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                             />
-
                         </div>
-
-                        {errors.email && (
-                            <p className="text-red-500 text-xs mt-1">
-                                {errors.email.message}
-                            </p>
-                        )}
-
+                        {errors.email && (<p className="text-red-500 text-xs mt-1">{errors.email.message}</p>)}
                     </div>
-
-
-                    {/* Password */}
                     <div className="mb-5">
-
-                        <label
-                            htmlFor="password"
-                            className="block text-xs font-semibold text-gray-700 mb-2"
-                        >
+                        <label htmlFor="password" className="block text-xs font-semibold text-gray-700 mb-2">
                             Mot de passe
                         </label>
-
                         <div className="relative">
-
-                            <Lock
-                                size={15}
-                                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                            />
-
+                            <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
                             <input
-                                type="password"
-                                id="password"
-                                placeholder="Minimum 6 caractères"
+                                type="password" id="password" placeholder="Minimum 6 caractères"
                                 {...register("password", {
                                     required: "Mot de passe requis",
                                 })}
                                 className="w-full h-10 pl-9 pr-3 border border-orange-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                             />
-
                         </div>
-
-                        {errors.password && (
-                            <p className="text-red-500 text-xs mt-1">
-                                {errors.password.message}
-                            </p>
-                        )}
-
+                        {errors.password && (<p className="text-red-500 text-xs mt-1">{errors.password.message}</p>)}
                     </div>
                     {registerError && (<p className="text-red-500 text-xs text-center mb-4">{registerError}</p>)}
                     <button
@@ -155,10 +112,7 @@ function Register() {
             </div>
             <p className="text-white text-xs mt-5">
                 Vous avez déjà un compte ?
-                <button
-                    onClick={() => navigate("/login")}
-                    className="ml-1 font-semibold hover:underline"
-                >
+                <button onClick={() => navigate("/login")} className="ml-1 font-semibold hover:underline">
                     Se connecter
                 </button>
             </p>

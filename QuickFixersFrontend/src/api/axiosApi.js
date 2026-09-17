@@ -1,11 +1,12 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const api = axios.create({
+export const axiosApi = axios.create({
     baseURL: "http://localhost:8081/api",
 });
 
-api.interceptors.request.use(
+
+axiosApi.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");
 
@@ -21,7 +22,7 @@ api.interceptors.request.use(
     }
 );
 
-api.interceptors.response.use(
+axiosApi.interceptors.response.use(
     (response) => {
         console.log(
             "Response:",
@@ -78,4 +79,4 @@ api.interceptors.response.use(
     }
 );
 
-export default api;
+export default axiosApi;
