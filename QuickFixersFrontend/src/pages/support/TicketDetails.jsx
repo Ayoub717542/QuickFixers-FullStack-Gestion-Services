@@ -1,4 +1,4 @@
-function SupportTicketDetails(){
+function TicketDetails(){
     return(
         <div>
             <h1>Support Ticket Details</h1>
@@ -6,4 +6,4 @@ function SupportTicketDetails(){
         </div>
     )
 }
-export default SupportTicketDetails;
+export default TicketDetails;

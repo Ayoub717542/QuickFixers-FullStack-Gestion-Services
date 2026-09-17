@@ -1,4 +1,4 @@
-function MyTickets(){
+function Tickets(){
     return(
         <div>
             <h1>My Tickets</h1>
@@ -6,4 +6,4 @@ function MyTickets(){
         </div>
     )
 }
-export default MyTickets;
+export default Tickets;

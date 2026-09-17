@@ -1,4 +1,4 @@
-function SupportDashboard(){
+function Dashboard(){
     return(
         <div>
             <h1>Support Dashboard</h1>
@@ -6,4 +6,4 @@ function SupportDashboard(){
         </div>
     )
 }
-export default SupportDashboard;
+export default Dashboard;

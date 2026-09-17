@@ -1,4 +1,4 @@
-function UserDashboard() {
+function Dashboard() {
     return (
         <div>
             <h1>User Dashboard</h1>
@@ -7,4 +7,4 @@ function UserDashboard() {
     );
 }
 
-export default UserDashboard;
+export default Dashboard;
