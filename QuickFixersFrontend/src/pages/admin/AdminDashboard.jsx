@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { axiosApi } from "../../api/axiosApi";
 import Loader from "../../components/Loader";
+import Pagination from "../../components/Pagination";
+import TicketTable from "../../components/tickets/TicketTable";
 import {
     Ticket,
     Users,
@@ -36,8 +38,9 @@ function AdminDashboard() {
     const [tickets, setTickets] = useState(0);
     const [users, setUsers] = useState(0);
     const [payments, setPayments] = useState(0);
-    const [recentTickets, setRecentTickets] = useState([]);
     const [recentPayments, setRecentPayments] = useState([]);
+    const [paymentPage, setPaymentPage] = useState(1);
+    const [paymentTotalPages, setPaymentTotalPages] = useState(0);
     const [loading, setLoading] = useState(true);
     const [incomeLabels, setIncomeLabels] = useState([]);
     const [incomeValues, setIncomeValues] = useState([]);
@@ -45,6 +48,10 @@ function AdminDashboard() {
     useEffect(() => {
         loadDashboard();
     }, []);
+
+    useEffect(() => {
+        loadPayments();
+    }, [paymentPage]);
 
     async function loadDashboard() {
 
@@ -57,10 +64,6 @@ function AdminDashboard() {
                 .get("/users/countUsers");
             const paymentsResponse = await axiosApi
                 .get("/paiements/paiements");
-            const recentTicketsResponse = await axiosApi
-                .get("/ticket/tickets?pageNumber=1&pageSize=5&sortBy=dateCreation&sortDir=desc");
-            const recentPaymentsResponse = await axiosApi
-                .get("/paiements/paimentHistorique?pageNumber=1&pageSize=5&sortBy=id&sortDir=desc");
             const res = await axiosApi.get("/paiements/incomeByDay");
 
             setIncomeLabels(res.data.map(d => d.jour));
@@ -70,13 +73,22 @@ function AdminDashboard() {
             setTickets(ticketsResponse.data);
             setUsers(usersResponse.data);
             setPayments(paymentsResponse.data);
-            setRecentTickets(recentTicketsResponse.data.content);
-            setRecentPayments(recentPaymentsResponse.data.content);
 
         } catch (error) {
             console.log("Dashboard error:", error);
         } finally {
             setLoading(false);
+        }
+    }
+
+    async function loadPayments() {
+        try {
+            const response = await axiosApi
+                .get("/paiements/paimentHistorique?pageNumber=" + paymentPage + "&pageSize=5&sortBy=id&sortDir=desc");
+            setRecentPayments(response.data.content);
+            setPaymentTotalPages(response.data.totalPages);
+        } catch (error) {
+            console.log("Payments error:", error);
         }
     }
     if (loading) {
@@ -203,49 +215,14 @@ function AdminDashboard() {
                             </tbody>
                         </table>
                     </div>
+
+                    <div className="p-4">
+                        <Pagination page={paymentPage} totalPages={paymentTotalPages} onChange={setPaymentPage} />
+                    </div>
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-5 border-b border-gray-100">
-                    <h2 className="text-lg font-bold text-gray-800">Tickets récents</h2>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead>
-                        <tr className="bg-gray-50 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                            <th className="p-4">ID</th>
-                            <th className="p-4">Titre</th>
-                            <th className="p-4">Statut</th>
-                            <th className="p-4">Date</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {recentTickets.map((ticket) => (
-                            <tr key={ticket.id} className="border-b last:border-b-0 hover:bg-gray-50">
-                                <td className="p-4 text-sm">#{ticket.id}</td>
-                                <td className="p-4 text-sm font-medium">{ticket.titre}</td>
-                                <td className="p-4">
-                                    <span className="px-3 py-1 rounded-full text-xs bg-orange-100 text-orange-600">
-                                        {ticket.statut}
-                                    </span>
-                                </td>
-
-                                <td className="p-4 text-sm text-gray-500">
-                                    {ticket.dateCreation}
-                                </td>
-
-                            </tr>
-
-                        ))}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
+            <TicketTable title="Tickets récents" />
 
         </div>
     );

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { axiosApi } from "../../api/axiosApi";
 import Loader from "../../components/Loader";
+import TicketTable from "../../components/tickets/TicketTable";
 import { Ticket, CreditCard, Wallet, Clock } from "lucide-react";
 
 import { Line } from "react-chartjs-2";
@@ -25,9 +26,7 @@ ChartJS.register(
 );
 
 function Dashboard() {
-    const [assignedTickets, setAssignedTickets] = useState([]);
     const [assignedCount, setAssignedCount] = useState(0);
-    const [enCoursTickets, setEnCoursTickets] = useState([]);
     const [enCoursCount, setEnCoursCount] = useState(0);
     const [incomeLabels, setIncomeLabels] = useState([]);
     const [incomeValues, setIncomeValues] = useState([]);
@@ -46,10 +45,8 @@ function Dashboard() {
             const incomeResponse = await axiosApi
                 .get("/paiements/incomeByDay");
 
-            setAssignedTickets(ticketsResponse.data.content);
             setAssignedCount(ticketsResponse.data.totalElements);
 
-            setEnCoursTickets(enCoursResponse.data.content);
             setEnCoursCount(enCoursResponse.data.totalElements);
 
             setIncomeLabels(incomeResponse.data.map(d => d.jour));
@@ -81,16 +78,6 @@ function Dashboard() {
             }
         ]
     };
-
-    function statutBadge(statut) {
-        const colors = {
-            OUVERT: "bg-blue-100 text-blue-600",
-            EN_COURS: "bg-orange-100 text-orange-600",
-            RESOLU: "bg-green-100 text-green-600",
-            FERME: "bg-gray-100 text-gray-600"
-        };
-        return colors[statut] || "bg-gray-100 text-gray-600";
-    }
 
     return (
         <div className="p-3 bg-gray-100">
@@ -172,71 +159,10 @@ function Dashboard() {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm">
-                    <div className="p-5 border-b">
-                        <h2 className="text-lg font-bold text-gray-800">Tickets assignés récents</h2>
-                    </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead>
-                            <tr className="text-left text-sm text-gray-500 border-b">
-                                <th className="p-4">ID</th>
-                                <th className="p-4">Titre</th>
-                                <th className="p-4">Statut</th>
-                                <th className="p-4">Date</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {assignedTickets.map((ticket) => (
-                                <tr key={ticket.id} className="border-b last:border-b-0 hover:bg-gray-50">
-                                    <td className="p-4 text-sm">#{ticket.id}</td>
-                                    <td className="p-4 text-sm font-medium">{ticket.titre}</td>
-                                    <td className="p-4">
-                                        <span className={`px-3 py-1 rounded-full text-xs ${statutBadge(ticket.statut)}`}>
-                                            {ticket.statut}
-                                        </span>
-                                    </td>
-                                    <td className="p-4 text-sm text-gray-500">{ticket.dateCreation}</td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <TicketTable title="Tickets assignés" />
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-5 border-b border-gray-100">
-                    <h2 className="text-lg font-bold text-gray-800">Tickets en cours</h2>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead>
-                        <tr className="bg-gray-50 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                            <th className="p-4">ID</th>
-                            <th className="p-4">Titre</th>
-                            <th className="p-4">Statut</th>
-                            <th className="p-4">Date</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {enCoursTickets.map((ticket) => (
-                            <tr key={ticket.id} className="border-b last:border-b-0 hover:bg-gray-50">
-                                <td className="p-4 text-sm">#{ticket.id}</td>
-                                <td className="p-4 text-sm font-medium">{ticket.titre}</td>
-                                <td className="p-4">
-                                    <span className={`px-3 py-1 rounded-full text-xs ${statutBadge(ticket.statut)}`}>
-                                        {ticket.statut}
-                                    </span>
-                                </td>
-                                <td className="p-4 text-sm text-gray-500">{ticket.dateCreation}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
             </div>
-        </div>
     );
 }
 

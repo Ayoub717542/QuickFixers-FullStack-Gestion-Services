@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { axiosApi } from "../../api/axiosApi";
 import Loader from "../../components/Loader";
+import Pagination from "../../components/Pagination";
+import TicketTable from "../../components/tickets/TicketTable";
 import {Ticket, CreditCard} from "lucide-react";
 import { Bar } from "react-chartjs-2";
 import {
@@ -17,14 +19,20 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 function Dashboard() {
     const [tickets, setTickets] = useState(0);
     const [payments, setPayments] = useState(0);
-    const [recentTickets, setRecentTickets] = useState([]);
     const [recentPayments, setRecentPayments] = useState([]);
+    const [paymentItems, setPaymentItems] = useState([]);
+    const [paymentPage, setPaymentPage] = useState(1);
+    const [paymentTotalPages, setPaymentTotalPages] = useState(0);
 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         loadDashboard();
     }, []);
+
+    useEffect(() => {
+        loadPayments();
+    }, [paymentPage]);
 
     if (loading) {
         return <Loader />;
@@ -64,13 +72,11 @@ function Dashboard() {
 
             const ticketsResponse = await axiosApi.get("/ticket/countTickets");
             const paymentsResponse = await axiosApi.get("/paiements/paiements");
-            const recentTicketsResponse = await axiosApi.get("/ticket/tickets?pageNumber=1&pageSize=5&sortBy=dateCreation&sortDir=desc");
             const paymentsHistoryResponse = await axiosApi.get("/paiements/paimentHistorique?pageNumber=1&pageSize=1000&sortBy=id&sortDir=desc");
 
             setTickets(ticketsResponse.data);
             setPayments(paymentsResponse.data);
 
-            setRecentTickets(recentTicketsResponse.data.content);
             setRecentPayments(paymentsHistoryResponse.data.content);
         } catch (error) {
             console.log("Dashboard error:", error);
@@ -79,6 +85,19 @@ function Dashboard() {
             setLoading(false);
         }
     }
+
+    async function loadPayments() {
+        try {
+            const response = await axiosApi.get(
+                "/paiements/paimentHistorique?pageNumber=" + paymentPage + "&pageSize=5&sortBy=id&sortDir=desc"
+            );
+            setPaymentItems(response.data.content);
+            setPaymentTotalPages(response.data.totalPages);
+        } catch (error) {
+            console.log("Payments error:", error);
+        }
+    }
+
     return (
         <div className="p-3 bg-gray-100 ">
             {/*cards*/}
@@ -150,7 +169,7 @@ function Dashboard() {
                             </thead>
 
                             <tbody>
-                            {recentPayments.slice(0, 5).map((payment) => (
+                            {paymentItems.map((payment) => (
                                 <tr key={payment.id} className="border-b last:border-b-0 hover:bg-gray-50">
 
                                     <td className="px-2 py-1 text-sm">#{payment.id}</td>
@@ -167,41 +186,14 @@ function Dashboard() {
                             </tbody>
                         </table>
                     </div>
+
+                    <div className="p-4">
+                        <Pagination page={paymentPage} totalPages={paymentTotalPages} onChange={setPaymentPage} />
+                    </div>
                 </div>
             </div>
 
-            {/* Recent Tickets */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-6">
-                <div className="p-5 border-b border-gray-100">
-                    <h2 className="text-lg font-bold text-gray-800">Mes tickets récents</h2>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead>
-                        <tr className="bg-gray-50 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                            <th className="p-4">ID</th>
-                            <th className="p-4">Titre</th>
-                            <th className="p-4">Statut</th>
-                            <th className="p-4">Date</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {recentTickets.map((ticket) => (
-                            <tr key={ticket.id} className="border-b last:border-b-0 hover:bg-gray-50">
-                                <td className="p-4 text-sm">#{ticket.id}</td>
-                                <td className="p-4 text-sm font-medium">{ticket.titre}</td>
-                                <td className="p-4">
-                                    <span className="px-3 py-1 rounded-full text-xs bg-orange-100 text-orange-600">
-                                        {ticket.statut}
-                                    </span>
-                                </td>
-                                <td className="p-4 text-sm text-gray-500">{ticket.dateCreation}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <TicketTable title="Mes tickets récents" />
 
         </div>
     );
