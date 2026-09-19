@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { axiosApi } from "../../api/axiosApi.js";
@@ -14,20 +14,20 @@ function Login() {
 
     const handleLogin = async (data) => {
         setLoginError(null);
-
         try {
             const response = await axiosApi.post("/auth/login", data);
             localStorage.setItem("token", response.data.token);
+            localStorage.setItem("userEmail", data.userEmail);
             const role = getUserRole();
             console.log("User role:", role);
             toast.success("Connexion réussie !");
 
-            if (role === "ROLE_ADMIN") {
-                navigate("/admin-dashboard");
-            } else if (role === "ROLE_USER") {
-                navigate("/user-dashboard");
-            } else if (role === "ROLE_SUPPORT") {
-                navigate("/support-dashboard");
+            if (role === "ADMIN") {
+                navigate("/admin/dashboard");
+            } else if (role === "USER") {
+                navigate("/user/dashboard");
+            } else if (role === "SUPPORT") {
+                navigate("/support/dashboard");
             } else {
                 setLoginError("Rôle utilisateur inconnu.");
             }
@@ -93,8 +93,7 @@ function Login() {
                     {loginError && (<p className="text-red-500 text-xs text-center mb-4">{loginError}</p>)}
                     <button
                         type="submit"
-                        className="w-full h-10 flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-md shadow-sm transition"
-                    >
+                        className="w-full h-10 flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-md shadow-sm transition">
                         Se connecter
                         <ArrowRight size={15} />
                     </button>

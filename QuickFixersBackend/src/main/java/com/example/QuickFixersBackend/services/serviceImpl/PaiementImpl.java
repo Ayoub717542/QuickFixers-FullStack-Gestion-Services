@@ -1,5 +1,6 @@
 package com.example.QuickFixersBackend.services.serviceImpl;
 
+import com.example.QuickFixersBackend.dto.paiement.IncomeByDay;
 import com.example.QuickFixersBackend.dto.paiement.PaiementRequestDTO;
 import com.example.QuickFixersBackend.dto.paiement.PaiementResponseDTO;
 import com.example.QuickFixersBackend.entity.Paiement;
@@ -7,18 +8,21 @@ import com.example.QuickFixersBackend.entity.Ticket;
 import com.example.QuickFixersBackend.entity.User;
 import com.example.QuickFixersBackend.enums.PaiementStatut;
 import com.example.QuickFixersBackend.enums.Role;
+import com.example.QuickFixersBackend.enums.Statut;
 import com.example.QuickFixersBackend.mapper.PaiementMapper;
 import com.example.QuickFixersBackend.repository.PaiementRepository;
 import com.example.QuickFixersBackend.repository.TicketRepository;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.PaiementInterface;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,11 +34,19 @@ public class PaiementImpl implements PaiementInterface {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public PaiementResponseDTO creerPaiement(PaiementRequestDTO paiementRequestDTO, String email) {
         Ticket ticket = ticketRepository.findById(paiementRequestDTO.getTicketId())
                 .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
-
         User userEmail = userRepository.findByEmail(email).orElseThrow(()-> new RuntimeException("email not found"));
+
+        if(paiementRepository.existsByTicketAndStatut(ticket,PaiementStatut.TERMINE) && ticket.getStatut() == Statut.FERME){
+            throw new RuntimeException("Ce ticket est déjà payé");
+        }
+
+        if(ticket.getCreatedBy() == null && !ticket.getAssignedTo().getEmail().equals(userEmail.getEmail())){
+            throw new RuntimeException("Vous ne pouvez payer que vos propres tickets");
+        }
 
         Paiement payment = paiementMapper.toEntity(paiementRequestDTO);
         payment.setTicket(ticket);
@@ -44,6 +56,8 @@ public class PaiementImpl implements PaiementInterface {
         boolean success=true;
         if(success){
             payment.setStatut(PaiementStatut.TERMINE);
+            ticket.setStatut(Statut.FERME);
+            ticketRepository.save(ticket);
         }else {
             payment.setStatut(PaiementStatut.ECHOUE);
         }
@@ -75,5 +89,22 @@ public class PaiementImpl implements PaiementInterface {
             return paiementRepository.countByUser(user);
         }
         throw new RuntimeException("Access denied");
+    }
+
+    @Override
+    public List<IncomeByDay> incomeByday(User user) {
+        List<Object[]> rows;
+        if (user.getRole() == Role.ADMIN) {
+            rows = paiementRepository.incomeByDay(PaiementStatut.TERMINE);
+        } else if (user.getRole() == Role.SUPPORT) {
+            rows = paiementRepository.incomeByDayForSupport(PaiementStatut.TERMINE, user);
+        } else {
+            throw new RuntimeException("Access denied");
+        }
+        return rows.stream()
+                .map(row -> new IncomeByDay(
+                        ((java.sql.Date) row[0]).toLocalDate(),
+                        ((java.math.BigDecimal) row[1]).doubleValue()))
+                .toList();
     }
 }

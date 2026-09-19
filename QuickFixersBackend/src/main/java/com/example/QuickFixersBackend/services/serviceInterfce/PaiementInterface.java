@@ -1,14 +1,19 @@
 package com.example.QuickFixersBackend.services.serviceInterfce;
 
+import com.example.QuickFixersBackend.dto.paiement.IncomeByDay;
 import com.example.QuickFixersBackend.dto.paiement.PaiementRequestDTO;
 import com.example.QuickFixersBackend.dto.paiement.PaiementResponseDTO;
 import com.example.QuickFixersBackend.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface PaiementInterface {
     PaiementResponseDTO creerPaiement(PaiementRequestDTO paiementRequestDTO, String email);
     Page<PaiementResponseDTO> paimentHistorique(User user, Pageable pageable);
     long countPayments(User user);
+    List<IncomeByDay> incomeByday(User user);
+
 
 }

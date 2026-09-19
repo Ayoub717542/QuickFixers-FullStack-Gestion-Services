@@ -21,6 +21,7 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
 
     @Query("SELECT t From Ticket t where t.titre Like %:searchedTicket%")
     Page<Ticket> searchedTicket(String searchedTicket,Pageable pageable);
+
     Page<Ticket> findByCreatedBy(User user, Pageable pageable);
 
     @Query(" SELECT t FROM Ticket t  WHERE t.assignedTo = :user AND t.titre LIKE %:recherche%")

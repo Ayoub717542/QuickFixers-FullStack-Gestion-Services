@@ -98,15 +98,22 @@ public class TicketImpl implements TicketInterface {
     }
 
     @Override
-    public TicketResponseDTO modifierStatut(Long ticketId, Statut statut) {
+    public TicketResponseDTO modifierStatut(User user, Long ticketId, Statut statut) {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket Not Found"));
 
-        ticket.setStatut(statut);
-
-        Ticket savedTicket = ticketRepository.save(ticket);
-
-        return ticketMapper.toDto(savedTicket);
+        if(user.getRole() == Role.ADMIN ){
+            ticket.setStatut(statut);
+        } else if (user.getRole() == Role.SUPPORT) {
+            if (ticket.getAssignedTo() == null
+                    || !ticket.getAssignedTo().getEmail().equals(user.getEmail())){
+                throw new RuntimeException("Access denied");
+            }
+            ticket.setStatut(statut);
+        }else{
+            throw new RuntimeException("Access denied");
+        }
+        return ticketMapper.toDto(ticketRepository.save(ticket));
     }
 
     @Override

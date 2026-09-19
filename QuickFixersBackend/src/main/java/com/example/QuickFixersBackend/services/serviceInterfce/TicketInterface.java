@@ -12,7 +12,7 @@ public interface TicketInterface {
      TicketResponseDTO modifieTeckit(Long id , TicketRequestDTO ticketRequestDTO);
      TicketResponseDTO consulterTeckit(Long id,User user);
      Page<TicketResponseDTO> listerTeckits(User user,Pageable pageable);
-     TicketResponseDTO modifierStatut(Long ticketId, Statut statut);
+     TicketResponseDTO modifierStatut(User user, Long ticketId, Statut statut);
      Page<TicketResponseDTO> filtrerParStatut(User user, Statut statut,Pageable pageable);
      Page<TicketResponseDTO> rechercherTickets(User user,String recherche, Pageable pageable);
     long countTickets(User user);

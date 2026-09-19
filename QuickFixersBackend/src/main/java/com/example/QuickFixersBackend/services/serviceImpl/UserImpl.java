@@ -3,6 +3,7 @@ package com.example.QuickFixersBackend.services.serviceImpl;
 import com.example.QuickFixersBackend.dto.support.CreateSupportRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserResponseDTO;
+import com.example.QuickFixersBackend.dto.user.UserUpdateRequestDTO;
 import com.example.QuickFixersBackend.entity.User;
 import com.example.QuickFixersBackend.enums.Role;
 import com.example.QuickFixersBackend.mapper.UserMapper;
@@ -67,6 +68,18 @@ public record UserImpl(UserRepository userRepository, UserMapper userMapper, Pas
                 .build();
 
         return userMapper.toDto(userRepository.save(support));
+    }
+
+    @Override
+    public UserResponseDTO monProfil(User user) {
+        return userMapper.toDto(user);
+    }
+
+    @Override
+    public UserResponseDTO modifierProfil(User user, UserUpdateRequestDTO dto) {
+        user.setNom(dto.getNom());
+        user.setPrenom(dto.getPrenom());
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override

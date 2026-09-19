@@ -1,23 +1,79 @@
 import { Link } from "react-router-dom";
-function AdminSidebar() {
-    return (
-        <aside className="w-64 min-h-screen bg-slate-800 text-white p-5">
+import {
+    LayoutDashboard,
+    Ticket,
+    Users,
+    CreditCard,
+    Wrench
+} from "lucide-react";
 
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold text-orange-500">QuickFixers</h1>
-                <p className="text-sm text-gray-400">Support Multi-Services</p>
-            </div>
-            <nav className="space-y-2">
+function AdminSidebar({sginOut}) {
+    {
+        return (
+            <aside
+                className="group w-16 hover:w-64 sticky top-0 min-h-screen h-screen bg-slate-800 text-white p-3 transition-all duration-300">
+                <div className="mb-8 flex items-center gap-3">
+                    <Wrench size={24} className="text-orange-500"/>
+                    <div className="hidden group-hover:block">
+                        <h1 className="text-xl font-bold text-orange-500">QuickFixers</h1>
+                        <p className="text-xs text-gray-400">Support Multi-Services</p>
+                    </div>
+                </div>
 
-                <Link to="/admin/dashboard" className="block p-3 rounded hover:bg-slate-700">Dashboard</Link>
-                <Link to="/admin/tickets" className="block p-3 rounded hover:bg-slate-700">Tickets</Link>
-                <Link to="/admin/users" className="block p-3 rounded hover:bg-slate-700">Utilisateurs</Link>
-                <Link to="/admin/payments" className="block p-3 rounded hover:bg-slate-700">Paiements</Link>
-                <Link to="/admin/services" className="block p-3 rounded hover:bg-slate-700">Services</Link>
+                <nav className="space-y-2">
+                    <Link to="/admin/dashboard" className="flex items-center gap-3 p-3 rounded hover:bg-slate-700">
+                        <LayoutDashboard size={20}/>
+                        <span className="hidden group-hover:block">Dashboard</span>
+                    </Link>
 
-            </nav>
 
-        </aside>
-    )
+                    <Link
+                        to="/admin/tickets"
+                        className="flex items-center gap-3 p-3 rounded hover:bg-slate-700"
+                    >
+                        <Ticket size={20}/>
+
+                        <span className="hidden group-hover:block">
+                        Tickets
+                    </span>
+                    </Link>
+
+
+                    <Link
+                        to="/admin/users"
+                        className="flex items-center gap-3 p-3 rounded hover:bg-slate-700"
+                    >
+                        <Users size={20}/>
+
+                        <span className="hidden group-hover:block">
+                        Utilisateurs
+                    </span>
+                    </Link>
+
+
+                    <Link
+                        to="/admin/payments"
+                        className="flex items-center gap-3 p-3 rounded hover:bg-slate-700"
+                    >
+                        <CreditCard size={20}/>
+
+                        <span className="hidden group-hover:block">
+                        Paiements
+                    </span>
+                    </Link>
+                    <Link
+                        to="/admin/services"
+                        className="flex items-center gap-3 p-3 rounded hover:bg-slate-700"
+                    >
+                        <Wrench size={20}/>
+                        <span className="hidden group-hover:block">
+                        Services
+                    </span>
+                    </Link>
+                </nav>
+                {sginOut}
+            </aside>
+        );
+    }
 }
-export default AdminSidebar
+export default AdminSidebar;

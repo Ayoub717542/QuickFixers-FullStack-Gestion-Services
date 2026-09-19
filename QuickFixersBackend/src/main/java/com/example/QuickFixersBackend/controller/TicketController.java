@@ -41,7 +41,7 @@ public class TicketController {
     }
 
     @PutMapping("/modifier/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPPORT','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<TicketResponseDTO> modifierTicket(
             @PathVariable Long id,
             @RequestBody TicketRequestDTO ticketRequestDTO) {
@@ -77,8 +77,10 @@ public class TicketController {
 
     @PatchMapping("/statut/{ticketId}/{statut}")
     @PreAuthorize("hasAnyRole('ADMIN','SUPPORT')")
-    public ResponseEntity<TicketResponseDTO> modifierStatut(@PathVariable Long ticketId, @PathVariable Statut statut) {
-        return ResponseEntity.ok(ticketInterface.modifierStatut(ticketId, statut));
+    public ResponseEntity<TicketResponseDTO> modifierStatut(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long ticketId, @PathVariable Statut statut) {
+        return ResponseEntity.ok(ticketInterface.modifierStatut(user,ticketId, statut));
     }
 
     @GetMapping("/statut/{statut}")

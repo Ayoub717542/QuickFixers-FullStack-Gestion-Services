@@ -16,7 +16,7 @@ export function getUserRole(){
             return null;
         }
 
-        return authorities[0];
+        return authorities[0].replace("ROLE_", "");
 
     } catch (error) {
         console.error("JWT decoding error:", error);
@@ -24,4 +24,4 @@ export function getUserRole(){
     }
 }
 
-export default  getUserRole();
+export default  getUserRole;

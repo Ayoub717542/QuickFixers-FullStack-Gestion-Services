@@ -3,6 +3,8 @@ package com.example.QuickFixersBackend.controller;
 import com.example.QuickFixersBackend.dto.support.CreateSupportRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserResponseDTO;
+import com.example.QuickFixersBackend.dto.user.UserUpdateRequestDTO;
+import com.example.QuickFixersBackend.entity.User;
 import com.example.QuickFixersBackend.enums.Role;
 import com.example.QuickFixersBackend.services.serviceInterfce.UserInterface;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -16,10 +18,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 @EnableMethodSecurity
@@ -65,6 +68,20 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> createSupport(@Valid @RequestBody CreateSupportRequestDTO dto) {
         UserResponseDTO created = userInterface.createSupportAccount(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasAnyRole('ADMIN','USER','SUPPORT')")
+    public ResponseEntity<UserResponseDTO> monProfil(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(userInterface.monProfil(user));
+    }
+
+    @PutMapping("/me")
+    @PreAuthorize("hasAnyRole('ADMIN','USER','SUPPORT')")
+    public ResponseEntity<UserResponseDTO> modifierProfil(
+            @AuthenticationPrincipal User user,
+            @Valid @RequestBody UserUpdateRequestDTO dto) {
+        return ResponseEntity.ok(userInterface.modifierProfil(user, dto));
     }
 
     @GetMapping("/countUsers")

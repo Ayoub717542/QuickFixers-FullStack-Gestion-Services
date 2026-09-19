@@ -1,5 +1,6 @@
 package com.example.QuickFixersBackend.controller;
 
+import com.example.QuickFixersBackend.dto.paiement.IncomeByDay;
 import com.example.QuickFixersBackend.dto.paiement.PaiementRequestDTO;
 import com.example.QuickFixersBackend.dto.paiement.PaiementResponseDTO;
 import com.example.QuickFixersBackend.entity.User;
@@ -16,6 +17,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,7 +38,7 @@ public class PaiementController {
         return ResponseEntity.ok(paiementInterface.creerPaiement(paiementRequestDTO,user.getEmail()));
     }
 
-    @PreAuthorize(("hasRole('ADMIN')"))
+    @PreAuthorize(("hasAnyRole('ADMIN','USER')"))
     @GetMapping("/paimentHistorique")
     public  ResponseEntity<Page<PaiementResponseDTO>> paimentHistorique(
             @AuthenticationPrincipal User user,
@@ -59,5 +62,9 @@ public class PaiementController {
         return ResponseEntity.ok(paiementInterface.countPayments(user));
     }
 
-
+    @GetMapping("/incomeByDay")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPPORT')")
+    public ResponseEntity<List<IncomeByDay>> revenusParJour(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(paiementInterface.incomeByday(user));
+    }
 }

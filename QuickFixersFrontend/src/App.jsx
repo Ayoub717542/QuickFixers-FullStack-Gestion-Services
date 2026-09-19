@@ -31,9 +31,12 @@ import UserPayments from "./pages/user/Payments.jsx";
 import UserTicketDetails from "./pages/user/TicketDetails.jsx";
 import UserSidebar from "./components/sidebars/UserSidebar.jsx";
 
+import SginOut from "./components/SginOut.jsx";
+
+
 function App() {
     return (
-        <Route>
+        <>
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
@@ -41,7 +44,7 @@ function App() {
                 <Route element={<ProtectedRoute />}>
 
                     <Route element={<RoleGuard allowedRoles={["ADMIN"]} />}>
-                        <Route element={<Layout sidebar={<AdminSidebar />} />}>
+                        <Route element={<Layout sidebar={<AdminSidebar sginOut={<SginOut />}/>}/>}>
                             <Route path="/admin/dashboard" element={<AdminDashboard />} />
                             <Route path="/admin/tickets" element={<Tickets />} />
                             <Route path="/admin/tickets/:id" element={<TicketDetails />} />
@@ -53,7 +56,7 @@ function App() {
                     </Route>
 
                     <Route element={<RoleGuard allowedRoles={["USER"]} />}>
-                        <Route element={<Layout sidebar={<UserSidebar />} />}>
+                        <Route element={<Layout sidebar={<UserSidebar sginOut={<SginOut />} />} />}>
                             <Route path="/user/dashboard" element={<UserDashboard />} />
                             <Route path="/user/tickets" element={<UserTickets />} />
                             <Route path="/user/tickets/:id" element={<UserTicketDetails />} />
@@ -65,7 +68,7 @@ function App() {
                     </Route>
 
                     <Route element={<RoleGuard allowedRoles={["SUPPORT"]} />}>
-                        <Route element={<Layout sidebar={<SupportSidebar />} />}>
+                        <Route element={<Layout sidebar={<SupportSidebar sginOut={<SginOut />} />} />}>
                             <Route path="/support/dashboard" element={<Dashboard />} />
                             <Route path="/support/tickets" element={<SupportTickets />} />
                             <Route path="/support/tickets/:id" element={<SupportTicketDetails />} />

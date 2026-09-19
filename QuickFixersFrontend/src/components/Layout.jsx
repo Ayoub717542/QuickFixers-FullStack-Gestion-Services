@@ -1,19 +1,22 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "./Navbar.jsx";
-import Sidebar from "./Sidebar.jsx";
+import Navbar from "./Navbar";
 
-function Layout() {
+function Layout({ sidebar }) {
     return (
-        <div className="layout">
-            <Navbar />
+        <div className="flex min-h-screen">
 
-            <div className="layout-body">
-                <Sidebar />
+            {sidebar}
 
-                <main className="main-content">
+            <div className="flex-1">
+
+                <Navbar />
+
+                <main className="pt-8 p-3 bg-gray-100 min-h-screen">
                     <Outlet />
                 </main>
+
             </div>
+
         </div>
     );
 }
