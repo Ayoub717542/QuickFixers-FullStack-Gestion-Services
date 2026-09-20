@@ -2,7 +2,6 @@ function Pagination({ page, totalPages, onChange }) {
     if (totalPages <= 1) {
         return null;
     }
-
     return (
         <div className="flex items-center justify-between mt-4">
             <button
@@ -25,5 +24,4 @@ function Pagination({ page, totalPages, onChange }) {
         </div>
     );
 }
-
 export default Pagination;
