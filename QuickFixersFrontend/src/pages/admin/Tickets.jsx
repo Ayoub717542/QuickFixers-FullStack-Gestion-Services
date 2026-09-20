@@ -1,8 +1,19 @@
+import TicketTable from "../../components/tickets/TicketTable.jsx";
+import Pagination from "../../components/Pagination.jsx";
+import {useState} from "react";
+
 function Tickets(){
+
     return(
-        <div>
-            <h1>Tickets</h1>
-        </div>
+        <>
+            <div>
+                <TicketTable title="Tickets" />
+
+            </div>
+
+
+        </>
+
     )
 }
 export default Tickets;

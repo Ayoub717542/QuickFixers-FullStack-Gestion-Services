@@ -16,7 +16,6 @@ import {
     Chart as ChartJS,
     CategoryScale,
     LinearScale,
-    BarElement,
     PointElement,
     LineElement,
     Tooltip,
@@ -26,7 +25,6 @@ import {
 ChartJS.register(
     CategoryScale,
     LinearScale,
-    BarElement,
     PointElement,
     LineElement,
     Tooltip,
@@ -109,9 +107,7 @@ function AdminDashboard() {
     return (
         <div className="p-3 bg-gray-100">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
-
                 <div className="bg-white p-3 rounded-xl shadow-sm">
-
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm text-gray-500">Services</p>
@@ -162,8 +158,10 @@ function AdminDashboard() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+
                 <div className="bg-white p-3 rounded-xl shadow-sm">
                     <h2 className="text-sm font-bold text-gray-800 mb-4">Revenus par jour</h2>
+
                     <div style={{ height: "150px" }}>
                         <Line
                             data={chartData}
@@ -177,6 +175,7 @@ function AdminDashboard() {
                             }}
                         />
                     </div>
+
                 </div>
                 <div className="bg-white rounded-xl shadow-sm">
                     <div className="p-5 border-b">
@@ -196,19 +195,14 @@ function AdminDashboard() {
                             <tbody>
                             {recentPayments.map((payment) => (
                                 <tr key={payment.id} className="border-b last:border-b-0 hover:bg-gray-50">
-                                    <td className="px-2 py-2 text-sm">
-                                        #{payment.id}</td>
-                                    <td className="px-2 py-2 text-sm font-medium">
-                                        {payment.montant} DH
-                                    </td>
+                                    <td className="px-2 py-2 text-sm">#{payment.id}</td>
+                                    <td className="px-2 py-2 text-sm font-medium">{payment.montant} DH</td>
                                     <td className="px-2 py-2">
                                         <span className="px-3 py-1 rounded-full text-[10px] bg-green-100 text-green-600">
                                             {payment.statut}
                                         </span>
                                     </td>
-                                    <td className="px-2 py-2 text-sm">
-                                        #{payment.ticketId}
-                                    </td>
+                                    <td className="px-2 py-2 text-sm">#{payment.ticketId}</td>
 
                                 </tr>
                             ))}

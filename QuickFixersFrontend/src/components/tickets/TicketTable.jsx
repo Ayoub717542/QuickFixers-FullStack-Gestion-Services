@@ -4,16 +4,20 @@ import { toast } from "react-toastify";
 import { axiosApi } from "../../api/axiosApi";
 import Loader from "../Loader";
 import StatusBadge from "../StatusBadge";
+import Pagination from "../Pagination.jsx";
 
 function TicketTable() {
     const navigate = useNavigate();
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [ticketPage, setTicketPage] = useState(1);
+    const [ticketTotalPages, setTicketTotalPages] = useState(0);
 
     function fetchTickets() {
-        axiosApi.get("/ticket/tickets?pageNumber=1&pageSize=10")
+        axiosApi.get("/ticket/tickets?pageNumber="+ ticketPage + "&pageSize=4&sortBy=dateCreation&sortDir=desc")
             .then((response) => {
                 setTickets(response.data.content);
+                setTicketTotalPages(response.data.totalPages);
             })
             .catch((error) => {
                 console.error(error);
@@ -26,7 +30,7 @@ function TicketTable() {
 
     useEffect(() => {
         fetchTickets();
-    }, []);
+    }, [ticketPage]);
 
     function voirDetails(id) {
         navigate("/support/tickets/" + id);
@@ -76,7 +80,9 @@ function TicketTable() {
                 </table>
 
             </div>
-
+            <div className="p-4">
+                <Pagination page={ticketPage} totalPages={ticketTotalPages} onChange={setTicketPage} />
+            </div>
         </div>
     );
 }
