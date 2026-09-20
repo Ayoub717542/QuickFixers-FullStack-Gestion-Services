@@ -90,7 +90,7 @@ function TicketDetails() {
                 </div>
             ) : (
                 <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-md overflow-hidden">
-                    {/* Header */}
+
                     <div className="bg-gradient-to-r from-orange-500 to-yellow-500 p-6 text-white">
                         <div className="flex items-center justify-between gap-3">
                             <h1 className="text-xl font-bold">Ticket #{ticket.id}</h1>
@@ -101,7 +101,6 @@ function TicketDetails() {
                         <p className="text-white/90 mt-2 text-base font-medium">{ticket.titre}</p>
                     </div>
 
-                    {/* Body */}
                     <div className="p-6">
                         <h2 className="text-sm font-semibold text-gray-700 mb-2">Description</h2>
                         <p className="text-sm text-gray-600 mb-5">{ticket.description}</p>
@@ -127,7 +126,6 @@ function TicketDetails() {
                             </div>
                         </dl>
 
-                        {/* Status changer */}
                         <div className="mt-5 bg-gray-50 rounded-xl p-4">
                             <label className="block text-xs font-medium text-gray-600 mb-2">
                                 Changer le statut

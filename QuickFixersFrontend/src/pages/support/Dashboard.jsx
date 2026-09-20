@@ -81,7 +81,6 @@ function Dashboard() {
 
     return (
         <div className="p-3 bg-gray-100">
-            {/* Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
 
                 <div className="bg-white p-3 rounded-xl shadow-sm">
@@ -158,12 +157,10 @@ function Dashboard() {
                         />
                     </div>
                 </div>
-
                 <TicketTable title="Tickets assignés" />
             </div>
 
             </div>
     );
 }
-
 export default Dashboard;
