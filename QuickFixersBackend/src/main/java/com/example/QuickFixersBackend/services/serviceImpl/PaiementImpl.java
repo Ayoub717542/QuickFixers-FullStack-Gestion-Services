@@ -76,6 +76,10 @@ public class PaiementImpl implements PaiementInterface {
             return paiementRepository.findByUser(user, pageable)
                     .map(paiementMapper::toDto);
         }
+        if (user.getRole() == Role.SUPPORT) {
+            return paiementRepository.findByTicketAssignedTo(user, pageable)
+                    .map(paiementMapper::toDto);
+        }
 
         throw new RuntimeException("Access denied");
     }

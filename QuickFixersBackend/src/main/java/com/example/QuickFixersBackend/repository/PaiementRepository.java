@@ -21,6 +21,7 @@ public interface PaiementRepository  extends JpaRepository<Paiement,Long> {
 
     long countByUser(User user);
     long countByStatut(PaiementStatut statut);
+    Page<Paiement> findByTicketAssignedTo(User agent, Pageable pageable);
 
     @Query("select FUNCTION('DATE', p.dateCreation) AS jour, SUM(p.montant) AS total " +
             "from Paiement p where p.statut = :statut " +

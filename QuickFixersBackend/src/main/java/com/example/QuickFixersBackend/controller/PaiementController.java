@@ -38,7 +38,7 @@ public class PaiementController {
         return ResponseEntity.ok(paiementInterface.creerPaiement(paiementRequestDTO,user.getEmail()));
     }
 
-    @PreAuthorize(("hasAnyRole('ADMIN','USER')"))
+    @PreAuthorize(("hasAnyRole('ADMIN','USER','SUPPORT')"))
     @GetMapping("/paimentHistorique")
     public  ResponseEntity<Page<PaiementResponseDTO>> paimentHistorique(
             @AuthenticationPrincipal User user,
