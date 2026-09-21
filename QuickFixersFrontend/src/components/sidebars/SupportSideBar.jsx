@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import {
     LayoutDashboard,
     Ticket,
-    User, Wrench
+    User, Wrench, CreditCard
 } from "lucide-react";
 function SupportSidebar({ sginOut }) {
     return (
@@ -27,6 +27,11 @@ function SupportSidebar({ sginOut }) {
                 <Link to="/support/tickets" className="flex items-center gap-3 p-3 rounded hover:bg-slate-700">
                     <Ticket size={20} />
                     <span className="hidden group-hover:block">Tickets assignés</span>
+                </Link>
+
+                <Link to="/support/payments" className="flex items-center gap-3 p-3 rounded hover:bg-slate-700">
+                    <CreditCard size={20} />
+                    <span className="hidden group-hover:block">Paiements</span>
                 </Link>
                 <Link
                     to="/support/profile"

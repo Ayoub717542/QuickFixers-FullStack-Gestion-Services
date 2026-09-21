@@ -22,6 +22,7 @@ import Dashboard from "./pages/support/Dashboard.jsx";
 import SupportProfile from "./pages/support/Profile";
 import SupportTicketDetails from "./pages/support/TicketDetails.jsx";
 import SupportTickets from "./pages/support/AssignedTickets";
+import SupportPayments from "./pages/support/Payments.jsx";
 import SupportSidebar from "./components/sidebars/SupportSidebar.jsx";
 
 import UserProfile from "./pages/user/Profile";
@@ -76,6 +77,7 @@ function App() {
                             <Route path="/support/dashboard" element={<Dashboard />} />
                             <Route path="/support/tickets" element={<SupportTickets />} />
                             <Route path="/support/tickets/:id" element={<SupportTicketDetails />} />
+                            <Route path="/support/payments" element={<SupportPayments />} />
                             <Route path="/support/profile" element={<SupportProfile />} />
                         </Route>
                     </Route>
