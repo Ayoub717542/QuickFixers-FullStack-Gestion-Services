@@ -4,7 +4,6 @@ import Loader from "../../components/Loader";
 import Pagination from "../../components/Pagination";
 import { fetchPayments } from "../../api/paiementApi";
 
-// Couleurs des badges selon le statut du paiement
 const statutColors = {
     EN_ATTENTE: "bg-yellow-100 text-yellow-700",
     TERMINE: "bg-green-100 text-green-700",
@@ -29,7 +28,6 @@ function Payments() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
 
-    // Charge les paiements reçus (paiements des tickets assignés à ce support)
     function fetchList() {
         setLoading(true);
         fetchPayments(page)
