@@ -33,7 +33,6 @@ function ServiceDetails() {
 
     async function changeStatut(statut) {
         if (statut === service.statut) return;
-
         try {
             const updatedService = await updateServiceStatut(
                 service.id,

@@ -15,7 +15,7 @@ import Payments from "./pages/admin/Payments.jsx";
 import TicketDetails from "./pages/admin/TicketDetails.jsx";
 import AdminSidebar from "./components/sidebars/AdminSidebar.jsx";
 
-import Services from "./pages/services/Servicelist";
+import Services from "./pages/services/ServiceList";
 import ServiceDetails from "./pages/services/ServiceDetails";
 
 import Dashboard from "./pages/support/Dashboard.jsx";
