@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
 import { fetchTicket, updateTicketStatut } from "../../api/ticketApi";
+import { createPayment } from "../../api/paiementApi";
 
 const STATUTS = ["OUVERT", "EN_COURS", "RESOLU", "FERME"];
 
@@ -60,6 +61,24 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true }) 
             toast.success("Statut mis à jour avec succès");
         } catch (err) {
             toast.error("Erreur lors de la modification du statut");
+        } finally {
+            setSaving(false);
+        }
+    }
+
+    // Paiement du ticket (visible uniquement pour l'utilisateur)
+    async function handlePay() {
+        if (!window.confirm(`Confirmer le paiement de ${ticket.prix} DH ?`)) {
+            return;
+        }
+
+        setSaving(true);
+        try {
+            await createPayment(ticket.id, ticket.prix);
+            toast.success("Paiement effectué avec succès.");
+            loadTicket(); // recharger → statut FERME → le bouton disparaît
+        } catch (err) {
+            toast.error("Erreur lors du paiement.");
         } finally {
             setSaving(false);
         }
@@ -125,6 +144,17 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true }) 
                                 <dd className="text-gray-800 font-medium">{formatDate(ticket.dateCreation)}</dd>
                             </div>
                         </dl>
+
+                        {/* Bouton Payer — utilisateur uniquement, tant que le ticket n'est pas fermé */}
+                        {!canManage && ticket.statut !== "FERME" && ticket.prix != null && (
+                            <button
+                                onClick={handlePay}
+                                disabled={saving}
+                                className="mt-5 w-full px-5 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-sm font-semibold transition-colors disabled:opacity-50"
+                            >
+                                {saving ? "Paiement..." : `Payer ${ticket.prix} DH`}
+                            </button>
+                        )}
 
                         {canManage && (
                             <div className="mt-5 bg-gray-50 rounded-xl p-4">
