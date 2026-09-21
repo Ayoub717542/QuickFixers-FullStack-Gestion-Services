@@ -4,7 +4,6 @@ import Loader from "../../components/Loader";
 import Pagination from "../../components/Pagination";
 import { fetchPayments } from "../../api/paiementApi";
 
-// Couleurs des badges selon le statut du paiement
 const statutColors = {
     EN_ATTENTE: "bg-yellow-100 text-yellow-700",
     TERMINE: "bg-green-100 text-green-700",
@@ -29,7 +28,6 @@ function Payments() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
 
-    // Charge l'historique des paiements
     function fetchList() {
         setLoading(true);
         fetchPayments(page)
@@ -52,11 +50,9 @@ function Payments() {
     if (loading) {
         return <Loader />;
     }
-
     return (
         <div className="p-6">
             <h1 className="text-2xl font-bold text-gray-800 mb-4">Mes paiements</h1>
-
             <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full">
