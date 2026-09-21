@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,12 +33,14 @@ public class Ticket {
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "assigned_to")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User assignedTo;
 
     private BigDecimal prix;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User createdBy;
 
     @ManyToOne

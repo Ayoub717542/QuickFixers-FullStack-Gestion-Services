@@ -12,7 +12,6 @@ function SginOut() {
         toast.success("Vous êtes déconnecté avec succès !");
         navigate("/login", { replace: true });
     }
-
     return (
         <button
             onClick={handleLogOut}

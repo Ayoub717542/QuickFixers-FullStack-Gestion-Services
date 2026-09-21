@@ -1,7 +1,7 @@
+import TicketDetailsView from "../../components/tickets/TicketDetailsView";
 function TicketDetails() {
     return (<>
-        <h1>Ticket Details</h1>
-        <p>This is the ticket details page.</p>
+        <TicketDetailsView backPath={"/admin/tickets" } ></TicketDetailsView>
     </>)
 }
 export default TicketDetails;

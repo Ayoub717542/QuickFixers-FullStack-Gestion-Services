@@ -20,7 +20,6 @@ public interface PaiementRepository  extends JpaRepository<Paiement,Long> {
     long count();
 
     long countByUser(User user);
-
     long countByStatut(PaiementStatut statut);
 
     @Query("select FUNCTION('DATE', p.dateCreation) AS jour, SUM(p.montant) AS total " +
@@ -38,6 +37,7 @@ public interface PaiementRepository  extends JpaRepository<Paiement,Long> {
          ORDER BY FUNCTION('DATE', p.dateCreation)
          """)
     List<Object[]> incomeByDayForSupport(@Param("statut") PaiementStatut statut, @Param("agent") User agent);
+
     boolean existsByTicketAndStatut(Ticket ticket, PaiementStatut statut);
 
 

@@ -6,7 +6,7 @@ import Loader from "../Loader";
 import StatusBadge from "../StatusBadge";
 import Pagination from "../Pagination.jsx";
 
-function TicketTable({ title = "Tickets" }) {
+function TicketTable({ title = "Tickets" , basePath = "/support/tickets"}) {
     const navigate = useNavigate();
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -14,13 +14,12 @@ function TicketTable({ title = "Tickets" }) {
     const [ticketTotalPages, setTicketTotalPages] = useState(0);
 
     const [recherche, setRecherche] = useState("");
-    const [rechercheActive, setRechercheActive] = useState("");
     const [statut, setStatut] = useState("");
 
     function fetchTickets() {
         let url = "";
-        if (rechercheActive !== "") {
-            url = "/ticket/recherche?recherche=" + rechercheActive + "&pageNumber=" + ticketPage + "&pageSize=4";
+        if (recherche !== "") {
+            url = "/ticket/recherche?recherche=" + recherche + "&pageNumber=" + ticketPage + "&pageSize=4";
         } else if (statut !== "") {
             url = "/ticket/statut/" + statut + "?pageNumber=" + ticketPage + "&pageSize=4";
         } else {
@@ -42,11 +41,10 @@ function TicketTable({ title = "Tickets" }) {
 
     useEffect(() => {
         fetchTickets();
-    }, [ticketPage, rechercheActive, statut]);
+    }, [ticketPage, recherche, statut]);
 
     function handleRecherche(e) {
         setRecherche(e.target.value);
-        setRechercheActive(e.target.value);
         setTicketPage(1);
     }
 
@@ -56,7 +54,7 @@ function TicketTable({ title = "Tickets" }) {
     }
 
     function voirDetails(id) {
-        navigate("/support/tickets/" + id);
+        navigate(basePath + "/" + id);
     }
 
     if (loading) {

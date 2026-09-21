@@ -5,7 +5,6 @@ import { axiosApi } from "../../api/axiosApi";
 
 function UserForm({ onSuccess }) {
     const [typeCompte, setTypeCompte] = useState("USER");
-
     const {
         register,
         handleSubmit,

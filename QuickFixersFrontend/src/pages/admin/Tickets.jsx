@@ -5,7 +5,7 @@ function Tickets(){
     return(
         <>
             <div>
-                <TicketTable title="Tickets" />
+                <TicketTable title="Tickets" basePath={"/admin/tickets"}/>
 
             </div>
 
