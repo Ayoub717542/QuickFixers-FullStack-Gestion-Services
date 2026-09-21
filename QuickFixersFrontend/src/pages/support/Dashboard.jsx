@@ -157,7 +157,7 @@ function Dashboard() {
                         />
                     </div>
                 </div>
-                <TicketTable title="Tickets assignés" />
+                <TicketTable title="Mes tickets récents" basePath="/support/tickets"/>
             </div>
 
             </div>

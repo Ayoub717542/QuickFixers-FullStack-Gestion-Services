@@ -216,7 +216,7 @@ function AdminDashboard() {
                 </div>
             </div>
 
-            <TicketTable title="Tickets récents" />
+            <TicketTable  title="Tickets récents" basePath="/admin/tickets" />
 
         </div>
     );

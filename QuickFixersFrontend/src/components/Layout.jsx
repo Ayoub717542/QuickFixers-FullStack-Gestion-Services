@@ -7,11 +7,11 @@ function Layout({ sidebar }) {
 
             {sidebar}
 
-            <div className="flex-1">
+            <div className="flex-1 flex flex-col">
 
                 <Navbar />
 
-                <main className="pt-8 p-3 bg-gray-100 min-h-screen">
+                <main className="flex-1 pt-8 p-3 bg-gray-100">
                     <Outlet />
                 </main>
 

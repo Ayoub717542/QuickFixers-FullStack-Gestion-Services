@@ -193,7 +193,7 @@ function Dashboard() {
                 </div>
             </div>
 
-            <TicketTable title="Mes tickets récents" />
+            <TicketTable title="Mes tickets récents"  basePath="/user/tickets"  />
 
         </div>
     );
