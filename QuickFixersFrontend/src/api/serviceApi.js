@@ -23,7 +23,6 @@ export async function deleteService(id) {
 }
 
 export async function updateServiceStatut(id, statut) {
-    // On envoie le statut comme un texte JSON brut : "ACTIVE" ou "INACTIVE"
     const response = await axiosApi.patch(
         `/service/modefieStatut/${id}`,
         JSON.stringify(statut),
