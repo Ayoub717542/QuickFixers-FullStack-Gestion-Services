@@ -149,6 +149,16 @@ function ServiceDetails() {
                         </div>
 
                     </div>
+                    {!isAdmin && (
+                        <div className="mt-8 pt-6 border-t">
+                            <button
+                                onClick={() => navigate(`/user/create-ticket/${service.id}`)}
+                                className="w-full px-5 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-sm font-semibold transition-colors"
+                            >
+                                Créer un ticket pour ce service
+                            </button>
+                        </div>
+                    )}
                     {isAdmin && (
                         <div className="mt-8 pt-6 border-t">
 

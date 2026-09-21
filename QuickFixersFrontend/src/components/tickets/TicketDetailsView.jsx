@@ -24,7 +24,7 @@ function formatDate(dateStr) {
     });
 }
 
-function TicketDetailsView({ backPath = "/support/tickets" }) {
+function TicketDetailsView({ backPath = "/support/tickets", canManage = true }) {
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -126,21 +126,23 @@ function TicketDetailsView({ backPath = "/support/tickets" }) {
                             </div>
                         </dl>
 
-                        <div className="mt-5 bg-gray-50 rounded-xl p-4">
-                            <label className="block text-xs font-medium text-gray-600 mb-2">
-                                Changer le statut
-                            </label>
-                            <select
-                                value={ticket.statut}
-                                disabled={saving}
-                                onChange={(e) => changeStatut(e.target.value)}
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 disabled:opacity-50"
-                            >
-                                {STATUTS.map((s) => (
-                                    <option key={s} value={s}>{s}</option>
-                                ))}
-                            </select>
-                        </div>
+                        {canManage && (
+                            <div className="mt-5 bg-gray-50 rounded-xl p-4">
+                                <label className="block text-xs font-medium text-gray-600 mb-2">
+                                    Changer le statut
+                                </label>
+                                <select
+                                    value={ticket.statut}
+                                    disabled={saving}
+                                    onChange={(e) => changeStatut(e.target.value)}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 disabled:opacity-50"
+                                >
+                                    {STATUTS.map((s) => (
+                                        <option key={s} value={s}>{s}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

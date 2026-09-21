@@ -1,9 +1,6 @@
-function TicketDetails() {
-  return (
-    <div>
-      <h1>Ticket Details</h1>
-    </div>
-  )
-}
+import TicketDetailsView from "../../components/tickets/TicketDetailsView";
 
-export default TicketDetails
+function TicketDetails() {
+    return <TicketDetailsView backPath="/user/tickets" canManage={false} />;
+}
+export default TicketDetails;

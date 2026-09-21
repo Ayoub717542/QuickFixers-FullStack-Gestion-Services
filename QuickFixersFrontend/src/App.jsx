@@ -29,6 +29,8 @@ import UserTickets from "./pages/user/Tickets.jsx";
 import UserDashboard from "./pages/user/Dashboard.jsx";
 import UserPayments from "./pages/user/Payments.jsx";
 import UserTicketDetails from "./pages/user/TicketDetails.jsx";
+import CreateTicket from "./pages/user/CreateTicket.jsx";
+import PickService from "./pages/user/PickService.jsx";
 import UserSidebar from "./components/sidebars/UserSidebar.jsx";
 
 import SginOut from "./components/SginOut.jsx";
@@ -64,6 +66,8 @@ function App() {
                             <Route path="/user/profile" element={<UserProfile />} />
                             <Route path="/user/services" element={<Services />} />
                             <Route path="/user/services/:id" element={<ServiceDetails />} />
+                            <Route path="/user/create-ticket/:serviceId" element={<CreateTicket />} />
+                            <Route path="/user/tickets/create" element={<PickService />} />
                         </Route>
                     </Route>
 
