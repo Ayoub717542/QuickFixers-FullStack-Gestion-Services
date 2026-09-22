@@ -67,9 +67,7 @@ function Dashboard() {
     };
 
     async function loadDashboard() {
-
         try {
-
             const ticketsResponse = await axiosApi.get("/ticket/countTickets");
             const paymentsResponse = await axiosApi.get("/paiements/paiements");
             const paymentsHistoryResponse = await axiosApi.get("/paiements/paimentHistorique?pageNumber=1&pageSize=1000&sortBy=id&sortDir=desc");
@@ -85,7 +83,6 @@ function Dashboard() {
             setLoading(false);
         }
     }
-
     async function loadPayments() {
         try {
             const response = await axiosApi.get(
@@ -100,7 +97,6 @@ function Dashboard() {
 
     return (
         <div className="p-3 bg-gray-100 ">
-            {/*cards*/}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
 
@@ -148,7 +144,6 @@ function Dashboard() {
                     </div>
                 </div>
 
-                {/* Recent Payments */}
                 <div className="bg-white rounded-xl shadow-sm">
                     <div className="p-5 border-b">
                         <h2 className="text-lg font-bold text-gray-800">
