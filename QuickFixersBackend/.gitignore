@@ -18,7 +18,7 @@ target/
 *.iws
 *.iml
 *.ipr
-.envls
+.env
 
 ### NetBeans ###
 /nbproject/private/
