@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
 import { fetchTicket, updateTicketStatut } from "../../api/ticketApi";
 import { createPayment } from "../../api/paiementApi";
+import ChatWindow from "../chat/ChatWindow";
 
 const STATUTS = ["OUVERT", "EN_COURS", "RESOLU", "FERME"];
 
@@ -145,7 +146,6 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true }) 
                             </div>
                         </dl>
 
-                        {/* Bouton Payer — utilisateur uniquement, tant que le ticket n'est pas fermé */}
                         {!canManage && ticket.statut !== "FERME" && ticket.prix != null && (
                             <button
                                 onClick={handlePay}
@@ -174,6 +174,12 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true }) 
                             </div>
                         )}
                     </div>
+                </div>
+            )}
+
+            {!error && (
+                <div className="max-w-2xl mx-auto mt-6">
+                    <ChatWindow ticketId={ticket.id} />
                 </div>
             )}
         </div>
