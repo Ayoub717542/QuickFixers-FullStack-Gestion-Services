@@ -28,8 +28,6 @@ public class MessageImpl implements MessageInterface {
         Ticket ticket = ticketRepository.findById(messageDTO.getTicketId())
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
-        User receiver = userRepository.findById(messageDTO.getReceiverId())
-                .orElseThrow(() -> new RuntimeException("Receiver not found"));
 
         User sender = userRepository.findByEmail(email)
                 .orElseThrow(()-> new RuntimeException("email not found"));
@@ -49,7 +47,6 @@ public class MessageImpl implements MessageInterface {
         message.setContenu(messageDTO.getContenu());
         message.setTicket(ticket);
         message.setSender(sender);
-        message.setReceiver(receiver);
 
 Message saveMessage =messageRepository.save(message);
 

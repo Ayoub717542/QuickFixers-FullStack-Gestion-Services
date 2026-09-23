@@ -6,6 +6,5 @@ import lombok.Setter;
 @Setter
 public class MessageRequestDTO {
     private String contenu;
-    private Long receiverId;
     private Long ticketId;
 }
