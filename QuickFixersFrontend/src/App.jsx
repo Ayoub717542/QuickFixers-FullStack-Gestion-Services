@@ -35,6 +35,8 @@ import PickService from "./pages/user/PickService.jsx";
 import UserSidebar from "./components/sidebars/UserSidebar.jsx";
 
 import SginOut from "./components/SginOut.jsx";
+import ResetPassword from "./pages/auth/ResetPassword";
+
 
 
 function App() {
@@ -43,6 +45,7 @@ function App() {
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
 
                 <Route element={<ProtectedRoute />}>
 
