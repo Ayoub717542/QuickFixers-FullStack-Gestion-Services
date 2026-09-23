@@ -66,8 +66,6 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true }) 
             setSaving(false);
         }
     }
-
-    // Paiement du ticket (visible uniquement pour l'utilisateur)
     async function handlePay() {
         if (!window.confirm(`Confirmer le paiement de ${ticket.prix} DH ?`)) {
             return;

@@ -7,6 +7,9 @@ function SginOut() {
     const navigate = useNavigate();
 
     function handleLogOut() {
+        if (!window.confirm(`Confirmer le Deconnexion ?`)) {
+            return;
+        }
         localStorage.removeItem("token");
         localStorage.removeItem("userEmail");
         toast.success("Vous êtes déconnecté avec succès !");
