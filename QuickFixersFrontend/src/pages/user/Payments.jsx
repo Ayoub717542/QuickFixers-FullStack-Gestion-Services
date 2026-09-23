@@ -91,7 +91,6 @@ function Payments() {
                     </table>
                 </div>
             </div>
-
             <Pagination page={page} totalPages={totalPages} onChange={setPage} />
         </div>
     );

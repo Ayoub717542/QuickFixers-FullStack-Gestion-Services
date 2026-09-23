@@ -67,6 +67,23 @@ function UserForm({ onSuccess }) {
                     {errors.password && (<p className="text-red-500 text-xs">{errors.password.message}</p>
                     )}
                 </div>
+                {typeCompte === "SUPPORT" && (
+                    <div>
+                        <select
+                            {...register("serviceType", { required: "Type de service requis" })}
+                            className="border rounded-lg px-3 py-2 w-full"
+                        >
+                            <option value="">Choisir un type de service</option>
+                            <option value="ELECTROMENAGER">Électroménager</option>
+                            <option value="ELECTRONIQUE">Électronique</option>
+                            <option value="INFORMATIQUE">Informatique</option>
+                            <option value="TELEPHONIE">Téléphonie</option>
+                        </select>
+                        {errors.serviceType && (
+                            <p className="text-red-500 text-xs">{errors.serviceType.message}</p>
+                        )}
+                    </div>
+                )}
 
             </div>
 
