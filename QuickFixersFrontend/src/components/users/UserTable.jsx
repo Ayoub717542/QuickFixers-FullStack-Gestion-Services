@@ -6,9 +6,13 @@ import Pagination from "../Pagination.jsx";
 
 function UserTable() {
     const [users, setUsers] = useState([]);
+
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
+
+    const [editingUser, setEditingUser] = useState(null);
+    const { register, handleSubmit, reset } = useForm();
 
     function fetchUsers() {
         axiosApi.get("/users/listerUsers?pageNumber=" + page + "&pageSize=5")
@@ -21,6 +25,12 @@ function UserTable() {
             })
             .finally(()=>{setLoading(false)}
             )
+    }
+
+    function changerRole(user, role) {
+        axiosApi.patch(`/users/changeRole/${user.id}?role=${role}`)
+            .then(() => { toast.success("Rôle modifié."); fetchUsers(); })
+            .catch(() => toast.error("Erreur lors du changement de rôle."));
     }
 
     useEffect(() => {
@@ -79,6 +89,15 @@ function UserTable() {
                                 <td className="p-4 font-medium">{user.nom} {user.prenom}</td>
                                 <td className="p-4 text-gray-500">{user.email}</td>
                                 <td className="p-4">
+                                    <select
+                                        hidden={user.role === "ADMIN"}
+                                        value={user.role}
+                                        onChange={(e) => changerRole(user, e.target.value)}
+                                        className="px-2 py-1 border border-gray-300 rounded-lg text-sm mr-2 bg-white"
+                                    >
+                                        <option value="CLIENT">CLIENT</option>
+                                        <option value="SUPPORT">SUPPORT</option>
+                                    </select>
                                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${roleColors[user.role]}`}>
                                         {user.role}
                                     </span>
@@ -90,6 +109,15 @@ function UserTable() {
                                         className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-sm"
                                     >
                                         Supprimer
+                                    </button>
+
+                                    <button
+                                        onClick={() => { setEditingUser(user); reset({
+                                            nom: user.nom, prenom: user.prenom, email: user.email
+                                        }); }}
+                                        className="px-3 py-1.5 bg-blue-500 text-white rounded-lg text-sm mr-2"
+                                    >
+                                        Modifier
                                     </button>
                                 </td>
                             </tr>
