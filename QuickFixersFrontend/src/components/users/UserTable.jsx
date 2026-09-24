@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { axiosApi } from "../../api/axiosApi";
 import Loader from "../Loader";
 import Pagination from "../Pagination.jsx";
+import { useNavigate } from "react-router-dom";
 
 function UserTable() {
     const [users, setUsers] = useState([]);
@@ -11,8 +12,8 @@ function UserTable() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
 
-    const [editingUser, setEditingUser] = useState(null);
-    const { register, handleSubmit, reset } = useForm();
+
+    const navigate = useNavigate();
 
     function fetchUsers() {
         axiosApi.get("/users/listerUsers?pageNumber=" + page + "&pageSize=5")
@@ -103,7 +104,7 @@ function UserTable() {
                                     </span>
                                 </td>
                                 <td className="p-4 text-gray-500">{user.serviceType || "—"}</td>
-                                <td className="p-4 text-right whitespace-nowrap">
+                                <td className="p-4 text-right whitespace-nowrap g-1">
                                     <button
                                         onClick={() => supprimerUser(user)}
                                         className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-sm"
@@ -112,9 +113,7 @@ function UserTable() {
                                     </button>
 
                                     <button
-                                        onClick={() => { setEditingUser(user); reset({
-                                            nom: user.nom, prenom: user.prenom, email: user.email
-                                        }); }}
+                                        onClick={() => navigate(`/admin/users/edit/${user.id}`)}
                                         className="px-3 py-1.5 bg-blue-500 text-white rounded-lg text-sm mr-2"
                                     >
                                         Modifier

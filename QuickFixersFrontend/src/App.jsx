@@ -36,6 +36,7 @@ import UserSidebar from "./components/sidebars/UserSidebar.jsx";
 
 import SginOut from "./components/SginOut.jsx";
 import ResetPassword from "./pages/auth/ResetPassword";
+import EditUser from "./pages/admin/EditUser.jsx";
 
 
 
@@ -55,10 +56,11 @@ function App() {
                             <Route path="/admin/tickets" element={<Tickets />} />
                             <Route path="/admin/tickets/:id" element={<TicketDetails />} />
                             <Route path="/admin/users" element={<Users />} />
+                            <Route path="/admin/users/edit/:id" element={<EditUser />} />
                             <Route path="/admin/payments" element={<Payments />} />
                             <Route path="/admin/services" element={<Services />} />
                             <Route path="/admin/services/:id" element={<ServiceDetails />} />
-                        </Route>
+x                        </Route>
                     </Route>
 
                     <Route element={<RoleGuard allowedRoles={["CLIENT"]} />}>
