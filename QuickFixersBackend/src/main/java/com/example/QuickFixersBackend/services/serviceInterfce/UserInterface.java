@@ -22,5 +22,11 @@ public interface UserInterface {
     UserResponseDTO changerRole(Long id, String role, ServiceType serviceType);
     UserResponseDTO modifierUser(Long id, UserEditRequestDTO dto);
     UserResponseDTO consulterUser(Long id);
+    Page<UserResponseDTO> listerClients(Pageable pageable);
+    Page<UserResponseDTO> listerSupports(Pageable pageable);
+    Page<UserResponseDTO> rechercherSupports(String searchedEmail, Pageable pageable);
+    Page<UserResponseDTO> filtrerSupportsParService(ServiceType serviceType, Pageable pageable);
+    Page<UserResponseDTO> rechercherClients(String search, Pageable pageable);
+
 
 }

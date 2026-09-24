@@ -1,10 +1,7 @@
 package com.example.QuickFixersBackend.services.serviceImpl;
 
 import com.example.QuickFixersBackend.dto.support.CreateSupportRequestDTO;
-import com.example.QuickFixersBackend.dto.user.UserEditRequestDTO;
-import com.example.QuickFixersBackend.dto.user.UserRequestDTO;
-import com.example.QuickFixersBackend.dto.user.UserResponseDTO;
-import com.example.QuickFixersBackend.dto.user.UserUpdateRequestDTO;
+import com.example.QuickFixersBackend.dto.user.*;
 import com.example.QuickFixersBackend.entity.Admin;
 import com.example.QuickFixersBackend.entity.Client;
 import com.example.QuickFixersBackend.entity.Person;
@@ -140,6 +137,37 @@ public class UserImpl implements UserInterface {
         Person person = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return userMapper.toDto(person);
+    }
+
+    @Override
+    public Page<UserResponseDTO> listerClients(Pageable pageable) {
+        return userRepository.findAllClients(pageable)
+                .map(userMapper::toDto);
+    }
+
+    @Override
+    public Page<UserResponseDTO> listerSupports(Pageable pageable) {
+        return userRepository.findAllSupports(pageable)
+                .map(userMapper::toDto);
+    }
+
+
+    @Override
+    public Page<UserResponseDTO> rechercherSupports(String searchedEmail, Pageable pageable) {
+        return userRepository.searchedSupport(searchedEmail, pageable)
+                .map(userMapper::toDto);
+    }
+
+    @Override
+    public Page<UserResponseDTO> rechercherClients(String nom, Pageable pageable) {
+        return userRepository.rechercherClients(nom.trim(), pageable)
+                .map(userMapper::toDto);
+    }
+
+    @Override
+    public Page<UserResponseDTO> filtrerSupportsParService(ServiceType serviceType, Pageable pageable) {
+        return userRepository.findSupportsByServiceType(serviceType, pageable)
+                .map(userMapper::toDto);
     }
 
 
