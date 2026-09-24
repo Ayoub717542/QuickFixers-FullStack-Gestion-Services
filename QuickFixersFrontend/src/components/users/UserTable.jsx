@@ -45,14 +45,20 @@ function UserTable() {
     }, [page, keyword, role]);
 
     function changerRole(user, nouveauRole) {
-        axiosApi.patch(`/users/changeRole/${user.id}?role=${nouveauRole}`)
-            .then(() => {
-                toast.success("Rôle modifié.");
-                fetchUsers();
-            })
-            .catch(() => {
-                toast.error("Erreur lors du changement de rôle.");
-            });
+        let url = `/users/changeRole/${user.id}?role=${nouveauRole}`;
+
+        if (nouveauRole === "SUPPORT") {
+            const serviceType = window.prompt(
+                "Type de service (ELECTRONIQUE, ELECTROMENAGER, INFORMATIQUE, TELEPHONIE)",
+                "INFORMATIQUE"
+            );
+            if (!serviceType) return;
+            url += `&serviceType=${serviceType}`;
+        }
+
+        axiosApi.patch(url)
+            .then(() => { toast.success("Rôle modifié."); fetchUsers(); })
+            .catch(() => toast.error("Erreur lors du changement de rôle."));
     }
 
     function supprimerUser(user) {
