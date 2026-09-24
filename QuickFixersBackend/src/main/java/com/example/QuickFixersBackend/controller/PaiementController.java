@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -66,5 +68,16 @@ public class PaiementController {
     @PreAuthorize("hasAnyRole('ADMIN','SUPPORT')")
     public ResponseEntity<List<IncomeByDay>> revenusParJour(@AuthenticationPrincipal Person person) {
         return ResponseEntity.ok(paiementInterface.incomeByday(person));
+    }
+
+    @GetMapping("/recu/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','CLIENT','SUPPORT')")
+    public ResponseEntity<byte[]> telechargerRecu(@PathVariable Long id) {
+        byte[] pdf = paiementInterface.genererRecu(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=recu-" + id + ".pdf")
+                .body(pdf);
     }
 }

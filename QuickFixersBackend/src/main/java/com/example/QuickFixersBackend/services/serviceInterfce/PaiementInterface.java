@@ -14,6 +14,7 @@ public interface PaiementInterface {
     Page<PaiementResponseDTO> paimentHistorique(Person person, Pageable pageable);
     long countPayments(Person person);
     List<IncomeByDay> incomeByday(Person person);
+    byte[] genererRecu(Long paiementId);
 
 
 }

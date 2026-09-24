@@ -22,6 +22,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import com.lowagie.text.PageSize;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -111,4 +122,36 @@ public class PaiementImpl implements PaiementInterface {
                         ((java.math.BigDecimal) row[1]).doubleValue()))
                 .toList();
     }
+
+    @Override
+    public byte[] genererRecu(Long paiementId) {
+        Paiement payment = paiementRepository.findById(paiementId)
+                .orElseThrow(() -> new EntityNotFoundException("Paiement not found"));
+
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Document document = new Document(PageSize.A6, 20, 20, 20, 20);
+            PdfWriter.getInstance(document, out);
+            document.open();
+
+            document.add(new Paragraph("QuickFixers — Reçu de paiement",
+                    new Font(Font.HELVETICA, 16, Font.BOLD)));
+            document.add(new Paragraph("------------------------------"));
+            document.add(new Paragraph("Reçu n° " + payment.getId()));
+            document.add(new Paragraph("Date : " + payment.getDateCreation()));
+            document.add(new Paragraph("Client : " + payment.getClient().getNom() + " "
+                    + payment.getClient().getPrenom()));
+            document.add(new Paragraph("Email : " + payment.getClient().getEmail()));
+            document.add(new Paragraph("Ticket n° : " + payment.getTicket().getId()));
+            document.add(new Paragraph("Titre : " + payment.getTicket().getTitre()));
+            document.add(new Paragraph("------------------------------"));
+            document.add(new Paragraph("Montant : " + payment.getMontant() + " MAD",new Font(Font.BOLD)));
+            document.add(new Paragraph("Statut : " + payment.getStatut()));
+
+            document.close();
+            return out.toByteArray();
+        } catch (DocumentException | IOException e) {
+            throw new RuntimeException("Erreur lors de la génération du PDF", e);
+        }
+    }
+
 }
