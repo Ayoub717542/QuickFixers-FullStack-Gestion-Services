@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+
 
 import { axiosApi } from "../../api/axiosApi";
 import Loader from "../../components/Loader";
 
+
+
+
 function EditUser() {
+
+    const [searchParams] = useSearchParams();
+    const from = searchParams.get("from") || "/admin/users";
+
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
@@ -38,7 +46,7 @@ function EditUser() {
         try {
             await axiosApi.put(`/users/modifierUser/${id}`, data);
             toast.success("Utilisateur modifié.");
-            navigate("/admin/users");
+            navigate(from);
         } catch (error) {
             toast.error("Erreur lors de la modification.");
         }
@@ -105,7 +113,7 @@ function EditUser() {
 
                     <button
                         type="button"
-                        onClick={() => navigate("/admin/users")}
+                        onClick={() => navigate(from)}
                         className="bg-gray-300 px-4 py-2 rounded-lg"
                     >
                         Annuler

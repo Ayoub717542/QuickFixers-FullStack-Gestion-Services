@@ -4,7 +4,9 @@ import {
     Ticket,
     Users,
     CreditCard,
-    Wrench
+    Wrench,
+    Headset,
+    User
 } from "lucide-react";
 
 function AdminSidebar({sginOut}) {
@@ -54,7 +56,7 @@ function AdminSidebar({sginOut}) {
                         to="/admin/supports"
                         className="flex items-center gap-3 p-3 rounded hover:bg-slate-700"
                     >
-                        <Users size={20}/>
+                        <Headset size={20}/>
 
                         <span className="hidden group-hover:block">
                         Supports
@@ -64,7 +66,7 @@ function AdminSidebar({sginOut}) {
                         to="/admin/clients"
                         className="flex items-center gap-3 p-3 rounded hover:bg-slate-700"
                     >
-                        <Users size={20}/>
+                        <User size={20}/>
 
                         <span className="hidden group-hover:block">
                         Clients

@@ -8,7 +8,6 @@ import Pagination from "../Pagination.jsx";
 
 function SupportTable() {
     const [supports, setSupports] = useState([]);
-    const [email, setEmail] = useState("");
     const [searchedEmail, setSearchedEmail] = useState("");
     const [serviceType, setServiceType] = useState("");
     const [page, setPage] = useState(1);
@@ -16,6 +15,8 @@ function SupportTable() {
     const [loading, setLoading] = useState(true);
 
     const navigate = useNavigate();
+    const [recherche, setRecherche] = useState("");
+
 
     async function fetchSupports() {
         setLoading(true);
@@ -44,16 +45,9 @@ function SupportTable() {
         fetchSupports();
     }, [page, searchedEmail, serviceType]);
 
-    function rechercher(event) {
-        event.preventDefault();
-
-        setServiceType("");
-        setPage(1);
-        setSearchedEmail(email.trim());
-    }
 
     function filtrer(event) {
-        setEmail("");
+        setRecherche("");
         setSearchedEmail("");
         setPage(1);
         setServiceType(event.target.value);
@@ -72,40 +66,34 @@ function SupportTable() {
             toast.error("Erreur lors de la suppression.");
         }
     }
+    function handleRecherche(e) {
+        const value = e.target.value;
+        setRecherche(value);
+        setSearchedEmail(value.trim());
+        setServiceType("");
+        setPage(1);
+    }
 
     return (
         <div className="bg-white rounded-xl shadow-sm p-4">
             <div className="flex flex-wrap gap-3 mb-4">
-                <form onSubmit={rechercher} className="flex gap-2">
                     <input
                         type="text"
-                        value={email}
-                        onChange={(event) => setEmail(event.target.value)}
+                        value={recherche}
+                        onChange={handleRecherche}
                         placeholder="Rechercher par email"
                         className="border rounded-lg px-3 py-2"
                     />
-
-                    <button
-                        type="submit"
-                        className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-                    >
-                        Rechercher
-                    </button>
-                </form>
-
                 <select
                     value={serviceType}
                     onChange={filtrer}
                     className="border rounded-lg px-3 py-2"
                 >
                     <option value="">Tous les services</option>
-                    <option value="REFRIGERATOR">Réfrigérateur</option>
-                    <option value="WASHING_MACHINE">Machine à laver</option>
-                    <option value="TELEVISION">Télévision</option>
-                    <option value="AIR_CONDITIONER">Climatisation</option>
-                    <option value="COMPUTER">Ordinateur</option>
-                    <option value="PHONE">Téléphone</option>
-                    <option value="OTHER">Autre</option>
+                    <option value="ELECTRONIQUE">ELECTRONIQUE</option>
+                    <option value="ELECTROMENAGER">ELECTROMENAGER</option>
+                    <option value="INFORMATIQUE">INFORMATIQUE</option>
+                    <option value="TELEPHONIE">TELEPHONIE</option>
                 </select>
             </div>
 
