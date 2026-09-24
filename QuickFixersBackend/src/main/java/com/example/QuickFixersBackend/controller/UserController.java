@@ -4,8 +4,7 @@ import com.example.QuickFixersBackend.dto.support.CreateSupportRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserResponseDTO;
 import com.example.QuickFixersBackend.dto.user.UserUpdateRequestDTO;
-import com.example.QuickFixersBackend.entity.User;
-import com.example.QuickFixersBackend.enums.Role;
+import com.example.QuickFixersBackend.entity.Person;
 import com.example.QuickFixersBackend.services.serviceInterfce.UserInterface;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -30,12 +29,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserInterface userInterface;
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PatchMapping("/changeRole/{id}")
-    public ResponseEntity<?> changerRole(@PathVariable Long id, @RequestParam Role role) {
-        return ResponseEntity.ok(userInterface.changerRole(id, role));
-    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listerUsers")
@@ -71,17 +64,17 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasAnyRole('ADMIN','USER','SUPPORT')")
-    public ResponseEntity<UserResponseDTO> monProfil(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(userInterface.monProfil(user));
+    @PreAuthorize("hasAnyRole('ADMIN','CLIENT','SUPPORT')")
+    public ResponseEntity<UserResponseDTO> monProfil(@AuthenticationPrincipal Person person) {
+        return ResponseEntity.ok(userInterface.monProfil(person));
     }
 
     @PutMapping("/me")
-    @PreAuthorize("hasAnyRole('ADMIN','USER','SUPPORT')")
+    @PreAuthorize("hasAnyRole('ADMIN','CLIENT','SUPPORT')")
     public ResponseEntity<UserResponseDTO> modifierProfil(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Person person,
             @Valid @RequestBody UserUpdateRequestDTO dto) {
-        return ResponseEntity.ok(userInterface.modifierProfil(user, dto));
+        return ResponseEntity.ok(userInterface.modifierProfil(person, dto));
     }
 
     @GetMapping("/countUsers")

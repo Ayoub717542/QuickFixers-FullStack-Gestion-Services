@@ -2,7 +2,7 @@ package com.example.QuickFixersBackend.controller;
 
 import com.example.QuickFixersBackend.dto.message.MessageRequestDTO;
 import com.example.QuickFixersBackend.dto.message.MessageResponseDTO;
-import com.example.QuickFixersBackend.entity.User;
+import com.example.QuickFixersBackend.entity.Person;
 import com.example.QuickFixersBackend.services.serviceInterfce.MessageInterface;
 import lombok.RequiredArgsConstructor;
 
@@ -20,8 +20,8 @@ public class MessageController {
     private final MessageInterface messageInterface;
 
     @MessageMapping("/chat")
-    public void sendMessage(MessageRequestDTO message, @AuthenticationPrincipal User user) {
-        MessageResponseDTO responseDTO =messageInterface.createMessage(message,user.getEmail());
+    public void sendMessage(MessageRequestDTO message, @AuthenticationPrincipal Person person) {
+        MessageResponseDTO responseDTO =messageInterface.createMessage(message,person.getEmail());
 
         messagingTemplate.convertAndSend(
                 "/topic/ticket." + message.getTicketId(),

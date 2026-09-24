@@ -11,6 +11,6 @@ public interface PaiementMapper {
     @Mapping(target = "ticket", ignore = true)
     Paiement toEntity(PaiementRequestDTO dto);
     @Mapping(source = "ticket.id", target = "ticketId")
-    @Mapping(source = "user.email" , target = "email")
+    @Mapping(source = "client.email" , target = "email")
     PaiementResponseDTO toDto(Paiement payment);
 }

@@ -2,17 +2,18 @@ package com.example.QuickFixersBackend.services.serviceImpl;
 
 import com.example.QuickFixersBackend.dto.ticket.TicketRequestDTO;
 import com.example.QuickFixersBackend.dto.ticket.TicketResponseDTO;
-import com.example.QuickFixersBackend.enums.Role;
 import com.example.QuickFixersBackend.enums.Statut;
 import com.example.QuickFixersBackend.mapper.TicketMapper;
+import com.example.QuickFixersBackend.entity.Admin;
+import com.example.QuickFixersBackend.entity.Client;
+import com.example.QuickFixersBackend.entity.Person;
 import com.example.QuickFixersBackend.entity.ServiceEntity;
+import com.example.QuickFixersBackend.entity.Support;
 import com.example.QuickFixersBackend.entity.Ticket;
-import com.example.QuickFixersBackend.entity.User;
 import com.example.QuickFixersBackend.repository.ServiceRepository;
 import com.example.QuickFixersBackend.repository.TicketRepository;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.TicketInterface;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,12 +30,13 @@ public class TicketImpl implements TicketInterface {
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
+    private final EmailService emailService;
 
     @Override
     public TicketResponseDTO ajouterTeckit(TicketRequestDTO ticketRequestDTO , Long serviceId, String email) {
         Ticket ticket = ticketMapper.toEntity(ticketRequestDTO);
 
-        User createdBy = userRepository.findByEmail(email)
+        Person createdBy = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         ServiceEntity service = serviceRepository.findById(serviceId)
@@ -45,11 +47,28 @@ public class TicketImpl implements TicketInterface {
         ticket.setStatut(Statut.OUVERT);
         ticket.setDateCreation(LocalDateTime.now());
 
-        List<User> supports = userRepository.findSupportOrderByOpenTicketsAsc(service.getType());
-        User support = supports.isEmpty() ? null : supports.get(0);
+        List<Support> supports = userRepository.findSupportOrderByOpenTicketsAsc(service.getType());
+        Support support = supports.isEmpty() ? null : supports.get(0);
         ticket.setAssignedTo(support);
 
-        return ticketMapper.toDto(ticketRepository.save(ticket));
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        if (support != null) {
+            try {
+                emailService.sendEmail(
+                        support.getEmail(),
+                        "Nouveau ticket #" + savedTicket.getId(),
+                        "Bonjour " + support.getNom() + ",\n\n" +
+                                "Un nouveau ticket vous a été assigné :\n" +
+                                "Titre : " + savedTicket.getTitre() + "\n" +
+                                "Description : " + savedTicket.getDescription() + "\n\n" +
+                                "Merci de vous connecter pour le traiter."
+                );
+            } catch (Exception e) {
+                System.out.println("Email non envoyé : " + e.getMessage());
+            }
+        }
+            return ticketMapper.toDto(savedTicket);
     }
 
     @Override
@@ -65,48 +84,48 @@ public class TicketImpl implements TicketInterface {
         }
 
     @Override
-    public TicketResponseDTO consulterTeckit(Long id, User user) {
+    public TicketResponseDTO consulterTeckit(Long id, Person person) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket Not Found"));
-        if (user.getRole() == Role.ADMIN) {
+        if (person instanceof Admin) {
             return ticketMapper.toDto(ticket);
         }
-        if (ticket.getCreatedBy() != null && ticket.getCreatedBy().getEmail().equals(user.getEmail())) {
+        if (ticket.getCreatedBy() != null && ticket.getCreatedBy().getEmail().equals(person.getEmail())) {
             return ticketMapper.toDto(ticket);
         }
-        if (ticket.getAssignedTo() != null && ticket.getAssignedTo().getEmail().equals(user.getEmail())) {
+        if (ticket.getAssignedTo() != null && ticket.getAssignedTo().getEmail().equals(person.getEmail())) {
             return ticketMapper.toDto(ticket);
         }
         throw new RuntimeException("Access denied");
     }
 
     @Override
-    public Page<TicketResponseDTO> listerTeckits(User user, Pageable pageable) {
+    public Page<TicketResponseDTO> listerTeckits(Person person, Pageable pageable) {
         Page<Ticket> tickets;
 
-        if (user.getRole() == Role.ADMIN) {
+        if (person instanceof Admin) {
             tickets = ticketRepository.findAll(pageable);
         } else {
-            tickets = ticketRepository.findByCreatedBy(user, pageable);
+            tickets = ticketRepository.findByCreatedBy(person, pageable);
         }
 
-        if (user.getRole() == Role.SUPPORT) {
-            return ticketRepository.findByAssignedTo(user , pageable).map(ticketMapper::toDto);
+        if (person instanceof Support) {
+            return ticketRepository.findByAssignedTo(person , pageable).map(ticketMapper::toDto);
         }
 
         return tickets.map(ticketMapper::toDto);
     }
 
     @Override
-    public TicketResponseDTO modifierStatut(User user, Long ticketId, Statut statut) {
+    public TicketResponseDTO modifierStatut(Person person, Long ticketId, Statut statut) {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket Not Found"));
 
-        if(user.getRole() == Role.ADMIN ){
+        if(person instanceof Admin ){
             ticket.setStatut(statut);
-        } else if (user.getRole() == Role.SUPPORT) {
+        } else if (person instanceof Support) {
             if (ticket.getAssignedTo() == null
-                    || !ticket.getAssignedTo().getEmail().equals(user.getEmail())){
+                    || !ticket.getAssignedTo().getEmail().equals(person.getEmail())){
                 throw new RuntimeException("Access denied");
             }
             ticket.setStatut(statut);
@@ -117,54 +136,48 @@ public class TicketImpl implements TicketInterface {
     }
 
     @Override
-    public Page<TicketResponseDTO> filtrerParStatut(User user,Statut statut,Pageable pageable) {
-        if (user.getRole() == Role.ADMIN) {
+    public Page<TicketResponseDTO> filtrerParStatut(Person person,Statut statut,Pageable pageable) {
+        if (person instanceof Admin) {
             return ticketRepository.findByStatut(statut, pageable)
                     .map(ticketMapper::toDto);
         }
 
-        if (user.getRole() == Role.SUPPORT) {
+        if (person instanceof Support) {
             return ticketRepository.findByAssignedToAndStatut(
-                    user, statut, pageable
+                    person, statut, pageable
             ).map(ticketMapper::toDto);
         }
 
-        return ticketRepository.findByCreatedByAndStatut(user, statut, pageable)
+        return ticketRepository.findByCreatedByAndStatut(person, statut, pageable)
                 .map(ticketMapper::toDto);
     }
 
     @Override
-    public Page<TicketResponseDTO> rechercherTickets(User user,String recherche, Pageable pageable) {
-        if (user.getRole() == Role.ADMIN) {
+    public Page<TicketResponseDTO> rechercherTickets(Person person,String recherche, Pageable pageable) {
+        if (person instanceof Admin) {
             return ticketRepository.searchedTicket(recherche, pageable)
                     .map(ticketMapper::toDto);
         }
-        if (user.getRole() == Role.SUPPORT) {
+        if (person instanceof Support) {
             return ticketRepository.searchedAssignedTickets(
-                    recherche, user, pageable
+                    recherche, person, pageable
             ).map(ticketMapper::toDto);
         }
 
-        if (user.getRole() == Role.USER) {
-            return ticketRepository.searchedUserTickets(recherche, user, pageable)
-                    .map(ticketMapper::toDto);
-        }
-
-        return ticketRepository.searchedUserTickets(
-                recherche, user, pageable
-        ).map(ticketMapper::toDto);
+        return ticketRepository.searchedUserTickets(recherche, person, pageable)
+                .map(ticketMapper::toDto);
     }
 
     @Override
-    public long countTickets(User user) {
-        if (user.getRole() == Role.ADMIN) {
+    public long countTickets(Person person) {
+        if (person instanceof Admin) {
             return ticketRepository.count();
         }
-        if (user.getRole() == Role.SUPPORT) {
-            return ticketRepository.countByAssignedTo(user);
+        if (person instanceof Support) {
+            return ticketRepository.countByAssignedTo(person);
         }
-        if(user.getRole() == Role.USER){
-            return ticketRepository.countByCreatedBy(user);
+        if (person instanceof Client) {
+            return ticketRepository.countByCreatedBy(person);
         }
         throw new RuntimeException("Access denied");
     }

@@ -3,7 +3,7 @@ package com.example.QuickFixersBackend.services.serviceImpl;
 import com.example.QuickFixersBackend.dto.service.ServiceRequistDTO;
 import com.example.QuickFixersBackend.dto.service.ServiceResponseDTO;
 import com.example.QuickFixersBackend.dto.user.UserResponseDTO;
-import com.example.QuickFixersBackend.entity.User;
+import com.example.QuickFixersBackend.entity.Person;
 import com.example.QuickFixersBackend.enums.ServiceStatut;
 import com.example.QuickFixersBackend.mapper.ServiceMapper;
 import com.example.QuickFixersBackend.entity.ServiceEntity;
@@ -25,7 +25,7 @@ public class ServiceImpl implements ServiceInterface {
     @Override
     public ServiceResponseDTO ajouterService(ServiceRequistDTO serviceRequistDTO,String email) {
 
-        User createdBy = userRepository.findByEmail(email)
+        Person createdBy = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         ServiceEntity service = serviceMapper.toEntity(serviceRequistDTO);

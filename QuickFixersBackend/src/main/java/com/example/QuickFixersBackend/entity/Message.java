@@ -26,12 +26,12 @@ public class Message {
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private User sender;
+    private Person sender;
 
     @ManyToOne
     @JoinColumn(name = "receiver_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private User receiver;
+    private Person receiver;
 
     @ManyToOne
     @JoinColumn(name = "ticket_id")

@@ -2,6 +2,7 @@ package com.example.QuickFixersBackend.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Builder
@@ -12,6 +13,7 @@ public class AuthenticationRequestDTO {
     @NotBlank
     @Email
     private String userEmail;
-    @NonNull
+    @NotBlank
+    @Size(min = 8)
     private String password;
 }

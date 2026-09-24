@@ -1,8 +1,8 @@
 package com.example.QuickFixersBackend.repository;
 
 import com.example.QuickFixersBackend.entity.Paiement;
+import com.example.QuickFixersBackend.entity.Person;
 import com.example.QuickFixersBackend.entity.Ticket;
-import com.example.QuickFixersBackend.entity.User;
 import com.example.QuickFixersBackend.enums.PaiementStatut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,13 +15,13 @@ import java.util.List;
 
 public interface PaiementRepository  extends JpaRepository<Paiement,Long> {
     Page<Paiement> findByStatut(PaiementStatut statut, Pageable pageable);
-    Page<Paiement> findByUser(User user,Pageable pageable);
+    Page<Paiement> findByClient(Person client,Pageable pageable);
     @Override
     long count();
 
-    long countByUser(User user);
+    long countByClient(Person client);
     long countByStatut(PaiementStatut statut);
-    Page<Paiement> findByTicketAssignedTo(User agent, Pageable pageable);
+    Page<Paiement> findByTicketAssignedTo(Person agent, Pageable pageable);
 
     @Query("select FUNCTION('DATE', p.dateCreation) AS jour, SUM(p.montant) AS total " +
             "from Paiement p where p.statut = :statut " +
@@ -37,13 +37,11 @@ public interface PaiementRepository  extends JpaRepository<Paiement,Long> {
          GROUP BY FUNCTION('DATE', p.dateCreation)
          ORDER BY FUNCTION('DATE', p.dateCreation)
          """)
-    List<Object[]> incomeByDayForSupport(@Param("statut") PaiementStatut statut, @Param("agent") User agent);
+    List<Object[]> incomeByDayForSupport(@Param("statut") PaiementStatut statut, @Param("agent") Person agent);
 
     boolean existsByTicketAndStatut(Ticket ticket, PaiementStatut statut);
 
-
-
-//    @Query("SELECT count(p) FROM Paiement p WHERE p.user = :user")
-//    long findByUser(@Param("user") User user);
+//    @Query("SELECT count(p) FROM Paiement p WHERE p.client = :client")
+//    long findByClient(@Param("client") Person client);
 
 }

@@ -2,9 +2,9 @@ package com.example.QuickFixersBackend.services;
 
 import com.example.QuickFixersBackend.dto.paiement.PaiementRequestDTO;
 import com.example.QuickFixersBackend.dto.paiement.PaiementResponseDTO;
+import com.example.QuickFixersBackend.entity.Client;
 import com.example.QuickFixersBackend.entity.Paiement;
 import com.example.QuickFixersBackend.entity.Ticket;
-import com.example.QuickFixersBackend.entity.User;
 import com.example.QuickFixersBackend.enums.PaiementStatut;
 import com.example.QuickFixersBackend.enums.Statut;
 import com.example.QuickFixersBackend.mapper.PaiementMapper;
@@ -47,7 +47,7 @@ class PaiementImplTest {
 
     @Test
     void payerTicket_ok() {
-        User client = new User();
+        Client client = new Client();
         client.setId(10L);
         client.setEmail("client@test.com");
 
@@ -76,7 +76,7 @@ class PaiementImplTest {
 
         Paiement saved = captor.getValue();
         assertEquals(PaiementStatut.TERMINE, saved.getStatut());
-        assertEquals(client, saved.getUser());
+        assertEquals(client, saved.getClient());
         assertEquals(ticket, saved.getTicket());
     }
 }

@@ -2,10 +2,10 @@ package com.example.QuickFixersBackend.services;
 
 import com.example.QuickFixersBackend.dto.user.UserRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserResponseDTO;
-import com.example.QuickFixersBackend.entity.User;
-import com.example.QuickFixersBackend.enums.Role;
+import com.example.QuickFixersBackend.entity.Client;
 import com.example.QuickFixersBackend.mapper.UserMapper;
 import com.example.QuickFixersBackend.repository.UserRepository;
+import com.example.QuickFixersBackend.services.serviceImpl.EmailService;
 import com.example.QuickFixersBackend.services.serviceImpl.UserImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -31,12 +32,14 @@ class UserImplTest {
     private UserMapper userMapper;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private EmailService emailService;
 
     private UserImpl userService;
 
     @BeforeEach
     void setUp() {
-        userService = new UserImpl(userRepository, userMapper, passwordEncoder);
+        userService = new UserImpl(userRepository, userMapper, passwordEncoder, emailService);
     }
 
     @Test
@@ -51,20 +54,20 @@ class UserImplTest {
                 .thenReturn(false);
         when(passwordEncoder.encode("ayoub123"))
                 .thenReturn("HASHED");
-        when(userRepository.save(any(User.class)))
-                .thenReturn(new User());
-        when(userMapper.toDto(any(User.class)))
+        when(userRepository.save(any(Client.class)))
+                .thenReturn(new Client());
+        when(userMapper.toDto(any(Client.class)))
                 .thenReturn(new UserResponseDTO());
 
         userService.ajouterUnUser(dto);
 
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<Client> captor = ArgumentCaptor.forClass(Client.class);
         verify(userRepository).save(captor.capture());
 
-        User saved = captor.getValue();
-        assertEquals(Role.USER, saved.getRole());
+        Client saved = captor.getValue();
+        assertTrue(saved instanceof Client);
         assertEquals("HASHED", saved.getPassword());
-        assertEquals("ayoub@test.com", saved.getEmail());
+        assertEquals("ayoub@gmail.com", saved.getEmail());
     }
 
     @Test

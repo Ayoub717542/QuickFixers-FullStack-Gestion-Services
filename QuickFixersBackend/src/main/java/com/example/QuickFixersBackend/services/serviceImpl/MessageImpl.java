@@ -2,10 +2,11 @@ package com.example.QuickFixersBackend.services.serviceImpl;
 
 import com.example.QuickFixersBackend.dto.message.MessageRequestDTO;
 import com.example.QuickFixersBackend.dto.message.MessageResponseDTO;
+import com.example.QuickFixersBackend.entity.Client;
 import com.example.QuickFixersBackend.entity.Message;
+import com.example.QuickFixersBackend.entity.Person;
+import com.example.QuickFixersBackend.entity.Support;
 import com.example.QuickFixersBackend.entity.Ticket;
-import com.example.QuickFixersBackend.entity.User;
-import com.example.QuickFixersBackend.enums.Role;
 import com.example.QuickFixersBackend.mapper.MessageMapper;
 import com.example.QuickFixersBackend.repository.MessageRepository;
 import com.example.QuickFixersBackend.repository.TicketRepository;
@@ -29,16 +30,16 @@ public class MessageImpl implements MessageInterface {
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
 
-        User sender = userRepository.findByEmail(email)
+        Person sender = userRepository.findByEmail(email)
                 .orElseThrow(()-> new RuntimeException("email not found"));
 
 
-        if (sender.getRole() == Role.USER &&
+        if (sender instanceof Client &&
                 !ticket.getCreatedBy().getId().equals(sender.getId())) {
             throw new RuntimeException("Access denied");
         }
 
-        if (sender.getRole() == Role.SUPPORT &&
+        if (sender instanceof Support &&
                 !ticket.getAssignedTo().getId().equals(sender.getId())) {
             throw new RuntimeException("Access denied");
         }

@@ -4,8 +4,9 @@ import com.example.QuickFixersBackend.dto.auth.AuthenticationRequestDTO;
 import com.example.QuickFixersBackend.dto.auth.AuthenticationResponceDTO;
 import com.example.QuickFixersBackend.dto.auth.RegisterRequoestDTO;
 
-import com.example.QuickFixersBackend.enums.Role;
-import com.example.QuickFixersBackend.entity.User;
+import com.example.QuickFixersBackend.dto.auth.ResetPasswordRequestDTO;
+import com.example.QuickFixersBackend.entity.Client;
+import com.example.QuickFixersBackend.entity.Person;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +28,12 @@ public class AuthenticationService {
     private  final AuthenticationManager authenticationManager;
 
     public @Nullable AuthenticationResponceDTO register(RegisterRequoestDTO register) {
-        User user = User.builder()
-                .nom(register.getNom())
-                .prenom(register.getPrenom())
-                .email(register.getEmail())
-                .password(passwordEncoder.encode(register.getPassword()))
-                .role(Role.USER)
-                .build();
+        Client user = new Client(
+                register.getNom(),
+                register.getPrenom(),
+                register.getEmail(),
+                passwordEncoder.encode(register.getPassword())
+        );
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponceDTO.builder()
@@ -50,12 +50,16 @@ public class AuthenticationService {
                         authenticationRequestDTO.getPassword()
                 )
         );
-        User user = userRepository.findByEmail(authenticationRequestDTO.getUserEmail()).orElseThrow(() -> new UsernameNotFoundException("user not found!!"));
+        Person user = userRepository.findByEmail(authenticationRequestDTO.getUserEmail()).orElseThrow(() -> new UsernameNotFoundException("user not found!!"));
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponceDTO.builder()
                 .token(jwtToken)
                 .userEmail(user.getEmail())
                 .build();
+    }
+
+    public void resetPassword(ResetPasswordRequestDTO dto) {
+        return;
     }
 
 }

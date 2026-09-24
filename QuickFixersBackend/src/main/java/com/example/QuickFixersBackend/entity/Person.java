@@ -1,7 +1,5 @@
 package com.example.QuickFixersBackend.entity;
 
-import com.example.QuickFixersBackend.enums.Role;
-import com.example.QuickFixersBackend.enums.ServiceType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,11 +12,12 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="users")
-public class User implements UserDetails {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
+@Table(name = "users")
+public abstract class Person implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,17 +28,24 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
-    @Enumerated(EnumType.STRING)
-    private ServiceType serviceType;
+    public Person(String nom, String prenom, String email, String password) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.password = password;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(
-                new SimpleGrantedAuthority("ROLE_" + role.name())
-        );
+        String role;
+        if (this instanceof Admin) {
+            role = "ADMIN";
+        } else if (this instanceof Support) {
+            role = "SUPPORT";
+        } else {
+            role = "CLIENT";
+        }
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role));
     }
 
     @Override

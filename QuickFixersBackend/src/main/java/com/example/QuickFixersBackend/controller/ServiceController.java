@@ -37,7 +37,7 @@ public class ServiceController {
     public void supprimerService(@PathVariable Long id){
         serviceInterface.supprimerService(id);
     }
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','CLIENT')")
     @GetMapping("listerServices")
     public  ResponseEntity<Page<ServiceResponseDTO>> listerServices(
             @RequestParam (defaultValue = "1") int pageNumber,
@@ -51,7 +51,7 @@ public class ServiceController {
         return  ResponseEntity.ok(rs);
     }
 
-@PreAuthorize("hasAnyRole('ADMIN','USER')")
+@PreAuthorize("hasAnyRole('ADMIN','CLIENT')")
     @GetMapping("/consulterUnService/{id}")
     public ResponseEntity<ServiceResponseDTO> consulterUnService(@PathVariable Long id){
         return  ResponseEntity.ok(serviceInterface.consulterUnService(id));

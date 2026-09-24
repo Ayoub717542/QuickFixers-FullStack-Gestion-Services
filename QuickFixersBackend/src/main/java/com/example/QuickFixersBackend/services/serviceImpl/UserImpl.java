@@ -4,8 +4,9 @@ import com.example.QuickFixersBackend.dto.support.CreateSupportRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserResponseDTO;
 import com.example.QuickFixersBackend.dto.user.UserUpdateRequestDTO;
-import com.example.QuickFixersBackend.entity.User;
-import com.example.QuickFixersBackend.enums.Role;
+import com.example.QuickFixersBackend.entity.Client;
+import com.example.QuickFixersBackend.entity.Person;
+import com.example.QuickFixersBackend.entity.Support;
 import com.example.QuickFixersBackend.mapper.UserMapper;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.UserInterface;
@@ -15,7 +16,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public record UserImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder
+public record UserImpl(
+        UserRepository userRepository,
+        UserMapper userMapper,
+        PasswordEncoder passwordEncoder,
+        EmailService emailService
 ) implements UserInterface {
 
     @Override
@@ -24,21 +29,15 @@ public record UserImpl(UserRepository userRepository, UserMapper userMapper, Pas
       if(userRepository.existsByEmail(userRequestDTO.getEmail())){
           throw new RuntimeException("This user already exists");
       }
-        User user= User.builder()
-                .nom(userRequestDTO.getNom())
-                .prenom(userRequestDTO.getPrenom())
-                .email(userRequestDTO.getEmail())
-                .password(passwordEncoder.encode(userRequestDTO.getPassword()))
-                .role(Role.USER)
-                .build();
-        return  userMapper.toDto(userRepository.save(user));
-    }
+        Client user = new Client(
+                userRequestDTO.getNom(),
+                userRequestDTO.getPrenom(),
+                userRequestDTO.getEmail(),
+                passwordEncoder.encode(userRequestDTO.getPassword())
+        );
 
-    @Override
-    public UserResponseDTO changerRole(Long id, Role role) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found"));
-        user.setRole(role);
-        return userMapper.toDto(userRepository.save(user));
+        Client saved = userRepository.save(user);
+        return userMapper.toDto(saved);
     }
 
     @Override
@@ -49,8 +48,8 @@ public record UserImpl(UserRepository userRepository, UserMapper userMapper, Pas
 
     @Override
     public void supprimerUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found to delete"));
-        userRepository.delete(user);
+        Person person = userRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found to delete"));
+        userRepository.delete(person);
     }
 
     public UserResponseDTO createSupportAccount(CreateSupportRequestDTO dto) {
@@ -58,32 +57,33 @@ public record UserImpl(UserRepository userRepository, UserMapper userMapper, Pas
             throw new RuntimeException("Cet email est déjà utilisé");
         }
 
-        User support = User.builder()
-                .nom(dto.getNom())
-                .prenom(dto.getPrenom())
-                .email(dto.getEmail())
-                .password(passwordEncoder.encode(dto.getPassword()))
-                .role(Role.SUPPORT)
-                .serviceType(dto.getServiceType())
-                .build();
+        Support support = new Support(
+                dto.getNom(),
+                dto.getPrenom(),
+                dto.getEmail(),
+                passwordEncoder.encode(dto.getPassword()),
+                dto.getServiceType()
+        );
 
-        return userMapper.toDto(userRepository.save(support));
+        Support saved = userRepository.save(support);
+        return userMapper.toDto(saved);
     }
 
     @Override
-    public UserResponseDTO monProfil(User user) {
-        return userMapper.toDto(user);
+    public UserResponseDTO monProfil(Person person) {
+        return userMapper.toDto(person);
     }
 
     @Override
-    public UserResponseDTO modifierProfil(User user, UserUpdateRequestDTO dto) {
-        user.setNom(dto.getNom());
-        user.setPrenom(dto.getPrenom());
-        return userMapper.toDto(userRepository.save(user));
+    public UserResponseDTO modifierProfil(Person person, UserUpdateRequestDTO dto) {
+        person.setNom(dto.getNom());
+        person.setPrenom(dto.getPrenom());
+        return userMapper.toDto(userRepository.save(person));
     }
 
     @Override
     public long countUsers() {
         return userRepository.count();
     }
+
 }

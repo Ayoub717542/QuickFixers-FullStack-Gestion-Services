@@ -3,7 +3,7 @@ package com.example.QuickFixersBackend.controller;
 import com.example.QuickFixersBackend.dto.paiement.IncomeByDay;
 import com.example.QuickFixersBackend.dto.paiement.PaiementRequestDTO;
 import com.example.QuickFixersBackend.dto.paiement.PaiementResponseDTO;
-import com.example.QuickFixersBackend.entity.User;
+import com.example.QuickFixersBackend.entity.Person;
 import com.example.QuickFixersBackend.services.serviceInterfce.PaiementInterface;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -29,19 +29,19 @@ import java.util.List;
 public class PaiementController {
     private final PaiementInterface paiementInterface;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('CLIENT')")
     @PostMapping("/effectuerPaiement")
     public ResponseEntity<PaiementResponseDTO> effectuerPaiement(
             @RequestBody PaiementRequestDTO paiementRequestDTO,
-            @AuthenticationPrincipal User user
+            @AuthenticationPrincipal Person person
     ){
-        return ResponseEntity.ok(paiementInterface.creerPaiement(paiementRequestDTO,user.getEmail()));
+        return ResponseEntity.ok(paiementInterface.creerPaiement(paiementRequestDTO,person.getEmail()));
     }
 
-    @PreAuthorize(("hasAnyRole('ADMIN','USER','SUPPORT')"))
+    @PreAuthorize(("hasAnyRole('ADMIN','CLIENT','SUPPORT')"))
     @GetMapping("/paimentHistorique")
     public  ResponseEntity<Page<PaiementResponseDTO>> paimentHistorique(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Person person,
             @RequestParam (defaultValue = "1") int pageNumber,
             @RequestParam (defaultValue = "5") int pageSize,
             @RequestParam (defaultValue = "id") String sortBy,
@@ -50,21 +50,21 @@ public class PaiementController {
     ){
         Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable= PageRequest.of(pageNumber-1,pageSize,sort);
-        Page<PaiementResponseDTO> rs = paiementInterface.paimentHistorique(user,pageable);
+        Page<PaiementResponseDTO> rs = paiementInterface.paimentHistorique(person,pageable);
 
         return ResponseEntity.ok(rs);
 
     }
 
     @GetMapping("/paiements")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<Long> userCountPaiements(@AuthenticationPrincipal User user){
-        return ResponseEntity.ok(paiementInterface.countPayments(user));
+    @PreAuthorize("hasAnyRole('ADMIN','CLIENT')")
+    public ResponseEntity<Long> userCountPaiements(@AuthenticationPrincipal Person person){
+        return ResponseEntity.ok(paiementInterface.countPayments(person));
     }
 
     @GetMapping("/incomeByDay")
     @PreAuthorize("hasAnyRole('ADMIN','SUPPORT')")
-    public ResponseEntity<List<IncomeByDay>> revenusParJour(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(paiementInterface.incomeByday(user));
+    public ResponseEntity<List<IncomeByDay>> revenusParJour(@AuthenticationPrincipal Person person) {
+        return ResponseEntity.ok(paiementInterface.incomeByday(person));
     }
 }

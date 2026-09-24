@@ -3,6 +3,7 @@ package com.example.QuickFixersBackend.auth;
 import com.example.QuickFixersBackend.dto.auth.AuthenticationRequestDTO;
 import com.example.QuickFixersBackend.dto.auth.AuthenticationResponceDTO;
 import com.example.QuickFixersBackend.dto.auth.RegisterRequoestDTO;
+import com.example.QuickFixersBackend.dto.auth.ResetPasswordRequestDTO;
 import com.example.QuickFixersBackend.dto.support.CreateSupportRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserResponseDTO;
 import jakarta.validation.Valid;
@@ -31,5 +32,11 @@ public class AuthenticationContoller {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponceDTO> login(@RequestBody @Valid AuthenticationRequestDTO authenticationRequestDTO){
         return ResponseEntity.ok(authenticationService.login(authenticationRequestDTO));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody @Valid ResetPasswordRequestDTO dto){
+        authenticationService.resetPassword(dto);
+        return ResponseEntity.ok("Mot de passe mis à jour.");
     }
 }

@@ -34,6 +34,6 @@ public class Paiement {
     @ManyToOne
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private User user;
+    private Person client;
 
 }

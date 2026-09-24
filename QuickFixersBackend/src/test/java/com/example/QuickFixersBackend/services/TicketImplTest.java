@@ -2,15 +2,17 @@ package com.example.QuickFixersBackend.services;
 
 import com.example.QuickFixersBackend.dto.ticket.TicketRequestDTO;
 import com.example.QuickFixersBackend.dto.ticket.TicketResponseDTO;
+import com.example.QuickFixersBackend.entity.Client;
 import com.example.QuickFixersBackend.entity.ServiceEntity;
+import com.example.QuickFixersBackend.entity.Support;
 import com.example.QuickFixersBackend.entity.Ticket;
-import com.example.QuickFixersBackend.entity.User;
 import com.example.QuickFixersBackend.enums.ServiceType;
 import com.example.QuickFixersBackend.enums.Statut;
 import com.example.QuickFixersBackend.mapper.TicketMapper;
 import com.example.QuickFixersBackend.repository.ServiceRepository;
 import com.example.QuickFixersBackend.repository.TicketRepository;
 import com.example.QuickFixersBackend.repository.UserRepository;
+import com.example.QuickFixersBackend.services.serviceImpl.EmailService;
 import com.example.QuickFixersBackend.services.serviceImpl.TicketImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,12 +40,14 @@ class TicketImplTest {
     private UserRepository userRepository;
     @Mock
     private ServiceRepository serviceRepository;
+    @Mock
+    private EmailService emailService;
 
     private TicketImpl ticketService;
 
     @BeforeEach
     void setUp() {
-        ticketService = new TicketImpl(ticketMapper, ticketRepository, userRepository, serviceRepository);
+        ticketService = new TicketImpl(ticketMapper, ticketRepository, userRepository, serviceRepository, emailService);
     }
 
     @Test
@@ -52,7 +56,7 @@ class TicketImplTest {
         dto.setTitre("Pc en panne");
         dto.setDescription("Ecran noir");
 
-        User client = new User();
+        Client client = new Client();
         client.setId(10L);
         client.setEmail("client@test.com");
 
@@ -60,7 +64,7 @@ class TicketImplTest {
         service.setId(1L);
         service.setType(ServiceType.INFORMATIQUE);
 
-        User support = new User();
+        Support support = new Support();
         support.setId(5L);
         support.setEmail("support@test.com");
 

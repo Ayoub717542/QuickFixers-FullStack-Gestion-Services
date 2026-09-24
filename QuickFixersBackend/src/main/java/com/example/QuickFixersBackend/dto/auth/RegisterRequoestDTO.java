@@ -18,6 +18,8 @@ public class RegisterRequoestDTO {
     @NotBlank private String prenom;
     @NotBlank @Email
     private String email;
-    @NotBlank @Size(min = 8) private String password;
+    @NotBlank
+    @Size(min = 8)
+    private String password;
 }
 

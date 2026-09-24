@@ -36,6 +36,6 @@ public class ServiceEntity {
 
     @ManyToOne
     @JoinColumn(name = "created_by")
-    private User createdBy;
+    private Person createdBy;
 
 }

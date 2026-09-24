@@ -34,14 +34,14 @@ public class Ticket {
     @ManyToOne(optional = true)
     @JoinColumn(name = "assigned_to")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private User assignedTo;
+    private Person assignedTo;
 
     private BigDecimal prix;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private User createdBy;
+    private Person createdBy;
 
     @ManyToOne
     @JoinColumn(name = "service_id")

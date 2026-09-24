@@ -3,11 +3,13 @@ package com.example.QuickFixersBackend.services.serviceImpl;
 import com.example.QuickFixersBackend.dto.paiement.IncomeByDay;
 import com.example.QuickFixersBackend.dto.paiement.PaiementRequestDTO;
 import com.example.QuickFixersBackend.dto.paiement.PaiementResponseDTO;
+import com.example.QuickFixersBackend.entity.Admin;
+import com.example.QuickFixersBackend.entity.Client;
 import com.example.QuickFixersBackend.entity.Paiement;
+import com.example.QuickFixersBackend.entity.Person;
+import com.example.QuickFixersBackend.entity.Support;
 import com.example.QuickFixersBackend.entity.Ticket;
-import com.example.QuickFixersBackend.entity.User;
 import com.example.QuickFixersBackend.enums.PaiementStatut;
-import com.example.QuickFixersBackend.enums.Role;
 import com.example.QuickFixersBackend.enums.Statut;
 import com.example.QuickFixersBackend.mapper.PaiementMapper;
 import com.example.QuickFixersBackend.repository.PaiementRepository;
@@ -38,20 +40,20 @@ public class PaiementImpl implements PaiementInterface {
     public PaiementResponseDTO creerPaiement(PaiementRequestDTO paiementRequestDTO, String email) {
         Ticket ticket = ticketRepository.findById(paiementRequestDTO.getTicketId())
                 .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
-        User userEmail = userRepository.findByEmail(email).orElseThrow(()-> new RuntimeException("email not found"));
+        Person person = userRepository.findByEmail(email).orElseThrow(()-> new RuntimeException("email not found"));
 
         if(paiementRepository.existsByTicketAndStatut(ticket,PaiementStatut.TERMINE) && ticket.getStatut() == Statut.FERME){
             throw new RuntimeException("Ce ticket est déjà payé");
         }
 
-        if(ticket.getCreatedBy() == null && !ticket.getAssignedTo().getEmail().equals(userEmail.getEmail())){
+        if(ticket.getCreatedBy() == null && !ticket.getAssignedTo().getEmail().equals(person.getEmail())){
             throw new RuntimeException("Vous ne pouvez payer que vos propres tickets");
         }
 
         Paiement payment = paiementMapper.toEntity(paiementRequestDTO);
         payment.setTicket(ticket);
         payment.setDateCreation(LocalDateTime.now());
-        payment.setUser(userEmail);
+        payment.setClient(person);
 
         boolean success=true;
         if(success){
@@ -66,42 +68,40 @@ public class PaiementImpl implements PaiementInterface {
     }
 
     @Override
-    public Page<PaiementResponseDTO> paimentHistorique(User user, Pageable pageable) {
-        if (user.getRole() == Role.ADMIN) {
+    public Page<PaiementResponseDTO> paimentHistorique(Person person, Pageable pageable) {
+        if (person instanceof Admin) {
             return paiementRepository.findAll(pageable)
                     .map(paiementMapper::toDto);
         }
-
-        if (user.getRole() == Role.USER) {
-            return paiementRepository.findByUser(user, pageable)
+        if (person instanceof Client) {
+            return paiementRepository.findByClient(person, pageable)
                     .map(paiementMapper::toDto);
         }
-        if (user.getRole() == Role.SUPPORT) {
-            return paiementRepository.findByTicketAssignedTo(user, pageable)
+        if (person instanceof Support) {
+            return paiementRepository.findByTicketAssignedTo(person, pageable)
                     .map(paiementMapper::toDto);
         }
-
         throw new RuntimeException("Access denied");
     }
 
     @Override
-    public long countPayments(User user) {
-        if (user.getRole() == Role.ADMIN) {
+    public long countPayments(Person person) {
+        if (person instanceof Admin) {
             return paiementRepository.count();
         }
-        if(user.getRole() == Role.USER){
-            return paiementRepository.countByUser(user);
+        if (person instanceof Client) {
+            return paiementRepository.countByClient(person);
         }
         throw new RuntimeException("Access denied");
     }
 
     @Override
-    public List<IncomeByDay> incomeByday(User user) {
+    public List<IncomeByDay> incomeByday(Person person) {
         List<Object[]> rows;
-        if (user.getRole() == Role.ADMIN) {
+        if (person instanceof Admin) {
             rows = paiementRepository.incomeByDay(PaiementStatut.TERMINE);
-        } else if (user.getRole() == Role.SUPPORT) {
-            rows = paiementRepository.incomeByDayForSupport(PaiementStatut.TERMINE, user);
+        } else if (person instanceof Support) {
+            rows = paiementRepository.incomeByDayForSupport(PaiementStatut.TERMINE, person);
         } else {
             throw new RuntimeException("Access denied");
         }
