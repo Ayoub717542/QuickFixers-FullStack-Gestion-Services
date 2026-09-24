@@ -38,4 +38,17 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    public void sendAccountCredentials(String to, String fullName,
+                                       String email, String role, String password) {
+        String text = "Bonjour " + fullName + ",\n\n" +
+                "Votre compte a été créé sur QuickFixers.\n\n" +
+                "Email : " + email + "\n" +
+                "Mot de passe : " + password + "\n" +
+                "Rôle : " + role + "\n\n" +
+                "Vous pouvez maintenant vous connecter.";
+
+        sendEmail(to, "Votre compte QuickFixers", text);
+    }
+
+
 }

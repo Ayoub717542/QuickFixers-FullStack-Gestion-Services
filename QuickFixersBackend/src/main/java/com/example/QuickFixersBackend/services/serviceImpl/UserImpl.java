@@ -40,6 +40,18 @@ public class UserImpl implements UserInterface {
         );
 
         Client saved = userRepository.save(user);
+
+        try {
+            emailService.sendAccountCredentials(
+                    userRequestDTO.getEmail(),
+                    userRequestDTO.getNom() + " " + userRequestDTO.getPrenom(),
+                    userRequestDTO.getEmail(),
+                    "CLIENT",
+                    userRequestDTO.getPassword()
+            );
+        } catch (Exception e) {
+            System.out.println("Email non envoyé à " + userRequestDTO.getEmail() + " : " + e.getMessage());
+        }
         return userMapper.toDto(saved);
     }
 
@@ -69,6 +81,18 @@ public class UserImpl implements UserInterface {
         );
 
         Support saved = userRepository.save(support);
+        try {
+            emailService.sendAccountCredentials(
+                    dto.getEmail(),
+                    dto.getNom() + " " + dto.getPrenom(),
+                    dto.getEmail(),
+                    "SUPPORT",
+                    dto.getPassword()
+            );
+        } catch (Exception e) {
+            System.out.println("Email non envoyé à " + dto.getEmail() + " : " + e.getMessage());
+        }
+
         return userMapper.toDto(saved);
     }
 
