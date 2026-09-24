@@ -50,6 +50,28 @@ function AdminSidebar({sginOut}) {
                     </span>
                     </Link>
 
+                    <Link
+                        to="/admin/supports"
+                        className="flex items-center gap-3 p-3 rounded hover:bg-slate-700"
+                    >
+                        <Users size={20}/>
+
+                        <span className="hidden group-hover:block">
+                        Supports
+                    </span>
+                    </Link>
+                    <Link
+                        to="/admin/clients"
+                        className="flex items-center gap-3 p-3 rounded hover:bg-slate-700"
+                    >
+                        <Users size={20}/>
+
+                        <span className="hidden group-hover:block">
+                        Clients
+                    </span>
+                    </Link>
+
+
 
                     <Link
                         to="/admin/payments"

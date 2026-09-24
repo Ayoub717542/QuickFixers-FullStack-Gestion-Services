@@ -153,9 +153,7 @@ function SupportTable() {
                                         <td className="p-4 text-right whitespace-nowrap">
                                             <button
                                                 onClick={() =>
-                                                    navigate(
-                                                        `/admin/users/edit/${support.id}`
-                                                    )
+                                                    navigate(`/admin/users/edit/${support.id}?from=/admin/supports`)
                                                 }
                                                 className="bg-blue-500 text-white px-3 py-1.5 rounded-lg mr-2"
                                             >

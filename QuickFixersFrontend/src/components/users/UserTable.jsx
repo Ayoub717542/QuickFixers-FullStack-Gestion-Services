@@ -113,7 +113,7 @@ function UserTable() {
                                     </button>
 
                                     <button
-                                        onClick={() => navigate(`/admin/users/edit/${user.id}`)}
+                                        onClick={() =>  navigate(`/admin/users/edit/${user.id}?from=/admin/users`)}
                                         className="px-3 py-1.5 bg-blue-500 text-white rounded-lg text-sm mr-2"
                                     >
                                         Modifier
