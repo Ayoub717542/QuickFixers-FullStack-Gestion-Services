@@ -63,5 +63,11 @@ public interface UserRepository extends JpaRepository<Person,Long> {
     @Query("SELECT c FROM Client c WHERE c.nom LIKE %:nom%")
     Page<Client> rechercherClients(@Param("nom") String nom, Pageable pageable);
 
+    @Query("SELECT u FROM Person u WHERE u.nom LIKE %:keyword% OR u.prenom LIKE %:keyword% OR u.email LIKE %:keyword%")
+    Page<Person> rechercherUsers(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT u FROM Person u WHERE TYPE(u) = :type")
+    Page<Person> filtrerUsers(@Param("type") Class<? extends Person> type, Pageable pageable);
+
 
 }
