@@ -15,8 +15,8 @@ import Payments from "./pages/admin/Payments.jsx";
 import TicketDetails from "./pages/admin/TicketDetails.jsx";
 import AdminSidebar from "./components/sidebars/AdminSidebar.jsx";
 import EditUser from "./pages/admin/EditUser.jsx";
-import SupportTable from "./components/users/SupportTable.jsx";
-import ClientTable from "./components/users/ClientTable.jsx";
+import Supports from "./pages/admin/Supports.jsx";
+import Clients from "./pages/admin/Clients.jsx";
 
 import Services from "./pages/services/ServiceList";
 import ServiceDetails from "./pages/services/ServiceDetails";
@@ -62,8 +62,8 @@ function App() {
                             <Route path="/admin/payments" element={<Payments />} />
                             <Route path="/admin/services" element={<Services />} />
                             <Route path="/admin/services/:id" element={<ServiceDetails />} />
-                            <Route path="/admin/supports" element={<SupportTable />} />
-                            <Route path="/admin/clients" element={<ClientTable />} />
+                            <Route path="/admin/supports" element={<Supports />} />
+                            <Route path="/admin/clients" element={<Clients />}/>
                        </Route>
                     </Route>
 

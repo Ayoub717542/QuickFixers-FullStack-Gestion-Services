@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { axiosApi } from "../../api/axiosApi";
 
-function UserForm({ onSuccess }) {
-    const [typeCompte, setTypeCompte] = useState("CLIENT");
+function UserForm({ onSuccess,fixedType }) {
+    const [typeCompte, setTypeCompte] = useState(fixedType || "CLIENT");
     const {
         register,
         handleSubmit,
@@ -88,14 +88,16 @@ function UserForm({ onSuccess }) {
             </div>
 
             <div className="flex gap-3 mt-4">
-                <select
-                    value={typeCompte}
-                    onChange={(e) => setTypeCompte(e.target.value)}
-                    className="border rounded-lg px-3 py-2"
-                >
-                    <option value="CLIENT">Client</option>
-                    <option value="SUPPORT">Support</option>
-                </select>
+                {!fixedType && (
+                    <select
+                        value={typeCompte}
+                        onChange={(e) => setTypeCompte(e.target.value)}
+                        className="border rounded-lg px-3 py-2"
+                    >
+                        <option value="CLIENT">Client</option>
+                        <option value="SUPPORT">Support</option>
+                    </select>
+                )}
 
                 <button
                     type="submit"
