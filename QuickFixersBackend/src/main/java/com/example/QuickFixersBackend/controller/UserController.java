@@ -1,10 +1,12 @@
 package com.example.QuickFixersBackend.controller;
 
 import com.example.QuickFixersBackend.dto.support.CreateSupportRequestDTO;
+import com.example.QuickFixersBackend.dto.user.UserEditRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserResponseDTO;
 import com.example.QuickFixersBackend.dto.user.UserUpdateRequestDTO;
 import com.example.QuickFixersBackend.entity.Person;
+import com.example.QuickFixersBackend.enums.ServiceType;
 import com.example.QuickFixersBackend.services.serviceInterfce.UserInterface;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -54,6 +56,23 @@ public class UserController {
     @PostMapping("/ajouterUser")
     public ResponseEntity<UserResponseDTO> ajouterUnUser(@Valid @RequestBody UserRequestDTO userRequestDTO){
         return ResponseEntity.ok(userInterface.ajouterUnUser(userRequestDTO));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/changeRole/{id}")
+    public ResponseEntity<UserResponseDTO> changerRole(
+            @PathVariable Long id,
+            @RequestParam String role,
+            @RequestParam(required = false) ServiceType serviceType) {
+        return ResponseEntity.ok(userInterface.changerRole(id, role, serviceType));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/modifierUser/{id}")
+    public ResponseEntity<UserResponseDTO> modifierUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UserEditRequestDTO dto) {
+        return ResponseEntity.ok(userInterface.modifierUser(id, dto));
     }
 
     @PostMapping("/Ajoutersupport")

@@ -1,10 +1,12 @@
 package com.example.QuickFixersBackend.services.serviceInterfce;
 
 import com.example.QuickFixersBackend.dto.support.CreateSupportRequestDTO;
+import com.example.QuickFixersBackend.dto.user.UserEditRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserResponseDTO;
 import com.example.QuickFixersBackend.dto.user.UserUpdateRequestDTO;
 import com.example.QuickFixersBackend.entity.Person;
+import com.example.QuickFixersBackend.enums.ServiceType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,4 +19,8 @@ public interface UserInterface {
    UserResponseDTO monProfil(Person person);
    UserResponseDTO modifierProfil(Person person, UserUpdateRequestDTO dto);
     long countUsers();
+    UserResponseDTO changerRole(Long id, String role, ServiceType serviceType);
+    UserResponseDTO modifierUser(Long id, UserEditRequestDTO dto);
+
+
 }

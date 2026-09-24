@@ -1,27 +1,33 @@
 package com.example.QuickFixersBackend.services.serviceImpl;
 
 import com.example.QuickFixersBackend.dto.support.CreateSupportRequestDTO;
+import com.example.QuickFixersBackend.dto.user.UserEditRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserRequestDTO;
 import com.example.QuickFixersBackend.dto.user.UserResponseDTO;
 import com.example.QuickFixersBackend.dto.user.UserUpdateRequestDTO;
+import com.example.QuickFixersBackend.entity.Admin;
 import com.example.QuickFixersBackend.entity.Client;
 import com.example.QuickFixersBackend.entity.Person;
 import com.example.QuickFixersBackend.entity.Support;
+import com.example.QuickFixersBackend.enums.ServiceType;
 import com.example.QuickFixersBackend.mapper.UserMapper;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.UserInterface;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public record UserImpl(
-        UserRepository userRepository,
-        UserMapper userMapper,
-        PasswordEncoder passwordEncoder,
-        EmailService emailService
-) implements UserInterface {
+@RequiredArgsConstructor
+public class UserImpl implements UserInterface {
+
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     public UserResponseDTO ajouterUnUser(UserRequestDTO userRequestDTO) {
@@ -85,5 +91,51 @@ public record UserImpl(
     public long countUsers() {
         return userRepository.count();
     }
+
+    @Override
+    @Transactional
+    public UserResponseDTO changerRole(Long id, String role, ServiceType serviceType) {
+        Person person = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (person instanceof Admin) {
+            throw new RuntimeException("Le rôle d'un administrateur ne peut pas être modifié");
+        }
+        if (!role.equals("CLIENT") && !role.equals("SUPPORT")) {
+            throw new RuntimeException("Rôle invalide : seuls CLIENT et SUPPORT sont autorisés");
+        }
+
+        if (role.equals("CLIENT")) {
+            userRepository.changerRole(id, "CLIENT", null);
+        } else {
+            if (serviceType == null) {
+                throw new RuntimeException("Un type de service est requis pour un compte SUPPORT");
+            }
+            userRepository.changerRole(id, "SUPPORT", serviceType.name());
+        }
+        Person updated = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return userMapper.toDto(updated);
+    }
+
+    @Override
+    public UserResponseDTO modifierUser(Long id, UserEditRequestDTO dto) {
+        Person person = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (person instanceof Admin) {
+            throw new RuntimeException("Le compte d'un administrateur ne peut pas être modifié");
+        }
+        if (!person.getEmail().equals(dto.getEmail()) && userRepository.existsByEmail(dto.getEmail())) {
+            throw new RuntimeException("Cet email est déjà utilisé");
+        }
+        person.setNom(dto.getNom());
+        person.setPrenom(dto.getPrenom());
+        person.setEmail(dto.getEmail());
+
+        return userMapper.toDto(userRepository.save(person));
+    }
+
+
 
 }

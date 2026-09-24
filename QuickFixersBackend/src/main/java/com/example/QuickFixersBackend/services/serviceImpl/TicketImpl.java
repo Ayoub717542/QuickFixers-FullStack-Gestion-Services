@@ -2,6 +2,7 @@ package com.example.QuickFixersBackend.services.serviceImpl;
 
 import com.example.QuickFixersBackend.dto.ticket.TicketRequestDTO;
 import com.example.QuickFixersBackend.dto.ticket.TicketResponseDTO;
+
 import com.example.QuickFixersBackend.enums.Statut;
 import com.example.QuickFixersBackend.mapper.TicketMapper;
 import com.example.QuickFixersBackend.entity.Admin;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -181,4 +183,7 @@ public class TicketImpl implements TicketInterface {
         }
         throw new RuntimeException("Access denied");
     }
+
+
+
 }
