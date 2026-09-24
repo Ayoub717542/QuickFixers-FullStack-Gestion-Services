@@ -104,7 +104,7 @@ function UserTable() {
                                     </span>
                                 </td>
                                 <td className="p-4 text-gray-500">{user.serviceType || "—"}</td>
-                                <td className="p-4 text-right whitespace-nowrap g-1">
+                                <td className="p-4 text-right whitespace-nowrap">
                                     <button
                                         onClick={() => supprimerUser(user)}
                                         className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-sm"

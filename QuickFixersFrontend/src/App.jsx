@@ -14,6 +14,9 @@ import Users from "./pages/admin/Users.jsx";
 import Payments from "./pages/admin/Payments.jsx";
 import TicketDetails from "./pages/admin/TicketDetails.jsx";
 import AdminSidebar from "./components/sidebars/AdminSidebar.jsx";
+import EditUser from "./pages/admin/EditUser.jsx";
+import SupportTable from "./components/users/SupportTable.jsx";
+import ClientTable from "./components/users/ClientTable.jsx";
 
 import Services from "./pages/services/ServiceList";
 import ServiceDetails from "./pages/services/ServiceDetails";
@@ -36,7 +39,6 @@ import UserSidebar from "./components/sidebars/UserSidebar.jsx";
 
 import SginOut from "./components/SginOut.jsx";
 import ResetPassword from "./pages/auth/ResetPassword";
-import EditUser from "./pages/admin/EditUser.jsx";
 
 
 
@@ -60,7 +62,9 @@ function App() {
                             <Route path="/admin/payments" element={<Payments />} />
                             <Route path="/admin/services" element={<Services />} />
                             <Route path="/admin/services/:id" element={<ServiceDetails />} />
-x                        </Route>
+                            <Route path="/admin/supports" element={<SupportTable />} />
+                            <Route path="/admin/clients" element={<ClientTable />} />
+                       </Route>
                     </Route>
 
                     <Route element={<RoleGuard allowedRoles={["CLIENT"]} />}>
