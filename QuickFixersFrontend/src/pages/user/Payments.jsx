@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
 import Pagination from "../../components/Pagination";
 import { fetchPayments } from "../../api/paiementApi";
+import { axiosApi } from "../../api/axiosApi";
 
 const statutColors = {
     EN_ATTENTE: "bg-yellow-100 text-yellow-700",
@@ -20,6 +21,23 @@ function formatDate(dateStr) {
         month: "long",
         year: "numeric"
     });
+}
+
+async function telechargerRecu(paiement) {
+    try {
+        const response = await axiosApi.get(`/paiements/recu/${paiement.id}`,
+            { responseType: "blob" });
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `recu-${paiement.id}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        toast.error("Erreur lors du téléchargement du reçu.");
+    }
 }
 
 function Payments() {
@@ -63,12 +81,13 @@ function Payments() {
                             <th className="p-4 text-left">Statut</th>
                             <th className="p-4 text-left">Date</th>
                             <th className="p-4 text-left">Ticket</th>
+                            <th className="p-4 text-left">Reçu</th>
                         </tr>
                         </thead>
                         <tbody>
                         {payments.length === 0 ? (
                             <tr>
-                                <td colSpan={5} className="p-8 text-center text-gray-500">
+                                <td colSpan={6} className="p-8 text-center text-gray-500">
                                     Aucun paiement trouvé
                                 </td>
                             </tr>
@@ -84,6 +103,14 @@ function Payments() {
                                     </td>
                                     <td className="p-4 text-gray-500">{formatDate(p.dateCreation)}</td>
                                     <td className="p-4 text-gray-500">#{p.ticketId}</td>
+                                    <td className="p-4">
+                                        <button
+                                            onClick={() => telechargerRecu(p)}
+                                            className="px-3 py-1 rounded-lg text-sm font-medium bg-blue-50 text-blue-600 hover:bg-blue-100"
+                                        >
+                                            Télécharger le reçu
+                                        </button>
+                                    </td>
                                 </tr>
                             ))
                         )}
