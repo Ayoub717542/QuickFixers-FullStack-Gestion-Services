@@ -61,7 +61,7 @@ function App() {
                         </Route>
                     </Route>
 
-                    <Route element={<RoleGuard allowedRoles={["USER"]} />}>
+                    <Route element={<RoleGuard allowedRoles={["CLIENT"]} />}>
                         <Route element={<Layout sidebar={<UserSidebar sginOut={<SginOut />} />} />}>
                             <Route path="/user/dashboard" element={<UserDashboard />} />
                             <Route path="/user/tickets" element={<UserTickets />} />

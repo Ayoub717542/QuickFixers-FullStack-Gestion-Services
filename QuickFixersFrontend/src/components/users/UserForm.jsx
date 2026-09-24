@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { axiosApi } from "../../api/axiosApi";
 
 function UserForm({ onSuccess }) {
-    const [typeCompte, setTypeCompte] = useState("USER");
+    const [typeCompte, setTypeCompte] = useState("CLIENT");
     const {
         register,
         handleSubmit,
@@ -18,7 +18,7 @@ function UserForm({ onSuccess }) {
             .then(() => {
                 toast.success("Compte ajouté avec succès.");
                 reset();
-                setTypeCompte("USER");
+                setTypeCompte("CLIENT");
                 onSuccess();
             })
             .catch(() => {
@@ -93,7 +93,7 @@ function UserForm({ onSuccess }) {
                     onChange={(e) => setTypeCompte(e.target.value)}
                     className="border rounded-lg px-3 py-2"
                 >
-                    <option value="USER">Utilisateur</option>
+                    <option value="CLIENT">Client</option>
                     <option value="SUPPORT">Support</option>
                 </select>
 

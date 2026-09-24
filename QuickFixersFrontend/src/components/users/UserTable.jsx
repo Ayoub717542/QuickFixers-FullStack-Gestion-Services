@@ -4,8 +4,6 @@ import { axiosApi } from "../../api/axiosApi";
 import Loader from "../Loader";
 import Pagination from "../Pagination.jsx";
 
-const ROLES = ["ADMIN", "SUPPORT", "USER"];
-
 function UserTable() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -29,17 +27,6 @@ function UserTable() {
         fetchUsers();
     }, [page]);
 
-    function changerRole(user, role) {
-        axiosApi.patch("/users/changeRole/" + user.id + "?role=" + role)
-            .then(() => {
-                toast.success("Rôle modifié.");
-                fetchUsers();
-            })
-            .catch(() => {
-                toast.error("Erreur lors du changement de rôle.");
-            });
-    }
-
     function supprimerUser(user) {
         if (!window.confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
             return;
@@ -61,7 +48,7 @@ function UserTable() {
     const roleColors = {
         ADMIN: "bg-red-100 text-red-600",
         SUPPORT: "bg-blue-100 text-blue-600",
-        USER: "bg-gray-100 text-gray-600"
+        CLIENT: "bg-gray-100 text-gray-600"
     };
 
     return (
@@ -98,15 +85,6 @@ function UserTable() {
                                 </td>
                                 <td className="p-4 text-gray-500">{user.serviceType || "—"}</td>
                                 <td className="p-4 text-right whitespace-nowrap">
-                                    <select
-                                        value={user.role}
-                                        onChange={(e) => changerRole(user, e.target.value)}
-                                        className="px-2 py-1 border border-gray-300 rounded-lg text-sm mr-2 bg-white"
-                                    >
-                                        {ROLES.map((role) => (
-                                            <option key={role} value={role}>{role}</option>
-                                        ))}
-                                    </select>
                                     <button
                                         onClick={() => supprimerUser(user)}
                                         className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-sm"
