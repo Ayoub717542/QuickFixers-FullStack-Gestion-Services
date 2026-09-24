@@ -180,6 +180,24 @@ public class UserController {
                 userInterface.rechercherClients(nom, pageable)
         );
     }
+    @GetMapping("/filtrerUsers")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<UserResponseDTO>> filtrerUsers(
+            @RequestParam String role,
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @RequestParam(defaultValue = "5") int pageSize) {
+        Pageable pageable = creerPageable(pageNumber, pageSize);
+        return ResponseEntity.ok(userInterface.filtrerUsers(role, pageable));
+    }
+    @GetMapping("/rechercherUsers")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<UserResponseDTO>> rechercherUsers(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @RequestParam(defaultValue = "5") int pageSize) {
+        Pageable pageable = creerPageable(pageNumber, pageSize);
+        return ResponseEntity.ok(userInterface.rechercherUsers(keyword, pageable));
+    }
 
     @GetMapping("/countUsers")
     @PreAuthorize("hasRole('ADMIN')")

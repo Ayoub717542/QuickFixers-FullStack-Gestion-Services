@@ -27,6 +27,8 @@ public interface UserInterface {
     Page<UserResponseDTO> rechercherSupports(String searchedEmail, Pageable pageable);
     Page<UserResponseDTO> filtrerSupportsParService(ServiceType serviceType, Pageable pageable);
     Page<UserResponseDTO> rechercherClients(String search, Pageable pageable);
+    Page<UserResponseDTO> rechercherUsers(String keyword, Pageable pageable);
+    Page<UserResponseDTO> filtrerUsers(String role, Pageable pageable);
 
 
 }

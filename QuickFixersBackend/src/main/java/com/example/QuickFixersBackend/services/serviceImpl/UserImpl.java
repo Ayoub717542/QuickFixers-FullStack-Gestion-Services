@@ -169,6 +169,27 @@ public class UserImpl implements UserInterface {
         return userRepository.findSupportsByServiceType(serviceType, pageable)
                 .map(userMapper::toDto);
     }
+    @Override
+    public Page<UserResponseDTO> rechercherUsers(String keyword, Pageable pageable) {
+        return userRepository.rechercherUsers(keyword.trim(), pageable).map(userMapper::toDto);
+    }
+
+    @Override
+    public Page<UserResponseDTO> filtrerUsers(String role, Pageable pageable) {
+        Class<? extends Person> type;
+        if (role.equalsIgnoreCase("ADMIN")) {
+            type = Admin.class;
+        } else if (role.equalsIgnoreCase("SUPPORT")) {
+            type = Support.class;
+        } else if (role.equalsIgnoreCase("CLIENT")) {
+            type = Client.class;
+        } else {
+            throw new RuntimeException("Rôle invalide : " + role);
+        }
+        return userRepository.filtrerUsers(type, pageable)
+                .map(userMapper::toDto);
+    }
+
 
 
 }
