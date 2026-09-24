@@ -21,5 +21,51 @@ function SupportForm({ onSuccess }) {
                 toast.error("Erreur lors de l'ajout du support.");
             });
     }
+
+    return (
+        <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-xl shadow-sm p-5 border mb-4">
+            <h2 className="text-lg font-bold text-gray-800 mb-4">Ajouter un support</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                    <input type="text" placeholder="Nom" {...register("nom", { required: "Nom requis" })}
+                           className="border rounded-lg px-3 py-2 w-full" />
+                    {errors.nom && (<p className="text-red-500 text-xs">{errors.nom.message}</p>)}
+                </div>
+                <div>
+                    <input type="text" placeholder="Prénom" {...register("prenom", { required: "Prénom requis" })}
+                           className="border rounded-lg px-3 py-2 w-full" />
+                    {errors.prenom && (<p className="text-red-500 text-xs">{errors.prenom.message}</p>)}
+                </div>
+                <div>
+                    <input type="email" placeholder="Email" {...register("email", { required: "Email requis" })}
+                           className="border rounded-lg px-3 py-2 w-full" />
+                    {errors.email && (<p className="text-red-500 text-xs">{errors.email.message}</p>)}
+                </div>
+                <div>
+                    <input type="password" placeholder="Mot de passe" {...register("password", { required: "Mot de passe requis" })}
+                           className="border rounded-lg px-3 py-2 w-full" />
+                    {errors.password && (<p className="text-red-500 text-xs">{errors.password.message}</p>)}
+                </div>
+                <div>
+                    <select {...register("serviceType", { required: "Type de service requis" })}
+                            className="border rounded-lg px-3 py-2 w-full">
+                        <option value="">Choisir un type de service</option>
+                        <option value="ELECTROMENAGER">Électroménager</option>
+                        <option value="ELECTRONIQUE">Électronique</option>
+                        <option value="INFORMATIQUE">Informatique</option>
+                        <option value="TELEPHONIE">Téléphonie</option>
+                    </select>
+                    {errors.serviceType && (<p className="text-red-500 text-xs">{errors.serviceType.message}</p>)}
+                </div>
+            </div>
+            <div className="flex gap-3 mt-4">
+                <button type="submit" disabled={isSubmitting}
+                        className="bg-green-500 text-white px-4 py-2 rounded-lg">
+                    {isSubmitting ? "Ajout..." : "Ajouter"}
+                </button>
+            </div>
+        </form>
+    );
+
 }
 export default SupportForm;
