@@ -68,6 +68,12 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/consulterUser/{id}")
+    public ResponseEntity<UserResponseDTO> consulterUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userInterface.consulterUser(id));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/modifierUser/{id}")
     public ResponseEntity<UserResponseDTO> modifierUser(
             @PathVariable Long id,

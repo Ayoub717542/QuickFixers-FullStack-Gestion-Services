@@ -135,7 +135,12 @@ public class UserImpl implements UserInterface {
 
         return userMapper.toDto(userRepository.save(person));
     }
-
+    @Override
+    public UserResponseDTO consulterUser(Long id) {
+        Person person = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return userMapper.toDto(person);
+    }
 
 
 }

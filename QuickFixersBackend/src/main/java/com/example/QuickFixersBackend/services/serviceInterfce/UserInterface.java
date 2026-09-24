@@ -21,6 +21,6 @@ public interface UserInterface {
     long countUsers();
     UserResponseDTO changerRole(Long id, String role, ServiceType serviceType);
     UserResponseDTO modifierUser(Long id, UserEditRequestDTO dto);
-
+    UserResponseDTO consulterUser(Long id);
 
 }
