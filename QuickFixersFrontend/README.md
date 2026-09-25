@@ -1,7 +1,7 @@
 # QuickFixers — Frontend (React + Vite)
 
 Frontend of the **QuickFixers** repair-service application.
-Three role-based dashboards (User / Support / Admin) to create tickets, manage repairs, and handle payments.
+Three role-based dashboards (CLIENT / Support / Admin) to create tickets, manage repairs, and handle payments.
 
 The app talks to the Spring Boot backend at **`http://localhost:8081/api`**.
 
@@ -70,10 +70,10 @@ export const axiosApi = axios.create({
 - **JWT handling is automatic:** the request interceptor reads the token from storage and adds
   `Authorization: Bearer <token>` to every call.
 - **401 handling is automatic too:** expired/invalid token → storage cleared → back to `/login`.
-- Tokens are stored under `token` and `userEmail` after login.
+- Tokens are stored under `token` and `CLIENTEmail` after login.
 
-> Multiple users in the same browser share the same `localStorage`, so the last login wins across tabs.
-> To test two users at once, use two browsers (or an incognito window).
+> Multiple CLIENTs in the same browser share the same `localStorage`, so the last login wins across tabs.
+> To test two CLIENTs at once, use two browsers (or an incognito window).
 
 ---
 
@@ -85,20 +85,20 @@ Protected routes are wrapped in `RoleGuard`, so each role only sees its own area
 | Route | Page |
 |---|---|
 | `/login` | Login |
-| `/register` | Create a USER account |
+| `/register` | Create a CLIENT account |
 
-### User (`/user/...`)
+### CLIENT (`/CLIENT/...`)
 | Route | Page |
 |---|---|
-| `/user/dashboard` | Dashboard (tickets récents + payments) |
-| `/user/tickets` | My tickets |
-| `/user/tickets/:id` | Ticket details — **pay button lives here** |
-| `/user/tickets/create` | Pick a service |
-| `/user/create-ticket/:serviceId` | Create a ticket for a service |
-| `/user/payments` | "Mes paiements" |
-| `/user/services` | Browse services |
-| `/user/services/:id` | Service details |
-| `/user/profile` | Profile |
+| `/CLIENT/dashboard` | Dashboard (tickets récents + payments) |
+| `/CLIENT/tickets` | My tickets |
+| `/CLIENT/tickets/:id` | Ticket details — **pay button lives here** |
+| `/CLIENT/tickets/create` | Pick a service |
+| `/CLIENT/create-ticket/:serviceId` | Create a ticket for a service |
+| `/CLIENT/payments` | "Mes paiements" |
+| `/CLIENT/services` | Browse services |
+| `/CLIENT/services/:id` | Service details |
+| `/CLIENT/profile` | Profile |
 
 ### Support (`/support/...`)
 | Route | Page |
@@ -115,7 +115,7 @@ Protected routes are wrapped in `RoleGuard`, so each role only sees its own area
 | `/admin/dashboard` | Dashboard (tickets, revenue, stats) |
 | `/admin/tickets` | All tickets |
 | `/admin/tickets/:id` | Ticket details + status changer |
-| `/admin/users` | Manage users & roles |
+| `/admin/CLIENTs` | Manage CLIENTs & roles |
 | `/admin/payments` | All payments |
 | `/admin/services` | Manage services (with prices) |
 | `/admin/services/:id` | Service details |
@@ -125,20 +125,20 @@ Protected routes are wrapped in `RoleGuard`, so each role only sees its own area
 
 ## 💳 How the payment works
 
-The **`Payer … DH`** button appears on **ticket details** (`/user/tickets/:id`) only for the **USER** role, and only when all of these are true:
+The **`Payer … DH`** button appears on **ticket details** (`/CLIENT/tickets/:id`) only for the **CLIENT** role, and only when all of these are true:
 
 ```jsx
 !canManage && ticket.statut !== "FERME" && ticket.prix != null
 ```
 
-1. The user clicks **Payer {prix} DH** → confirmation dialog.
+1. The CLIENT clicks **Payer {prix} DH** → confirmation dialog.
 2. `createPayment(ticket.id, ticket.prix)` → `POST /paiements/effectuerPaiement`.
 3. Backend marks the payment **TERMINE** and closes the ticket (**statut = FERME**).
 4. The page reloads → the button disappears (no double payment).
 
 > The price comes **live from the service** (`ticket.prix`). If a service has no price, the button is hidden and the price shows "—" on the details page.
 
-After paying, the transaction appears under **"Mes paiements"** (`/user/payments`).
+After paying, the transaction appears under **"Mes paiements"** (`/CLIENT/payments`).
 
 ---
 
@@ -146,17 +146,17 @@ After paying, the transaction appears under **"Mes paiements"** (`/user/payments
 
 ```
 src/
-├── api/          # Axios instance + API helpers (ticket, paiement, service, user...)
+├── api/          # Axios instance + API helpers (ticket, paiement, service, CLIENT...)
 ├── components/   # Reusable UI (tables, cards, forms, sidebars, Layout, Loader...)
 ├── context/      # React context (if used)
-├── pages/        # One folder per area: admin / support / user / services / auth
-│   ├── user/     # Tickets, Dashboard, Payments, CreateTicket, PickService, Profile
+├── pages/        # One folder per area: admin / support / CLIENT / services / auth
+│   ├── CLIENT/     # Tickets, Dashboard, Payments, CreateTicket, PickService, Profile
 │   ├── support/  # Dashboard, AssignedTickets, Payments, Profile
-│   ├── admin/    # Dashboard, Tickets, Users, Payments, Services
+│   ├── admin/    # Dashboard, Tickets, CLIENTs, Payments, Services
 │   ├── services/ # ServiceList, ServiceDetails
 │   └── auth/     # Login, Register
 ├── routes/       # ProtectedRoute (logged in?) + RoleGuard (allowed role?)
-├── utils/        # auth helpers (getUserRole via JWT decode)
+├── utils/        # auth helpers (getCLIENTRole via JWT decode)
 ├── App.jsx       # All routes & guards
 └── main.jsx      # Entry point
 ```
