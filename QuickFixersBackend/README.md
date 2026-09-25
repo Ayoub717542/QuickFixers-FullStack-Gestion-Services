@@ -1,5 +1,51 @@
 # QuickFixers — Backend (Spring Boot)
 
+## Run with Docker Compose
+
+Docker Compose starts two things for you: the MySQL database and the Spring Boot app.
+
+1. Open Docker Desktop and wait until it is running.
+2. Open a terminal in the `QuickFixersBackend` folder.
+3. Keep your existing `.env` file in this folder. It needs `DB_PASSWORD`,
+   `JWT_SECRET`, `MAIL_USERNAME`, and `MAIL_APP_PASSWORD`.
+   The JWT secret must be a Base64-encoded random key of at least 32 bytes.
+   For email, use your Gmail address and Gmail app password.
+4. Start everything with this command:
+
+```bash
+docker compose up --build -d
+```
+
+`--build` builds your app. `-d` keeps it running in the background.
+The first start may take a few minutes.
+
+5. Open `http://localhost:8081/swagger-ui/index.html` to try the API.
+
+To see the app's messages:
+
+```bash
+docker compose logs -f backend
+```
+
+Press `Ctrl+C` to stop watching messages. The app keeps running.
+
+The backend runs at `http://localhost:8081`. MySQL is available on
+`localhost:3307` with database `QuickFixers_db`, user `quickfixers`, and your
+`DB_PASSWORD`. Compose sets `DB_URL` and `DB_USERNAME` for the backend itself,
+so their values in `.env` can stay configured for running without Docker.
+The first start builds the app and waits for MySQL to be ready.
+
+To stop everything:
+
+```bash
+docker compose down
+```
+
+Database data stays in the
+`mysql_data` volume. Database passwords are applied when that volume is first
+created; changing `.env` later does not change an existing database password.
+These settings are intended for local development.
+
 REST API for the **QuickFixers** repair-service application.
 Clients create tickets, support agents fix them, admins manage everything — secured with JWT and role-based access.
 
