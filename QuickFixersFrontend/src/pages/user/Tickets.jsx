@@ -4,7 +4,7 @@ import TicketTable from "../../components/tickets/TicketTable";
 function Tickets() {
     return (
         <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <h1 className="text-2xl font-bold text-gray-800">Mes tickets</h1>
                 <Link
                     to="/user/tickets/create"

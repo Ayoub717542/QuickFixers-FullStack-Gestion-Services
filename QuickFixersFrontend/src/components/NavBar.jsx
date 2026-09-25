@@ -1,6 +1,6 @@
-import { Bell, Search,  } from "lucide-react";
+import { Bell, Menu,  } from "lucide-react";
 
-function Navbar() {
+function Navbar({onMenuClick}) {
 
     const userEmail = localStorage.getItem("userEmail");
 
@@ -8,14 +8,8 @@ function Navbar() {
 
     return (
         <nav className="sticky top-0 z-10 h-16 bg-white border-b flex items-center justify-between px-6">
-            <div className="flex items-center gap-2 border rounded-lg px-3 w-80">
-                <Search size={18} className="text-gray-400" />
-                <input
-                    type="text"
-                    placeholder="Rechercher..."
-                    className="w-full py-2 outline-none"
-                />
-            </div>
+            <Menu size={22} onClick={onMenuClick}
+                  className="lg:hidden p-2 box-content cursor-pointer text-gray-500" />
 
             <div className="flex items-center gap-4">
                 <button className="text-gray-500 hover:text-gray-700">

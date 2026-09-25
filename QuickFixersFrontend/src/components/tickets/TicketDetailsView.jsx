@@ -110,7 +110,7 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true }) 
                 <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-md overflow-hidden">
 
                     <div className="bg-gradient-to-r from-orange-500 to-yellow-500 p-6 text-white">
-                        <div className="flex items-center justify-between gap-3">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
                             <h1 className="text-xl font-bold">Ticket #{ticket.id}</h1>
                             <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statutColors[ticket.statut] || "bg-gray-100 text-gray-600"}`}>
                                 {ticket.statut}

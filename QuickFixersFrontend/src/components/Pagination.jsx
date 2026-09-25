@@ -3,7 +3,7 @@ function Pagination({ page, totalPages, onChange }) {
         return null;
     }
     return (
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 mt-4">
             <button
                 onClick={() => onChange(page - 1)}
                 disabled={page === 1}

@@ -64,12 +64,12 @@ function ClientTable() {
     return (
         <div className="bg-white rounded-xl shadow-sm p-4">
             <div className="flex flex-wrap gap-3 mb-4">
-                <form onSubmit={handleSubmit(rechercher)} className="flex gap-2">
+                <form onSubmit={handleSubmit(rechercher)} className="flex flex-wrap gap-2 w-full sm:w-auto">
                     <input
                         type="text"
                         placeholder="Rechercher par nom"
                         {...register("nom")}
-                        className="border rounded-lg px-3 py-2"
+                        className="border rounded-lg px-3 py-2 flex-1 min-w-[200px]"
                     />
 
                     <button
@@ -86,7 +86,7 @@ function ClientTable() {
             ) : (
                 <>
                     <div className="overflow-x-auto">
-                        <table className="w-full">
+                        <table className="w-full min-w-[600px]">
                             <thead className="bg-gray-50">
                                 <tr>
                                     <th className="p-4 text-left">ID</th>

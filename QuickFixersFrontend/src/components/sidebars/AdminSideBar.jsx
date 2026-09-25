@@ -13,10 +13,10 @@ function AdminSidebar({sginOut}) {
     {
         return (
             <aside
-                className="group w-16 hover:w-64 sticky top-0 min-h-screen h-screen bg-slate-800 text-white p-3 transition-all duration-300">
+                className="group w-64 lg:w-16 lg:hover:w-64 lg:sticky lg:top-0 lg:h-screen bg-slate-800 text-white p-3 transition-all duration-300">
                 <div className="mb-8 flex items-center gap-3">
                     <Wrench size={24} className="text-orange-500"/>
-                    <div className="hidden group-hover:block">
+                    <div className="block lg:hidden lg:group-hover:block">
                         <h1 className="text-xl font-bold text-orange-500">QuickFixers</h1>
                         <p className="text-xs text-gray-400">Support Multi-Services</p>
                     </div>
@@ -25,7 +25,7 @@ function AdminSidebar({sginOut}) {
                 <nav className="space-y-2">
                     <Link to="/admin/dashboard" className="flex items-center gap-3 p-3 rounded hover:bg-slate-700">
                         <LayoutDashboard size={20}/>
-                        <span className="hidden group-hover:block">Dashboard</span>
+                        <span className="block lg:hidden lg:group-hover:block">Dashboard</span>
                     </Link>
 
 
@@ -35,7 +35,7 @@ function AdminSidebar({sginOut}) {
                     >
                         <Ticket size={20}/>
 
-                        <span className="hidden group-hover:block">
+                        <span className="block lg:hidden lg:group-hover:block        ">
                         Tickets
                     </span>
                     </Link>
@@ -47,7 +47,7 @@ function AdminSidebar({sginOut}) {
                     >
                         <Users size={20}/>
 
-                        <span className="hidden group-hover:block">
+                        <span className="block lg:hidden lg:group-hover:block">
                         Utilisateurs
                     </span>
                     </Link>
@@ -58,7 +58,7 @@ function AdminSidebar({sginOut}) {
                     >
                         <Headset size={20}/>
 
-                        <span className="hidden group-hover:block">
+                        <span className="block lg:hidden lg:group-hover:block">
                         Supports
                     </span>
                     </Link>
@@ -68,7 +68,7 @@ function AdminSidebar({sginOut}) {
                     >
                         <User size={20}/>
 
-                        <span className="hidden group-hover:block">
+                        <span className="block lg:hidden lg:group-hover:block">
                         Clients
                     </span>
                     </Link>
@@ -81,7 +81,7 @@ function AdminSidebar({sginOut}) {
                     >
                         <CreditCard size={20}/>
 
-                        <span className="hidden group-hover:block">
+                        <span className="block lg:hidden lg:group-hover:block">
                         Paiements
                     </span>
                     </Link>
@@ -90,7 +90,7 @@ function AdminSidebar({sginOut}) {
                         className="flex items-center gap-3 p-3 rounded hover:bg-slate-700"
                     >
                         <Wrench size={20}/>
-                        <span className="hidden group-hover:block">
+                        <span className="block lg:hidden lg:group-hover:block">
                         Services
                     </span>
                     </Link>

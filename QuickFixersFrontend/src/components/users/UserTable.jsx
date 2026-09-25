@@ -83,7 +83,7 @@ function UserTable() {
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm overflow-x-auto">
             <div className="flex flex-wrap gap-3 p-4">
                 <input
                     type="text"
@@ -94,7 +94,7 @@ function UserTable() {
                         setPage(1);
                     }}
                     placeholder="Rechercher un utilisateur"
-                    className="border rounded-lg px-3 py-2"
+                    className="border rounded-lg px-3 py-2 flex-1 min-w-[200px]"
                 />
 
                 <select
@@ -104,7 +104,7 @@ function UserTable() {
                         setKeyword("");
                         setPage(1);
                     }}
-                    className="border rounded-lg px-3 py-2"
+                    className="border rounded-lg px-3 py-2 flex-1 min-w-[200px]"
                 >
                     <option value="">Tous les rôles</option>
                     <option value="CLIENT">Client</option>
@@ -118,7 +118,7 @@ function UserTable() {
             ) : (
                 <>
                     <div className="overflow-x-auto">
-                        <table className="w-full">
+                        <table className="w-full min-w-[640px]">
                             <thead className="bg-gray-50">
                             <tr>
                                 <th className="p-4 text-left">ID</th>

@@ -62,23 +62,23 @@ function TicketTable({ title = "Tickets" , basePath = "/support/tickets"}) {
     }
 
     return (
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-            <div className="p-5 border-b flex justify-between items-center gap-3">
+        <div className="bg-white rounded-xl shadow-sm overflow-x-auto">
+            <div className="p-5 border-b flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-lg font-bold text-gray-800">{title}</h2>
 
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                     <input
                         type="text"
                         placeholder="Rechercher..."
                         value={recherche}
                         onChange={handleRecherche}
-                        className="border rounded-lg px-3 py-2 text-sm"
+                        className="border rounded-lg px-3 py-2 text-sm flex-1 min-w-[150px]"
                     />
 
                     <select
                         value={statut}
                         onChange={handleStatut}
-                        className="border rounded-lg px-3 py-2 text-sm"
+                        className="border rounded-lg px-3 py-2 text-sm flex-1 min-w-[150px]"
                     >
                         <option value="">Tous les statuts</option>
                         <option value="OUVERT">OUVERT</option>
@@ -90,7 +90,7 @@ function TicketTable({ title = "Tickets" , basePath = "/support/tickets"}) {
             </div>
 
             <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full min-w-[640px]">
                     <thead className="bg-gray-50">
                     <tr>
                         <th className="p-4 text-left">ID</th>

@@ -82,12 +82,12 @@ function SupportTable() {
                         value={recherche}
                         onChange={handleRecherche}
                         placeholder="Rechercher par email"
-                        className="border rounded-lg px-3 py-2"
+                        className="border rounded-lg px-3 py-2 flex-1 min-w-[200px]"
                     />
                 <select
                     value={serviceType}
                     onChange={filtrer}
-                    className="border rounded-lg px-3 py-2"
+                    className="border rounded-lg px-3 py-2 flex-1 min-w-[200px]"
                 >
                     <option value="">Tous les services</option>
                     <option value="ELECTRONIQUE">ELECTRONIQUE</option>
@@ -102,7 +102,7 @@ function SupportTable() {
             ) : (
                 <>
                     <div className="overflow-x-auto">
-                        <table className="w-full">
+                        <table className="w-full min-w-[640px]">
                             <thead className="bg-gray-50">
                             <tr>
                                 <th className="p-4 text-left">ID</th>

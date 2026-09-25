@@ -22,7 +22,7 @@ function SginOut() {
         >
             <LogOut size={20} />
 
-            <span className="hidden group-hover:block text-sm">
+            <span className="block lg:hidden lg:group-hover:block text-sm">
                 Déconnexion
             </span>
         </button>

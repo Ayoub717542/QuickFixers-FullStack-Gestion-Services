@@ -6,7 +6,7 @@ function Clients() {
     const [showForm, setShowForm] = useState(false);
     return (
         <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-2 mb-4">
                 <h1 className="text-2xl font-bold text-gray-800">Clients</h1>
                 <button
                     onClick={() => setShowForm(!showForm)}
