@@ -34,7 +34,7 @@ Monorepo containing two independent projects:
 
 | Role | What they do |
 |---|---|
-| **USER** | Create tickets, view details, **pay** their tickets, browse services |
+| **CLIENT** | Create tickets, view details, **pay** their tickets, browse services |
 | **SUPPORT** | Fix tickets assigned to them, change ticket status, view related payments |
 | **ADMIN** | Everything: users, roles, services, tickets, payments, revenue stats |
 
@@ -42,7 +42,7 @@ Monorepo containing two independent projects:
 
 ## 💳 Payments at a glance
 
-A user pays a ticket from its **details page** (`/user/tickets/:id`). The button only appears when the ticket is not yet `FERME` and its service has a price. Paying marks the payment `TERMINE` and closes the ticket.
+A client pays a ticket from its **details page** (`/user/tickets/:id`). The button only appears when the ticket is not yet `FERME` and its service has a price. Paying marks the payment `TERMINE` and closes the ticket.
 
 ---
 
