@@ -11,7 +11,9 @@ function UserSidebar({ sginOut }) {
 
     return (
         <aside
-            className="group w-64 lg:w-16 lg:hover:w-64 lg:sticky lg:top-0 lg:h-screen bg-slate-800 text-white p-3 transition-all duration-300">
+            className="group w-64 lg:w-16 lg:hover:w-64 lg:sticky lg:top-0 lg:h-screen bg-slate-800 text-white p-3 transition-all duration-300
+
+            ">
             <div className="mb-8 flex items-center gap-3">
                 <Wrench size={24} className="text-orange-500" />
                 <div className="block lg:hidden lg:group-hover:block">
