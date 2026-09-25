@@ -1,7 +1,7 @@
 # QuickFixers — Backend (Spring Boot)
 
 REST API for the **QuickFixers** repair-service application.
-Users create tickets, support agents fix them, admins manage everything — secure with JWT and role-based access.
+CLIENTs create tickets, support agents fix them, admins manage everything — secure with JWT and role-based access.
 
 ---
 
@@ -39,12 +39,12 @@ Everything lives in `src/main/resources/application.properties`:
 spring.application.name=QuickFixers
 server.port=8081
 spring.datasource.url=jdbc:mysql://localhost:3307/QuickFixers_db?createDatabaseIfNotExist=true
-spring.datasource.username=root
+spring.datasource.CLIENTname=root
 spring.datasource.password=YOUR_PASSWORD
 spring.jpa.hibernate.ddl-auto=update
 ```
 
-Adjust **username / password** to match your local MySQL. Default port: **8081**.
+Adjust **CLIENTname / password** to match your local MySQL. Default port: **8081**.
 
 ---
 
@@ -73,12 +73,12 @@ The API is now at: **`http://localhost:8081/api`**
 Mockito unit tests for the service layer (no database needed):
 
 ```bash
-.\mvnw.cmd test -Dtest="UserImplTest,TicketImplTest,PaiementImplTest"
+.\mvnw.cmd test -Dtest="CLIENTImplTest,TicketImplTest,PaiementImplTest"
 ```
 
 | Test class | Tests |
 |---|---|
-| `UserImplTest` | `creerUtilisateur_ok`, `emailExistant_erreur` |
+| `CLIENTImplTest` | `creerUtilisateur_ok`, `emailExistant_erreur` |
 | `TicketImplTest` | `creerTicket_ok` |
 | `PaiementImplTest` | `payerTicket_ok` |
 
@@ -92,9 +92,9 @@ Three roles:
 
 | Role | What they can do |
 |---|---|
-| **USER** | Create tickets, view/pay their own tickets, view their payments |
+| **CLIENT** | Create tickets, view/pay their own tickets, view their payments |
 | **SUPPORT** | See & update tickets assigned to them, see related payments |
-| **ADMIN** | Full control: users, services, tickets, payments, stats |
+| **ADMIN** | Full control: CLIENTs, services, tickets, payments, stats |
 
 Public endpoints:
 
@@ -103,7 +103,7 @@ Public endpoints:
 | POST | `/api/auth/register` | `{ nom, prenom, email, password }` |
 | POST | `/api/auth/login` | `{ email, password }` |
 
-Both return the JWT + user data.
+Both return the JWT + CLIENT data.
 Every other request must send the token:
 
 ```
@@ -119,21 +119,21 @@ All routes are under `/api` and require a valid JWT unless marked **public**.
 ### Tickets — `/api/ticket`
 | Method | Endpoint | Roles | Description |
 |---|---|---|---|
-| POST | `/{serviceId}/tickets` | USER | Create a ticket for a service |
+| POST | `/{serviceId}/tickets` | CLIENT | Create a ticket for a service |
 | GET | `/tickets?pageNumber=&pageSize=&sortBy=&sortDir=` | all | Paginated tickets (role-filtered) |
 | GET | `/{id}` | all | Ticket details (`prix` = live service price) |
 | PATCH | `/statut/{ticketId}/{statut}` | ADMIN, SUPPORT | Change ticket status |
 | GET | `/statut/{statut}` | all | Filter by status |
 | GET | `/recherche?recherche=` | all | Search tickets |
-| GET | `/countTickets` | ADMIN, USER | Ticket counts |
-| PUT | `/modifier/{id}` | ADMIN, USER | Edit a ticket |
+| GET | `/countTickets` | ADMIN, CLIENT | Ticket counts |
+| PUT | `/modifier/{id}` | ADMIN, CLIENT | Edit a ticket |
 
 ### Services — `/api/service`
 | Method | Endpoint | Roles | Description |
 |---|---|---|---|
 | POST | `/ajouterService` | ADMIN | Create a service (with price) |
-| GET | `/listerServices` | ADMIN, USER | List services |
-| GET | `/consulterUnService/{id}` | ADMIN, USER | One service |
+| GET | `/listerServices` | ADMIN, CLIENT | List services |
+| GET | `/consulterUnService/{id}` | ADMIN, CLIENT | One service |
 | PATCH | `/modefieStatut/{id}` | ADMIN | Activate/deactivate |
 | DELETE | `/supprimerService/{id}` | ADMIN | Delete a service |
 | GET | `/countServices` | ADMIN | Service counts |
@@ -141,22 +141,22 @@ All routes are under `/api` and require a valid JWT unless marked **public**.
 ### Payments — `/api/paiements`
 | Method | Endpoint | Roles | Description |
 |---|---|---|---|
-| POST | `/effectuerPaiement` | USER | Pay a ticket (`{ ticketId, montant }`) — marks payment `TERMINE` and closes the ticket |
+| POST | `/effectuerPaiement` | CLIENT | Pay a ticket (`{ ticketId, montant }`) — marks payment `TERMINE` and closes the ticket |
 | GET | `/paimentHistorique?pageNumber=&pageSize=` | all | Payments history (role-filtered) |
-| GET | `/paiements` | ADMIN, USER | Payments count |
+| GET | `/paiements` | ADMIN, CLIENT | Payments count |
 | GET | `/incomeByDay` | ADMIN, SUPPORT | Revenue stats for charts |
 
-### Users — `/api/users`
+### CLIENTs — `/api/CLIENTs`
 | Method | Endpoint | Roles | Description |
 |---|---|---|---|
 | GET | `/me` | all | Current profile |
 | PUT | `/me` | all | Update profile |
-| GET | `/listerUsers` | ADMIN | List users |
-| POST | `/ajouterUser` | ADMIN | Add a user |
+| GET | `/listerCLIENTs` | ADMIN | List CLIENTs |
+| POST | `/ajouterCLIENT` | ADMIN | Add a CLIENT |
 | POST | `/Ajoutersupport` | ADMIN | Add a support agent |
-| PATCH | `/changeRole/{id}` | ADMIN | Change a user role |
-| DELETE | `/supprimerUser/{id}` | ADMIN | Delete a user |
-| GET | `/countUsers` | ADMIN | User counts |
+| PATCH | `/changeRole/{id}` | ADMIN | Change a CLIENT role |
+| DELETE | `/supprimerCLIENT/{id}` | ADMIN | Delete a CLIENT |
+| GET | `/countCLIENTs` | ADMIN | CLIENT counts |
 
 ### Chat — WebSocket
 | Path | Description |
@@ -184,12 +184,12 @@ src/main/java/com/example/QuickFixersBackend/
 ├── auth/          # Login & register (JWT + AuthenticationService)
 ├── controller/    # REST endpoints (per resource)
 ├── dto/           # Request / response objects
-├── entity/        # JPA entities (User, Ticket, ServiceEntity, Paiement, Message)
+├── entity/        # JPA entities (CLIENT, Ticket, ServiceEntity, Paiement, Message)
 ├── enums/         # Role, Statut, PaiementStatut, ServiceType...
 ├── mapper/        # MapStruct mappers (e.g. ticket.prix ← service.prix)
 ├── repository/    # Spring Data repositories
 ├── security/      # JWT filter, SecurityConfig (CORS + rules)
-├── services/      # Business logic (UserImpl, TicketImpl, PaiementImpl...)
+├── services/      # Business logic (CLIENTImpl, TicketImpl, PaiementImpl...)
 ├── swaggerConfig/ # OpenAPI config
 └── webSocket/     # Chat WebSocket config
 
@@ -202,6 +202,6 @@ src/main/resources/
 ## 💡 Key business rules
 
 - **Ticket price is live:** a ticket's `prix` comes from its service (`service.prix`), not stored on the ticket.
-- **Auto-assignment:** when a user creates a ticket, the backend assigns the SUPPORT agent with the fewest open tickets.
+- **Auto-assignment:** when a CLIENT creates a ticket, the backend assigns the SUPPORT agent with the fewest open tickets.
 - **Payment closes the ticket:** paying marks the payment `TERMINE` and sets the ticket statut to `FERME`. Already-paid tickets are rejected ("Ce ticket est déjà payé").
-- **Ownership:** users only see their own tickets/payments; support only their assigned ones; admin sees everything.
+- **Ownership:** CLIENTs only see their own tickets/payments; support only their assigned ones; admin sees everything.
