@@ -5,6 +5,8 @@ export const axiosApi = axios.create({
     // In production (Vercel), VITE_API_URL points at the live backend.
     // Locally it falls back to your local backend.
     baseURL: import.meta.env.VITE_API_URL || "http://localhost:8081/api",
+    // Stop waiting after 60s so the button never spins forever (e.g. server starting)
+    timeout: 60000,
 });
 
 
@@ -70,6 +72,9 @@ axiosApi.interceptors.response.use(
                         error.response.status
                     );
             }
+        } else if (error.code === "ECONNABORTED") {
+            console.log("Request timed out (server probably starting).");
+            toast.error("Le serveur met du temps à répondre (il démarre). Patientez 1 minute et réessayez.");
         } else if (error.request) {
             console.log("No response received from the server.");
             toast.error("Cannot connect to the server.");
