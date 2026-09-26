@@ -2,8 +2,7 @@ name: keepalive
 
 on:
   schedule:
-    # Every 5 minutes — keeps the free Render services awake
-    - cron: "*/5 * * * *"
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -11,8 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Wake backend
-        continue-on-error: true
-        run: curl -s -o /dev/null -w "backend: %{http_code}\n" https://quickfixers-backend-latest.onrender.com/
+        run: curl -fsS -o /dev/null https://quickfixers-backend-latest.onrender.com/ || true
       - name: Wake frontend
-        continue-on-error: true
-        run: curl -s -o /dev/null -w "frontend: %{http_code}\n" https://quickfixers-frontend-latest.onrender.com/
+        run: curl -fsS -o /dev/null https://quickfixers-frontend-latest.onrender.com/ || true
