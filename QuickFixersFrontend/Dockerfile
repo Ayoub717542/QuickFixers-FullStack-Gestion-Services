@@ -16,6 +16,9 @@ RUN npm run build
 
 FROM nginx:alpine
 
+# Render overrides this with its own port; 80 is the local fallback
+ENV PORT=80
+
 # Makes Nginx listen on Render's port + keeps page refreshes working
 COPY nginx.conf /etc/nginx/templates/default.conf.template
 
