@@ -92,7 +92,7 @@ function Register() {
                         <div className="relative">
                             <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
                             <input
-                                type="password" id="password" placeholder="Minimum 6 caractères"
+                                type="password" id="password" placeholder="Minimum 8 caractères"
                                 {...register("password", {
                                     required: "Mot de passe requis",
                                 })}
