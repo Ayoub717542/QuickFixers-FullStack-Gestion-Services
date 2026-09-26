@@ -18,8 +18,9 @@ function Register() {
             navigate("/login");
         } catch (error) {
             console.log(error);
-            setRegisterError("Erreur lors de l'inscription.");
-            toast.error("Échec de l'inscription.");
+            const message = error.response?.data?.message || "Erreur lors de l'inscription.";
+            setRegisterError(message);
+            toast.error(message);
         }
     };
     return (

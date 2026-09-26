@@ -25,6 +25,7 @@ public abstract class Person implements UserDetails {
 
     private String nom;
     private String prenom;
+    @Column(unique = true, nullable = false)
     private String email;
     private String password;
 

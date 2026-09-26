@@ -32,6 +32,9 @@ public class AuthenticationService {
     private  final AuthenticationManager authenticationManager;
 
     public @Nullable AuthenticationResponceDTO register(RegisterRequoestDTO register) {
+        if (userRepository.existsByEmail(register.getEmail())) {
+            throw new RuntimeException("Cet email est déjà utilisé. Connectez-vous ou utilisez un autre email.");
+        }
         Client user = new Client(
                 register.getNom(),
                 register.getPrenom(),
