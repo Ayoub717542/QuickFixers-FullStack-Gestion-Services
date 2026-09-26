@@ -1,2 +1,0 @@
-ALTER TABLE services
-    MODIFY COLUMN prix DECIMAL(10, 2);
