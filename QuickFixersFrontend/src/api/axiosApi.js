@@ -2,7 +2,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const axiosApi = axios.create({
-    baseURL: "http://localhost:8081/api",
+    // In production (Vercel), VITE_API_URL points at the live backend.
+    // Locally it falls back to your local backend.
+    baseURL: import.meta.env.VITE_API_URL || "http://localhost:8081/api",
 });
 
 
