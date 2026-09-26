@@ -85,3 +85,36 @@ jobs:
       env:
         RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
       run: curl -sS "$RENDER_DEPLOY_HOOK_URL"
+
+
+  deploy-frontend:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push frontend image to GHCR
+      uses: docker/build-push-action@v6
+      with:
+        context: QuickFixersFrontend
+        push: true
+        tags: ghcr.io/ayoub717542/quickfixers-frontend:latest
+        build-args: |
+          VITE_API_URL=https://quickfixers-backend.onrender.com/api
+
+    - name: Trigger Render frontend deploy
+      if: env.RENDER_FRONTEND_HOOK_URL != ''
+      env:
+        RENDER_FRONTEND_HOOK_URL: ${{ secrets.RENDER_FRONTEND_HOOK_URL }}
+      run: curl -sS "$RENDER_FRONTEND_HOOK_URL"
