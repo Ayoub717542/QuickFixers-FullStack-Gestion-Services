@@ -13,6 +13,7 @@ function UserTable() {
     const [totalPages, setTotalPages] = useState(0);
     const [keyword, setKeyword] = useState("");
     const [role, setRole] = useState("");
+    const [busyId, setBusyId] = useState(null);
 
     const navigate = useNavigate();
 
@@ -45,6 +46,8 @@ function UserTable() {
     }, [page, keyword, role]);
 
     function changerRole(user, nouveauRole) {
+        if (busyId) return;
+        setBusyId(user.id);
         let url = `/users/changeRole/${user.id}?role=${nouveauRole}`;
 
         if (nouveauRole === "SUPPORT") {
@@ -58,13 +61,16 @@ function UserTable() {
 
         axiosApi.patch(url)
             .then(() => { toast.success("Rôle modifié."); fetchUsers(); })
-            .catch(() => toast.error("Erreur lors du changement de rôle."));
+            .catch(() => toast.error("Erreur lors du changement de rôle."))
+            .finally(() => setBusyId(null));
     }
 
     function supprimerUser(user) {
+        if (busyId) return;
         if (!window.confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
             return;
         }
+        setBusyId(user.id);
 
         axiosApi.delete(`/users/supprimerUser/${user.id}`)
             .then(() => {
@@ -73,7 +79,8 @@ function UserTable() {
             })
             .catch(() => {
                 toast.error("Erreur lors de la suppression.");
-            });
+            })
+            .finally(() => setBusyId(null));
     }
 
     const roleColors = {
@@ -157,10 +164,11 @@ function UserTable() {
                                             {user.role !== "ADMIN" && (
                                                 <select
                                                     value={user.role}
+                                                    disabled={busyId === user.id}
                                                     onChange={(e) =>
                                                         changerRole(user, e.target.value)
                                                     }
-                                                    className="px-2 py-1 border border-gray-300 rounded-lg text-sm mr-2 bg-white"
+                                                    className="px-2 py-1 border border-gray-300 rounded-lg text-sm mr-2 bg-white disabled:opacity-50"
                                                 >
                                                     <option value="CLIENT">CLIENT</option>
                                                     <option value="SUPPORT">SUPPORT</option>
@@ -190,9 +198,10 @@ function UserTable() {
 
                                             <button
                                                 onClick={() => supprimerUser(user)}
-                                                className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-sm"
+                                                disabled={busyId === user.id}
+                                                className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-sm disabled:opacity-50"
                                             >
-                                                Supprimer
+                                                {busyId === user.id ? "Suppression..." : "Supprimer"}
                                             </button>
                                         </td>
                                     </tr>

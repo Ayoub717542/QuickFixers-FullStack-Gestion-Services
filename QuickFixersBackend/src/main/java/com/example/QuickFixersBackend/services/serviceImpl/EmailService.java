@@ -50,5 +50,14 @@ public class EmailService {
         sendEmail(to, "Votre compte QuickFixers", text);
     }
 
+    public void sendWelcome(String to, String fullName) {
+        String text = "Bonjour " + fullName + ",\n\n" +
+                "Votre compte QuickFixers a bien été créé.\n\n" +
+                "Vous pouvez maintenant vous connecter avec votre adresse email et votre mot de passe.\n\n" +
+                "Cordialement,\nL'équipe QuickFixers";
+
+        sendEmail(to, "Bienvenue sur QuickFixers", text);
+    }
+
 
 }

@@ -1,1 +1,20 @@
+# Node / frontend
+QuickFixersFrontend/node_modules/
+QuickFixersFrontend/dist/
+
+# Maven / backend
+QuickFixersBackend/target/
+
+# Environment files (contain secrets!)
+.env
+*.env
+
+# Logs
+*.log
+backend-local.log
+
+# Editor / OS
+.vscode/
 .idea/
+.DS_Store
+Thumbs.db

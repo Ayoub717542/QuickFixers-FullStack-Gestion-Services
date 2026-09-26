@@ -11,6 +11,7 @@ import com.example.QuickFixersBackend.mapper.UserMapper;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.UserInterface;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserImpl implements UserInterface {
 
     private final UserRepository userRepository;
@@ -50,7 +52,7 @@ public class UserImpl implements UserInterface {
                     userRequestDTO.getPassword()
             );
         } catch (Exception e) {
-            System.out.println("Email non envoyé à " + userRequestDTO.getEmail() + " : " + e.getMessage());
+            log.warn("Email non envoyé à {} : {}", userRequestDTO.getEmail(), e.getMessage());
         }
         return userMapper.toDto(saved);
     }
@@ -90,7 +92,7 @@ public class UserImpl implements UserInterface {
                     dto.getPassword()
             );
         } catch (Exception e) {
-            System.out.println("Email non envoyé à " + dto.getEmail() + " : " + e.getMessage());
+            log.warn("Email non envoyé à {} : {}", dto.getEmail(), e.getMessage());
         }
 
         return userMapper.toDto(saved);

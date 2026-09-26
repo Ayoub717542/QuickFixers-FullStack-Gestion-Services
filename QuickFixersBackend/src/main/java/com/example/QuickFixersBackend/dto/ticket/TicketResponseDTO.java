@@ -20,6 +20,8 @@ public class TicketResponseDTO {
     private LocalDate dateCreation;
     private BigDecimal prix;
     private Long assignedToId;
+    private String assignedToNom;
+    private String assignedToPrenom;
     private Long serviceId;
     private Long createdById;
 }

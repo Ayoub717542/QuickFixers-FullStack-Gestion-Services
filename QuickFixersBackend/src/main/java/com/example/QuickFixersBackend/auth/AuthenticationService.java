@@ -9,7 +9,9 @@ import com.example.QuickFixersBackend.entity.Client;
 import com.example.QuickFixersBackend.entity.Person;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.security.JwtService;
+import com.example.QuickFixersBackend.services.serviceImpl.EmailService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,10 +21,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
     private  final UserRepository userRepository;
     private  final PasswordEncoder passwordEncoder;
     private  final JwtService jwtService;
+    private final EmailService emailService;
 
 
     private  final AuthenticationManager authenticationManager;
@@ -35,6 +39,11 @@ public class AuthenticationService {
                 passwordEncoder.encode(register.getPassword())
         );
         userRepository.save(user);
+        try {
+            emailService.sendWelcome(user.getEmail(), user.getNom() + " " + user.getPrenom());
+        } catch (Exception e) {
+            log.warn("Email de bienvenue non envoyé à {} : {}", user.getEmail(), e.getMessage());
+        }
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponceDTO.builder()
                 .token(jwtToken)

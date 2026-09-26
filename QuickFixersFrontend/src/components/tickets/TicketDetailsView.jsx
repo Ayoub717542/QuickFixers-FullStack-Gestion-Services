@@ -133,6 +133,16 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true }) 
                                 <dd className="text-gray-800 font-medium">#{ticket.createdById}</dd>
                             </div>
                             <div className="flex justify-between border-b pb-2">
+                                <dt className="text-gray-500">Assigné à</dt>
+                                <dd className="text-gray-800 font-medium">
+                                    {ticket.assignedToNom
+                                        ? `${ticket.assignedToNom} ${ticket.assignedToPrenom || ""}`.trim()
+                                        : ticket.assignedToId
+                                            ? `#${ticket.assignedToId}`
+                                            : "—"}
+                                </dd>
+                            </div>
+                            <div className="flex justify-between border-b pb-2">
                                 <dt className="text-gray-500">Prix</dt>
                                 <dd className="text-gray-800 font-medium">
                                     {ticket.prix != null ? `${ticket.prix} DH` : "—"}

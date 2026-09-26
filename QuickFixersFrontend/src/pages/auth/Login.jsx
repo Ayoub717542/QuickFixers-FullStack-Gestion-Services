@@ -7,7 +7,7 @@ import { getUserRole } from "../../utils/auth.js";
 import { Wrench, Mail, Lock, ArrowRight } from "lucide-react";
 
 function Login() {
-    const {register, handleSubmit, formState: { errors }} = useForm();
+    const {register, handleSubmit, formState: { errors, isSubmitting }} = useForm();
 
     const navigate = useNavigate();
     const [loginError, setLoginError] = useState(null);
@@ -93,9 +93,11 @@ function Login() {
                     {loginError && (<p className="text-red-500 text-xs text-center mb-4">{loginError}</p>)}
                     <button
                         type="submit"
-                        className="w-full h-10 flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-md shadow-sm transition">
-                        Se connecter
-                        <ArrowRight size={15} />
+                        disabled={isSubmitting}
+                        className="w-full h-10 flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-md shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed">
+                        {isSubmitting && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                        {isSubmitting ? "Connexion..." : "Se connecter"}
+                        {!isSubmitting && <ArrowRight size={15} />}
                     </button>
                 </form>
             </div>

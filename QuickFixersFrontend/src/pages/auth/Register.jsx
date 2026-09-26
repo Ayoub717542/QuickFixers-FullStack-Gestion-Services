@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { Wrench, User, Mail, Lock, ArrowRight } from "lucide-react";
 
 function Register() {
-    const {register, handleSubmit, formState: { errors }} = useForm();
+    const {register, handleSubmit, formState: { errors, isSubmitting }} = useForm();
     const navigate = useNavigate();
     const [registerError, setRegisterError] = useState(null);
 
@@ -104,9 +104,12 @@ function Register() {
                     {registerError && (<p className="text-red-500 text-xs text-center mb-4">{registerError}</p>)}
                     <button
                         type="submit"
-                        className="w-full h-10 flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-md shadow-sm transition"
+                        disabled={isSubmitting}
+                        className="w-full h-10 flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-md shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        S'inscrire<ArrowRight size={15} />
+                        {isSubmitting && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                        {isSubmitting ? "Inscription..." : "S'inscrire"}
+                        {!isSubmitting && <ArrowRight size={15} />}
                     </button>
                 </form>
             </div>
