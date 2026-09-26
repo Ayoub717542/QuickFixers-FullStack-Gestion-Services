@@ -13,7 +13,7 @@ import Tickets from "./pages/admin/Tickets.jsx";
 import Users from "./pages/admin/Users.jsx";
 import Payments from "./pages/admin/Payments.jsx";
 import TicketDetails from "./pages/admin/TicketDetails.jsx";
-import AdminSidebar from "./components/sidebars/AdminSidebar.jsx";
+import AdminSidebar from "./components/sidebars/AdminSideBar.jsx";
 import EditUser from "./pages/admin/EditUser.jsx";
 import Supports from "./pages/admin/Supports.jsx";
 import Clients from "./pages/admin/Clients.jsx";
@@ -26,7 +26,7 @@ import SupportProfile from "./pages/support/Profile";
 import SupportTicketDetails from "./pages/support/TicketDetails.jsx";
 import SupportTickets from "./pages/support/AssignedTickets";
 import SupportPayments from "./pages/support/Payments.jsx";
-import SupportSidebar from "./components/sidebars/SupportSidebar.jsx";
+import SupportSidebar from "./components/sidebars/SupportSideBar.jsx";
 
 import UserProfile from "./pages/user/Profile";
 import UserTickets from "./pages/user/Tickets.jsx";
@@ -35,7 +35,7 @@ import UserPayments from "./pages/user/Payments.jsx";
 import UserTicketDetails from "./pages/user/TicketDetails.jsx";
 import CreateTicket from "./pages/user/CreateTicket.jsx";
 import PickService from "./pages/user/PickService.jsx";
-import UserSidebar from "./components/sidebars/UserSidebar.jsx";
+import UserSidebar from "./components/sidebars/UserSideBar.jsx";
 
 import SginOut from "./components/SginOut.jsx";
 import ResetPassword from "./pages/auth/ResetPassword";
