@@ -111,7 +111,7 @@ jobs:
         push: true
         tags: ghcr.io/ayoub717542/quickfixers-frontend:latest
         build-args: |
-          VITE_API_URL=https://quickfixers-backend.onrender.com/api
+          VITE_API_URL=https://quickfixers-backend-latest.onrender.com/api
 
     - name: Trigger Render frontend deploy
       if: env.RENDER_FRONTEND_HOOK_URL != ''
