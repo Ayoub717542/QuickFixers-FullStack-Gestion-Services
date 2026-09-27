@@ -12,7 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @DiscriminatorValue("CLIENT")
 public class Client extends Person {
-
     public Client(String nom, String prenom, String email, String password) {
         super(nom, prenom, email, password);
     }

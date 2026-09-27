@@ -35,4 +35,7 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
 
     long countByAssignedTo(Person person);
     long countByCreatedBy(Person person);
+
+//    Page<Ticket> findByDateCreationAndCreatedByAfterOrderById(Pageable pageable);
+
 }
