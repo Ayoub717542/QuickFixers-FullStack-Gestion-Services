@@ -6,6 +6,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.CompletableFuture;
+
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -29,13 +31,19 @@ public class EmailService {
     }
 
     public void sendEmail(String to, String subject, String text) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(from);
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
-
-        mailSender.send(message);
+        CompletableFuture.runAsync(() -> {
+            try {
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setFrom(from);
+                message.setTo(to);
+                message.setSubject(subject);
+                message.setText(text);
+                mailSender.send(message);
+                System.out.println("Email envoyé à " + to);
+            } catch (Exception e) {
+                System.out.println("Email non envoyé : " + e.getMessage());
+            }
+        });
     }
 
     public void sendAccountCredentials(String to, String fullName,
