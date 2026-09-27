@@ -50,6 +50,9 @@ public class TicketImpl implements TicketInterface {
         ticket.setDateCreation(LocalDateTime.now());
 
         List<Support> supports = userRepository.findSupportOrderByOpenTicketsAsc(service.getType());
+        if (supports.isEmpty()) {
+            supports = userRepository.findAnySupportOrderByOpenTicketsAsc();
+        }
         Support support = supports.isEmpty() ? null : supports.get(0);
         ticket.setAssignedTo(support);
 

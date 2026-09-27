@@ -40,6 +40,15 @@ public interface UserRepository extends JpaRepository<Person,Long> {
     """)
     List<Support> findSupportOrderByOpenTicketsAsc(@Param("serviceType") ServiceType serviceType);
 
+    @Query("""
+    SELECT s FROM Support s
+    ORDER BY (
+        SELECT COUNT(t) FROM Ticket t
+        WHERE t.assignedTo = s AND t.statut != 'FERME'
+    ) ASC
+    """)
+    List<Support> findAnySupportOrderByOpenTicketsAsc();
+
     @Override
     long count();
 
