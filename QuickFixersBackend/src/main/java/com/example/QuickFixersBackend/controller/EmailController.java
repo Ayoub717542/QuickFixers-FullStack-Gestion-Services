@@ -21,7 +21,7 @@ public class EmailController{
     private final EmailService emailService;
 
     @PostMapping("/sendEmail")
-    private ResponseEntity<String> sendEmail( @RequestParam String supportEmail, @RequestParam Long ticketId){
+    public ResponseEntity<String> sendEmail( @RequestParam String supportEmail, @RequestParam Long ticketId){
         emailService.sendTestEmail(supportEmail, ticketId);
         return ResponseEntity.ok("Email de test envoyé.");
     }

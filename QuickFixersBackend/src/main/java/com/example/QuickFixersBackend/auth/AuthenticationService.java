@@ -3,8 +3,6 @@ package com.example.QuickFixersBackend.auth;
 import com.example.QuickFixersBackend.dto.auth.AuthenticationRequestDTO;
 import com.example.QuickFixersBackend.dto.auth.AuthenticationResponceDTO;
 import com.example.QuickFixersBackend.dto.auth.RegisterRequoestDTO;
-
-import com.example.QuickFixersBackend.dto.auth.ResetPasswordRequestDTO;
 import com.example.QuickFixersBackend.entity.Client;
 import com.example.QuickFixersBackend.entity.Person;
 import com.example.QuickFixersBackend.repository.UserRepository;
@@ -70,7 +68,7 @@ public class AuthenticationService {
                 .build();
     }
 
-    public void resetPassword(ResetPasswordRequestDTO dto) {
+    public void resetPassword() {
         return;
     }
 

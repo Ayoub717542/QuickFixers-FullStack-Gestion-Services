@@ -41,7 +41,4 @@ public interface PaiementRepository  extends JpaRepository<Paiement,Long> {
 
     boolean existsByTicketAndStatut(Ticket ticket, PaiementStatut statut);
 
-//    @Query("SELECT count(p) FROM Paiement p WHERE p.client = :client")
-//    long findByClient(@Param("client") Person client);
-
 }

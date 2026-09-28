@@ -7,6 +7,7 @@ import com.example.QuickFixersBackend.entity.Client;
 import com.example.QuickFixersBackend.entity.Person;
 import com.example.QuickFixersBackend.entity.Support;
 import com.example.QuickFixersBackend.enums.ServiceType;
+import com.example.QuickFixersBackend.exception.BusinessException;
 import com.example.QuickFixersBackend.mapper.UserMapper;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.UserInterface;
@@ -22,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class UserImpl implements UserInterface {
+
+    private static final String ROLE_CLIENT = "CLIENT";
+    private static final String ROLE_SUPPORT = "SUPPORT";
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -48,7 +52,7 @@ public class UserImpl implements UserInterface {
                     userRequestDTO.getEmail(),
                     userRequestDTO.getNom() + " " + userRequestDTO.getPrenom(),
                     userRequestDTO.getEmail(),
-                    "CLIENT",
+                    ROLE_CLIENT,
                     userRequestDTO.getPassword()
             );
         } catch (Exception e) {
@@ -88,7 +92,7 @@ public class UserImpl implements UserInterface {
                     dto.getEmail(),
                     dto.getNom() + " " + dto.getPrenom(),
                     dto.getEmail(),
-                    "SUPPORT",
+                    ROLE_SUPPORT,
                     dto.getPassword()
             );
         } catch (Exception e) {
@@ -122,19 +126,19 @@ public class UserImpl implements UserInterface {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (person instanceof Admin) {
-            throw new RuntimeException("Le rôle d'un administrateur ne peut pas être modifié");
+            throw new BusinessException("Le rôle d'un administrateur ne peut pas être modifié");
         }
-        if (!role.equals("CLIENT") && !role.equals("SUPPORT")) {
+        if (!role.equals(ROLE_CLIENT) && !role.equals(ROLE_SUPPORT)) {
             throw new RuntimeException("Rôle invalide : seuls CLIENT et SUPPORT sont autorisés");
         }
 
-        if (role.equals("CLIENT")) {
-            userRepository.changerRole(id, "CLIENT", null);
+        if (role.equals(ROLE_CLIENT)) {
+            userRepository.changerRole(id, ROLE_CLIENT, null);
         } else {
             if (serviceType == null) {
                 throw new RuntimeException("Un type de service est requis pour un compte SUPPORT");
             }
-            userRepository.changerRole(id, "SUPPORT", serviceType.name());
+            userRepository.changerRole(id, ROLE_SUPPORT, serviceType.name());
         }
         Person updated = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -147,7 +151,7 @@ public class UserImpl implements UserInterface {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (person instanceof Admin) {
-            throw new RuntimeException("Le compte d'un administrateur ne peut pas être modifié");
+            throw new BusinessException("Le compte d'un administrateur ne peut pas être modifié");
         }
         if (!person.getEmail().equals(dto.getEmail()) && userRepository.existsByEmail(dto.getEmail())) {
             throw new RuntimeException("Cet email est déjà utilisé");
@@ -205,9 +209,9 @@ public class UserImpl implements UserInterface {
         Class<? extends Person> type;
         if (role.equalsIgnoreCase("ADMIN")) {
             type = Admin.class;
-        } else if (role.equalsIgnoreCase("SUPPORT")) {
+        } else if (role.equalsIgnoreCase(ROLE_SUPPORT)) {
             type = Support.class;
-        } else if (role.equalsIgnoreCase("CLIENT")) {
+        } else if (role.equalsIgnoreCase(ROLE_CLIENT)) {
             type = Client.class;
         } else {
             throw new RuntimeException("Rôle invalide : " + role);

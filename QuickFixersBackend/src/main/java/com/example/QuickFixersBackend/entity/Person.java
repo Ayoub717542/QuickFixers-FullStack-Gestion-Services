@@ -29,7 +29,7 @@ public abstract class Person implements UserDetails {
     private String email;
     private String password;
 
-    public Person(String nom, String prenom, String email, String password) {
+    protected Person(String nom, String prenom, String email, String password) {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
