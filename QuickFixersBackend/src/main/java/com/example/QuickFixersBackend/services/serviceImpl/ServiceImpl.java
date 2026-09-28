@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ServiceImpl implements ServiceInterface {
+    private static final String SERVICE_NOT_FOUND = "Service not found";
     private final ServiceRepository serviceRepository;
     private final ServiceMapper serviceMapper;
     private final UserRepository userRepository;
@@ -37,7 +38,7 @@ public class ServiceImpl implements ServiceInterface {
 
     @Override
     public ServiceResponseDTO modifierService(Long id, ServiceRequistDTO serviceRequistDTO) {
-        ServiceEntity serviceEntity = serviceRepository.findById(id).orElseThrow(()-> new RuntimeException("Service not found"));
+        ServiceEntity serviceEntity = serviceRepository.findById(id).orElseThrow(()-> new RuntimeException(SERVICE_NOT_FOUND));
         serviceEntity.setNom(serviceRequistDTO.getNom());
         serviceEntity.setStatut(serviceRequistDTO.getStatut());
         serviceEntity.setType(serviceRequistDTO.getType());
@@ -49,7 +50,7 @@ public class ServiceImpl implements ServiceInterface {
 
     @Override
     public void supprimerService(Long id) {
-        ServiceEntity serviceEntity = serviceRepository.findById(id).orElseThrow(() -> new RuntimeException("Service not found"));
+        ServiceEntity serviceEntity = serviceRepository.findById(id).orElseThrow(() -> new RuntimeException(SERVICE_NOT_FOUND));
         serviceRepository.delete(serviceEntity);
     }
 
@@ -61,13 +62,13 @@ public class ServiceImpl implements ServiceInterface {
 
     @Override
     public ServiceResponseDTO consulterUnService(Long id) {
-        ServiceEntity serviceEntity = serviceRepository.findById(id).orElseThrow(() -> new RuntimeException("Service not found"));
+        ServiceEntity serviceEntity = serviceRepository.findById(id).orElseThrow(() -> new RuntimeException(SERVICE_NOT_FOUND));
         return serviceMapper.toDto(serviceEntity);
     }
 
     @Override
     public ServiceResponseDTO updateStatus(Long id, ServiceStatut statut) {
-        ServiceEntity serviceEntity = serviceRepository.findById(id).orElseThrow(() -> new RuntimeException("Service not found"));
+        ServiceEntity serviceEntity = serviceRepository.findById(id).orElseThrow(() -> new RuntimeException(SERVICE_NOT_FOUND));
         serviceEntity.setStatut(statut);
         return serviceMapper.toDto(serviceRepository.save(serviceEntity));
     }
