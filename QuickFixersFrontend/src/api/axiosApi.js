@@ -2,13 +2,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const axiosApi = axios.create({
-    // In production (Vercel), VITE_API_URL points at the live backend.
-    // Locally it falls back to your local backend.
     baseURL: import.meta.env.VITE_API_URL || "http://localhost:8081/api",
-    // Stop waiting after 60s so the button never spins forever (e.g. server starting)
     timeout: 60000,
 });
-
 
 axiosApi.interceptors.request.use(
     (config) => {

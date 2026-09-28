@@ -36,7 +36,9 @@ function TicketForm({ serviceId, onSuccess }) {
                 <input
                     type="text"
                     placeholder="Titre du ticket"
-                    {...register("titre", { required: "Titre requis" })}
+                    {...register("titre", {
+                        required: "Titre requis"
+                    })}
                     className="border border-gray-200 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-400"
                 />
                 {errors.titre && (
