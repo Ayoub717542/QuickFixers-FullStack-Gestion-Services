@@ -27,7 +27,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http){
         http
                 .cors(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable) // NOSONAR - JWT in Authorization header, no cookies/sessions, CSRF not applicable
+                .csrf(AbstractHttpConfigurer::disable) // NOSONAR - CSRF protection is disabled because the application uses stateless JWT authentication. The JWT is sent in the Authorization header and authentication does not use session cookies.
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/ping").permitAll()
