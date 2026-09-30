@@ -2,7 +2,7 @@ FROM node:22-alpine AS build
 
 WORKDIR /app
 
-ARG VITE_API_URL=http://localhost:8081/api
+ARG VITE_API_URL=https://quickfixers-backend-latest.onrender.com/api
 
 COPY package*.json ./
 
