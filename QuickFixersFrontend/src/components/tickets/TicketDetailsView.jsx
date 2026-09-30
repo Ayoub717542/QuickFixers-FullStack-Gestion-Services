@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
-import { fetchTicket, updateTicketStatut } from "../../api/ticketApi";
+import { fetchTicket, updateTicketStatut, updateTicket } from "../../api/ticketApi";
 import { createPayment } from "../../api/paiementApi";
 import ChatWindow from "../chat/ChatWindow";
 
@@ -26,7 +26,7 @@ function formatDate(dateStr) {
     });
 }
 
-function TicketDetailsView({ backPath = "/support/tickets", canManage = true }) {
+function TicketDetailsView({ backPath = "/support/tickets", canManage = true, canEdit = false }) {
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -34,6 +34,9 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true }) 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [saving, setSaving] = useState(false);
+    const [editing, setEditing] = useState(false);
+    const [titre, setTitre] = useState("");
+    const [description, setDescription] = useState("");
 
     useEffect(() => {
         loadTicket();
@@ -66,6 +69,28 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true }) 
             setSaving(false);
         }
     }
+
+    function startEditing() {
+        setTitre(ticket.titre);
+        setDescription(ticket.description);
+        setEditing(true);
+    }
+
+    async function saveTicket(e) {
+        e.preventDefault();
+        setSaving(true);
+        try {
+            const updated = await updateTicket(ticket.id, { titre, description });
+            setTicket(updated);
+            setEditing(false);
+            toast.success("Ticket modifié avec succès");
+        } catch (err) {
+            toast.error("Erreur lors de la modification du ticket.");
+        } finally {
+            setSaving(false);
+        }
+    }
+
     async function handlePay() {
         if (!window.confirm(`Confirmer le paiement de ${ticket.prix} DH ?`)) {
             return;
@@ -116,12 +141,57 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true }) 
                                 {ticket.statut}
                             </span>
                         </div>
-                        <p className="text-white/90 mt-2 text-base font-medium">{ticket.titre}</p>
+                        {!editing && (
+                            <p className="text-white/90 mt-2 text-base font-medium">{ticket.titre}</p>
+                        )}
                     </div>
 
                     <div className="p-6">
-                        <h2 className="text-sm font-semibold text-gray-700 mb-2">Description</h2>
-                        <p className="text-sm text-gray-600 mb-5">{ticket.description}</p>
+                        {editing ? (
+                            <form onSubmit={saveTicket} className="mb-5">
+                                <div className="mb-3">
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Titre</label>
+                                    <input
+                                        type="text"
+                                        value={titre}
+                                        onChange={(e) => setTitre(e.target.value)}
+                                        className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    />
+                                </div>
+
+                                <div className="mb-4">
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                                    <textarea
+                                        rows="4"
+                                        value={description}
+                                        onChange={(e) => setDescription(e.target.value)}
+                                        className="border border-gray-300 rounded-lg px-3 py-2 w-full resize-none focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    />
+                                </div>
+
+                                <div className="flex gap-2">
+                                    <button
+                                        type="submit"
+                                        disabled={saving}
+                                        className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
+                                    >
+                                        {saving ? "Enregistrement..." : "Enregistrer"}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setEditing(false)}
+                                        className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Annuler
+                                    </button>
+                                </div>
+                            </form>
+                        ) : (
+                            <>
+                                <h2 className="text-sm font-semibold text-gray-700 mb-2">Description</h2>
+                                <p className="text-sm text-gray-600 mb-5">{ticket.description}</p>
+                            </>
+                        )}
 
                         <dl className="space-y-3 text-sm">
                             <div className="flex justify-between border-b pb-2">
@@ -153,6 +223,16 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true }) 
                                 <dd className="text-gray-800 font-medium">{formatDate(ticket.dateCreation)}</dd>
                             </div>
                         </dl>
+
+                        {canEdit && !editing && (
+                            <button
+                                onClick={startEditing}
+                                disabled={saving}
+                                className="mb-5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
+                            >
+                                Modifier le ticket
+                            </button>
+                        )}
 
                         {!canManage && ticket.statut !== "FERME" && ticket.prix != null && (
                             <button

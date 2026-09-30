@@ -13,3 +13,8 @@ export async function createTicket(serviceId, ticketData) {
     const response = await axiosApi.post(`/ticket/${serviceId}/tickets`, ticketData);
     return response.data;
 }
+
+export async function updateTicket(id, ticketData) {
+    const response = await axiosApi.put(`/ticket/modifier/${id}`, ticketData);
+    return response.data;
+}
