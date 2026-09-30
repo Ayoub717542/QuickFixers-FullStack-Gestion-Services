@@ -77,8 +77,14 @@ public class TicketImpl implements TicketInterface {
     }
 
     @Override
-        public TicketResponseDTO modifieTeckit(Long id, TicketRequestDTO ticketRequestDTO){
+        public TicketResponseDTO modifieTeckit(Long id, Person person, TicketRequestDTO ticketRequestDTO){
             Ticket ticket = ticketRepository.findById(id).orElseThrow(()-> new RuntimeException("ticket Not Found"));
+            if (person instanceof Admin) {
+            } else if (ticket.getCreatedBy() != null
+                    && ticket.getCreatedBy().getEmail().equals(person.getEmail())) {
+            } else {
+                throw new RuntimeException("Access denied");
+            }
 
             ticket.setTitre(ticketRequestDTO.getTitre());
             ticket.setDescription(ticketRequestDTO.getDescription());

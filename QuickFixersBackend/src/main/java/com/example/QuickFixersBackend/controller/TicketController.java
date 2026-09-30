@@ -44,10 +44,11 @@ public class TicketController {
     @PreAuthorize("hasAnyRole('ADMIN','CLIENT')")
     public ResponseEntity<TicketResponseDTO> modifierTicket(
             @PathVariable Long id,
+            @AuthenticationPrincipal Person person,
             @RequestBody TicketRequestDTO ticketRequestDTO) {
 
         return ResponseEntity.ok(
-                ticketInterface.modifieTeckit(id, ticketRequestDTO)
+                ticketInterface.modifieTeckit(id, person, ticketRequestDTO)
         );
     }
 

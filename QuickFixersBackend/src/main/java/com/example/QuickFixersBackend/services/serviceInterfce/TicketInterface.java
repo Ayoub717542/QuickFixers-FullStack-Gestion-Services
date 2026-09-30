@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 
 public interface TicketInterface {
     TicketResponseDTO ajouterTeckit(TicketRequestDTO ticketRequestDTO , Long serviceId, String email);
-     TicketResponseDTO modifieTeckit(Long id , TicketRequestDTO ticketRequestDTO);
+     TicketResponseDTO modifieTeckit(Long id, Person person, TicketRequestDTO ticketRequestDTO);
      TicketResponseDTO consulterTeckit(Long id,Person person);
      Page<TicketResponseDTO> listerTeckits(Person person,Pageable pageable);
      TicketResponseDTO modifierStatut(Person person, Long ticketId, Statut statut);
