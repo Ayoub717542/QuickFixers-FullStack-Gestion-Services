@@ -1,14 +1,14 @@
 package com.example.QuickFixersBackend.services.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.CompletableFuture;
-
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class EmailService {
     private final JavaMailSender mailSender;
@@ -31,19 +31,14 @@ public class EmailService {
     }
 
     public void sendEmail(String to, String subject, String text) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                SimpleMailMessage message = new SimpleMailMessage();
-                message.setFrom(from);
-                message.setTo(to);
-                message.setSubject(subject);
-                message.setText(text);
-                mailSender.send(message);
-                System.out.println("Email envoyé à " + to);
-            } catch (Exception e) {
-                System.out.println("Email non envoyé : " + e.getMessage());
-            }
-        });
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(from);
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
+
+        mailSender.send(message);
+        log.info("Email envoyé à {}", to);
     }
 
     public void sendAccountCredentials(String to, String fullName,

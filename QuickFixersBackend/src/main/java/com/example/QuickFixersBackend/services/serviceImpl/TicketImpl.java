@@ -16,15 +16,16 @@ import com.example.QuickFixersBackend.repository.TicketRepository;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.TicketInterface;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class TicketImpl implements TicketInterface {
 
@@ -70,7 +71,7 @@ public class TicketImpl implements TicketInterface {
                                 "Merci de vous connecter pour le traiter."
                 );
             } catch (Exception e) {
-                System.out.println("Email non envoyé : " + e.getMessage());
+                log.warn("Email non envoyé au support : {}", e.getMessage());
             }
         }
             return ticketMapper.toDto(savedTicket);

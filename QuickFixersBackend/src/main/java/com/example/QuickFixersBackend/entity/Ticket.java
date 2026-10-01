@@ -23,6 +23,7 @@ public class Ticket {
 
     private String  titre;
     private String description;
+    private String prirority;
 
 
     @Column(updatable = false)

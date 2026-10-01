@@ -9,7 +9,7 @@ Docker Compose starts two things for you: the MySQL database and the Spring Boot
 3. Keep your existing `.env` file in this folder. It needs `DB_PASSWORD`,
    `JWT_SECRET`, `MAIL_USERNAME`, and `MAIL_APP_PASSWORD`.
    The JWT secret must be a Base64-encoded random key of at least 32 bytes.
-   For email, use your Gmail address and Gmail app password.
+   For email, use a Brevo SMTP relay account and an SMTP key (see `application.properties`).
 4. Start everything with this command:
 
 ```bash
@@ -89,8 +89,8 @@ Clients create tickets, support agents fix them, admins manage everything — se
 | `DB_USERNAME` | MySQL user |
 | `DB_PASSWORD` | MySQL password |
 | `JWT_SECRET` | Secret used to sign JWTs |
-| `MAIL_USERNAME` | Gmail address used to send emails |
-| `MAIL_APP_PASSWORD` | Gmail app password (not the account password) |
+| `MAIL_USERNAME` | Brevo SMTP login, e.g. `xxxx@smtp-brevo.com` (Brevo → Senders & Domains → SMTP & API) |
+| `MAIL_APP_PASSWORD` | Brevo SMTP key (starts with `xsmtpsib-`) — **not** your account password |
 
 Example `.env`:
 
@@ -99,8 +99,8 @@ DB_URL=jdbc:mysql://localhost:3307/QuickFixers_db?createDatabaseIfNotExist=true
 DB_USERNAME=root
 DB_PASSWORD=yourpassword
 JWT_SECRET=some-long-secret
-MAIL_USERNAME=yourmail@gmail.com
-MAIL_APP_PASSWORD=your-app-password
+MAIL_USERNAME=xxxx@smtp-brevo.com
+MAIL_APP_PASSWORD=xsmtpsib-xxxxxxxxxxxxxxxx
 ```
 
 Ask a teammate for the actual values if you don't have them. Default API port: **8081**.

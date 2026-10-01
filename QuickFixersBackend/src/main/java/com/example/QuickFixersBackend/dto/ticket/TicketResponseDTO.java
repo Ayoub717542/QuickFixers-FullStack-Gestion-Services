@@ -24,4 +24,5 @@ public class TicketResponseDTO {
     private String assignedToPrenom;
     private Long serviceId;
     private Long createdById;
+    private String prirority;
 }
