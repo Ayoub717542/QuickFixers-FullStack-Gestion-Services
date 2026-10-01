@@ -18,3 +18,18 @@ backend-local.log
 .idea/
 .DS_Store
 Thumbs.db
+### Added before PC format 2026-10-01 (build output & secrets) ###
+target/
+*.class
+out/
+build/
+node_modules/
+.env
+.env.*
+!.env.example
+*.log
+*.tmp
+*.bak
+Thumbs.db
+.idea/
+*.iml
