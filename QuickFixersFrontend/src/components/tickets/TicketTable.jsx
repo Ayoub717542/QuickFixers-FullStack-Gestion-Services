@@ -96,6 +96,7 @@ function TicketTable({ title = "Tickets" , basePath = "/support/tickets"}) {
                         <th className="p-4 text-left">ID</th>
                         <th className="p-4 text-left">Titre</th>
                         <th className="p-4 text-left">Statut</th>
+                        <th className="p-4 text-left">Prirority</th>
                         <th className="p-4 text-left">Date</th>
                         <th className="p-4 text-right">Action</th>
                     </tr>
@@ -107,6 +108,7 @@ function TicketTable({ title = "Tickets" , basePath = "/support/tickets"}) {
                             <td className="p-4">#{ticket.id}</td>
                             <td className="p-4 font-medium">{ticket.titre}</td>
                             <td className="p-4"><StatusBadge status={ticket.statut} /></td>
+                            <td className="p-4">{ticket.prirority}</td>
                             <td className="p-4 text-gray-500">{ticket.dateCreation}</td>
                             <td className="p-4 text-right">
                                 <button

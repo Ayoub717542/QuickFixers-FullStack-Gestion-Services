@@ -12,6 +12,7 @@ function TicketForm({ serviceId, onSuccess }) {
     } = useForm();
 
     function onSubmit(data) {
+        console.log(data);
         createTicket(serviceId, data)
             .then(() => {
                 toast.success("Ticket créé avec succès.");
@@ -21,6 +22,7 @@ function TicketForm({ serviceId, onSuccess }) {
             .catch(() => {
                 toast.error("Erreur lors de la création du ticket.");
             });
+
     }
 
     return (
@@ -56,6 +58,19 @@ function TicketForm({ serviceId, onSuccess }) {
                 {errors.description && (
                     <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>
                 )}
+            </div>
+
+            <div>
+                <select
+                    {
+                    ...register("prirority", {required:"prirority required"}
+                    )
+                    }
+                >
+                    <option value="low">low</option>
+                    <option value="high">high</option>
+                    <option value="medium">medium</option>
+                </select>
             </div>
 
             <div className="flex justify-end">
