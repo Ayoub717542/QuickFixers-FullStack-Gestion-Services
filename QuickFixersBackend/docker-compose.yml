@@ -2,6 +2,16 @@ services:
   backend:
     build: .
     ports:
-      - "8081:8081"
+      - "8082:8081"
     env_file:
       - .env
+
+  frontend:
+    build:
+      context: ../QuickFixersFrontend
+      args:
+        VITE_API_URL: http://localhost:8082/api
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
