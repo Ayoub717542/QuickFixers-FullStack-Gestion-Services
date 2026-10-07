@@ -81,10 +81,8 @@ jobs:
         tags: ghcr.io/ayoub717542/quickfixers-backend:latest
 
     - name: Trigger Render deploy
-      if: env.RENDER_DEPLOY_HOOK_URL != ''
-      env:
-        RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-      run: curl -sS "$RENDER_DEPLOY_HOOK_URL"
+      if: ${{ secrets.RENDER_DEPLOY_HOOK_URL != '' }}
+      run: curl -sS "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
 
 
   deploy-frontend:
@@ -114,7 +112,5 @@ jobs:
           VITE_API_URL=https://quickfixers-backend-latest.onrender.com/api
 
     - name: Trigger Render frontend deploy
-      if: env.RENDER_FRONTEND_HOOK_URL != ''
-      env:
-        RENDER_FRONTEND_HOOK_URL: ${{ secrets.RENDER_FRONTEND_HOOK_URL }}
-      run: curl -sS "$RENDER_FRONTEND_HOOK_URL"
+      if: ${{ secrets.RENDER_FRONTEND_HOOK_URL != '' }}
+      run: curl -sS "${{ secrets.RENDER_FRONTEND_HOOK_URL }}"
