@@ -81,7 +81,7 @@ jobs:
         tags: ghcr.io/ayoub717542/quickfixers-backend:latest
 
     - name: Trigger Render deploy
-      if: env.RENDER_DEPLOY_HOOK_URL != ''d
+      if: env.RENDER_DEPLOY_HOOK_URL != ''
       env:
         RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
       run: curl -sS "$RENDER_DEPLOY_HOOK_URL"
