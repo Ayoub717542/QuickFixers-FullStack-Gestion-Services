@@ -5,6 +5,7 @@ import com.example.QuickFixersBackend.enums.Statut;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TicketResponseDTO {
+public class TicketResponseDTO implements Serializable {
     private Long id;
     private String titre;
     private String description;

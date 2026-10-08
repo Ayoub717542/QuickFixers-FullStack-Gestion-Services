@@ -11,16 +11,18 @@ import com.example.QuickFixersBackend.entity.Support;
 import com.example.QuickFixersBackend.entity.Ticket;
 import com.example.QuickFixersBackend.enums.PaiementStatut;
 import com.example.QuickFixersBackend.enums.Statut;
+import com.example.QuickFixersBackend.exception.BusinessException;
+import com.example.QuickFixersBackend.exception.NotFoundException;
 import com.example.QuickFixersBackend.mapper.PaiementMapper;
 import com.example.QuickFixersBackend.repository.PaiementRepository;
 import com.example.QuickFixersBackend.repository.TicketRepository;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.PaiementInterface;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import com.lowagie.text.PageSize;
 
@@ -33,8 +35,13 @@ import com.lowagie.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -48,17 +55,20 @@ public class PaiementImpl implements PaiementInterface {
 
     @Override
     @Transactional
-    public PaiementResponseDTO creerPaiement(PaiementRequestDTO paiementRequestDTO, String email) {
+    @CacheEvict(
+            value = {"payments", "Countpayments", "inComeByday"},
+            allEntries = true
+    )    public PaiementResponseDTO creerPaiement(PaiementRequestDTO paiementRequestDTO, String email) {
         Ticket ticket = ticketRepository.findById(paiementRequestDTO.getTicketId())
-                .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
-        Person person = userRepository.findByEmail(email).orElseThrow(()-> new RuntimeException("email not found"));
+                .orElseThrow(() -> new NotFoundException("Ticket not found"));
+        Person person = userRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("email not found"));
 
         if(paiementRepository.existsByTicketAndStatut(ticket,PaiementStatut.TERMINE) && ticket.getStatut() == Statut.FERME){
-            throw new RuntimeException("Ce ticket est déjà payé");
+            throw new BusinessException("Ce ticket est déjà payé");
         }
 
         if(ticket.getCreatedBy() == null && !ticket.getAssignedTo().getEmail().equals(person.getEmail())){
-            throw new RuntimeException("Vous ne pouvez payer que vos propres tickets");
+            throw new BusinessException("Vous ne pouvez payer que vos propres tickets");
         }
 
         Paiement payment = paiementMapper.toEntity(paiementRequestDTO);
@@ -79,6 +89,11 @@ public class PaiementImpl implements PaiementInterface {
     }
 
     @Override
+    @Cacheable(
+            value = "payments",
+            key = "#person.getClass().getSimpleName() + ':'"
+                    + " + #person.id + ':' + #pageable.toString()"
+    )
     public Page<PaiementResponseDTO> paimentHistorique(Person person, Pageable pageable) {
         if (person instanceof Admin) {
             return paiementRepository.findAll(pageable)
@@ -92,10 +107,14 @@ public class PaiementImpl implements PaiementInterface {
             return paiementRepository.findByTicketAssignedTo(person, pageable)
                     .map(paiementMapper::toDto);
         }
-        throw new RuntimeException("Access denied");
+        throw new AccessDeniedException("Access denied");
     }
 
     @Override
+    @Cacheable(
+            value = "Countpayments",
+            key = "#person.getClass().getSimpleName() + ':' + #person.id"
+    )
     public long countPayments(Person person) {
         if (person instanceof Admin) {
             return paiementRepository.count();
@@ -103,10 +122,14 @@ public class PaiementImpl implements PaiementInterface {
         if (person instanceof Client) {
             return paiementRepository.countByClient(person);
         }
-        throw new RuntimeException("Access denied");
+        throw new AccessDeniedException("Access denied");
     }
 
     @Override
+    @Cacheable(
+            value = "inComeByday",
+            key = "#person.getClass().getSimpleName() + ':' + #person.id"
+    )
     public List<IncomeByDay> incomeByday(Person person) {
         List<Object[]> rows;
         if (person instanceof Admin) {
@@ -114,19 +137,47 @@ public class PaiementImpl implements PaiementInterface {
         } else if (person instanceof Support) {
             rows = paiementRepository.incomeByDayForSupport(PaiementStatut.TERMINE, person);
         } else {
-            throw new RuntimeException("Access denied");
+            throw new AccessDeniedException("Access denied");
         }
         return rows.stream()
                 .map(row -> new IncomeByDay(
-                        ((java.sql.Date) row[0]).toLocalDate(),
-                        ((java.math.BigDecimal) row[1]).doubleValue()))
+                        toLocalDate(row[0]),
+                        toDouble(row[1])))
                 .toList();
+    }
+
+    /**
+     * The type returned by MySQL's DATE() depends on the Hibernate/JDBC version
+     * (Hibernate 6 gives java.time.LocalDate, older versions java.sql.Date),
+     * so convert defensively instead of casting.
+     */
+    private static LocalDate toLocalDate(Object value) {
+        if (value instanceof LocalDate localDate) {
+            return localDate;
+        }
+        if (value instanceof java.sql.Date sqlDate) {
+            return sqlDate.toLocalDate();
+        }
+        if (value instanceof java.sql.Timestamp timestamp) {
+            return timestamp.toLocalDateTime().toLocalDate();
+        }
+        if (value instanceof java.util.Date date) {
+            return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        }
+        return LocalDate.parse(value.toString());
+    }
+
+    private static double toDouble(Object value) {
+        if (value instanceof Number number) {
+            return number.doubleValue();
+        }
+        return Double.parseDouble(value.toString());
     }
 
     @Override
     public byte[] genererRecu(Long paiementId) {
         Paiement payment = paiementRepository.findById(paiementId)
-                .orElseThrow(() -> new EntityNotFoundException("Paiement not found"));
+                .orElseThrow(() -> new NotFoundException("Paiement not found"));
 
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Document document = new Document(PageSize.A6, 20, 20, 20, 20);

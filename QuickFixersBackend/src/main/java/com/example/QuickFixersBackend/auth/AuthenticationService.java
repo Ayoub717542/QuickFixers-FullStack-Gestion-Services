@@ -6,6 +6,7 @@ import com.example.QuickFixersBackend.dto.auth.RegisterRequoestDTO;
 import com.example.QuickFixersBackend.entity.Client;
 import com.example.QuickFixersBackend.entity.Person;
 import com.example.QuickFixersBackend.repository.UserRepository;
+import com.example.QuickFixersBackend.exception.BusinessException;
 import com.example.QuickFixersBackend.security.JwtService;
 import com.example.QuickFixersBackend.services.serviceImpl.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class AuthenticationService {
 
     public @Nullable AuthenticationResponceDTO register(RegisterRequoestDTO register) {
         if (userRepository.existsByEmail(register.getEmail())) {
-            throw new RuntimeException("Cet email est déjà utilisé. Connectez-vous ou utilisez un autre email.");
+            throw new BusinessException("Cet email est déjà utilisé. Connectez-vous ou utilisez un autre email.");
         }
         Client user = new Client(
                 register.getNom(),

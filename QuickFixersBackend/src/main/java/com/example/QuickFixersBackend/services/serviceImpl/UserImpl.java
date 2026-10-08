@@ -8,6 +8,7 @@ import com.example.QuickFixersBackend.entity.Person;
 import com.example.QuickFixersBackend.entity.Support;
 import com.example.QuickFixersBackend.enums.ServiceType;
 import com.example.QuickFixersBackend.exception.BusinessException;
+import com.example.QuickFixersBackend.exception.NotFoundException;
 import com.example.QuickFixersBackend.mapper.UserMapper;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.UserInterface;
@@ -18,7 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -33,10 +35,11 @@ public class UserImpl implements UserInterface {
     private final EmailService emailService;
 
     @Override
+    @CacheEvict(value = "users", allEntries = true)
     public UserResponseDTO ajouterUnUser(UserRequestDTO userRequestDTO) {
 
       if(userRepository.existsByEmail(userRequestDTO.getEmail())){
-          throw new RuntimeException("This user already exists");
+          throw new BusinessException("This user already exists");
       }
         Client user = new Client(
                 userRequestDTO.getNom(),
@@ -62,20 +65,30 @@ public class UserImpl implements UserInterface {
     }
 
     @Override
+    @Cacheable(value = "users", key = "'all:' + #p0.toString()")
     public Page<UserResponseDTO> listerUsers(Pageable pageable) {
         return  userRepository.findAll(pageable)
                 .map(userMapper::toDto);
     }
 
     @Override
+    @CacheEvict(
+            value = {
+                    "users",
+                    "tickets", "ticketsByStatus", "ticketSearch", "ticketCount",
+                    "payments", "Countpayments", "inComeByday"
+            },
+            allEntries = true
+    )
     public void supprimerUser(Long id) {
-        Person person = userRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found to delete"));
+        Person person = userRepository.findById(id).orElseThrow(() -> new NotFoundException("user not found to delete"));
         userRepository.delete(person);
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     public UserResponseDTO createSupportAccount(CreateSupportRequestDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Cet email est déjà utilisé");
+            throw new BusinessException("Cet email est déjà utilisé");
         }
 
         Support support = new Support(
@@ -108,6 +121,7 @@ public class UserImpl implements UserInterface {
     }
 
     @Override
+    @CacheEvict(value = "users", allEntries = true)
     public UserResponseDTO modifierProfil(Person person, UserUpdateRequestDTO dto) {
         person.setNom(dto.getNom());
         person.setPrenom(dto.getPrenom());
@@ -115,46 +129,56 @@ public class UserImpl implements UserInterface {
     }
 
     @Override
+    @Cacheable(value = "users", key = "'count'")
     public long countUsers() {
         return userRepository.count();
     }
 
     @Override
     @Transactional
+    @CacheEvict(
+            value = {
+                    "users",
+                    "tickets", "ticketsByStatus", "ticketSearch", "ticketCount",
+                    "payments", "Countpayments", "inComeByday"
+            },
+            allEntries = true
+    )
     public UserResponseDTO changerRole(Long id, String role, ServiceType serviceType) {
         Person person = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         if (person instanceof Admin) {
             throw new BusinessException("Le rôle d'un administrateur ne peut pas être modifié");
         }
         if (!role.equals(ROLE_CLIENT) && !role.equals(ROLE_SUPPORT)) {
-            throw new RuntimeException("Rôle invalide : seuls CLIENT et SUPPORT sont autorisés");
+            throw new BusinessException("Rôle invalide : seuls CLIENT et SUPPORT sont autorisés");
         }
 
         if (role.equals(ROLE_CLIENT)) {
             userRepository.changerRole(id, ROLE_CLIENT, null);
         } else {
             if (serviceType == null) {
-                throw new RuntimeException("Un type de service est requis pour un compte SUPPORT");
+                throw new BusinessException("Un type de service est requis pour un compte SUPPORT");
             }
             userRepository.changerRole(id, ROLE_SUPPORT, serviceType.name());
         }
         Person updated = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         return userMapper.toDto(updated);
     }
 
     @Override
+    @CacheEvict(value = "users", allEntries = true)
     public UserResponseDTO modifierUser(Long id, UserEditRequestDTO dto) {
         Person person = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         if (person instanceof Admin) {
             throw new BusinessException("Le compte d'un administrateur ne peut pas être modifié");
         }
         if (!person.getEmail().equals(dto.getEmail()) && userRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Cet email est déjà utilisé");
+            throw new BusinessException("Cet email est déjà utilisé");
         }
         person.setNom(dto.getNom());
         person.setPrenom(dto.getPrenom());
@@ -163,19 +187,22 @@ public class UserImpl implements UserInterface {
         return userMapper.toDto(userRepository.save(person));
     }
     @Override
+    @Cacheable(value = "users", key = "'detail:' + #p0")
     public UserResponseDTO consulterUser(Long id) {
         Person person = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         return userMapper.toDto(person);
     }
 
     @Override
+    @Cacheable(value = "users", key = "'clients:' + #p0.toString()")
     public Page<UserResponseDTO> listerClients(Pageable pageable) {
         return userRepository.findAllClients(pageable)
                 .map(userMapper::toDto);
     }
 
     @Override
+    @Cacheable(value = "users", key = "'supports:' + #p0.toString()")
     public Page<UserResponseDTO> listerSupports(Pageable pageable) {
         return userRepository.findAllSupports(pageable)
                 .map(userMapper::toDto);
@@ -183,28 +210,33 @@ public class UserImpl implements UserInterface {
 
 
     @Override
+    @Cacheable(value = "users", key = "'searchSupports:' + #p0 + ':' + #p1.toString()")
     public Page<UserResponseDTO> rechercherSupports(String searchedEmail, Pageable pageable) {
         return userRepository.searchedSupport(searchedEmail, pageable)
                 .map(userMapper::toDto);
     }
 
     @Override
+    @Cacheable(value = "users", key = "'searchClients:' + #p0.trim() + ':' + #p1.toString()")
     public Page<UserResponseDTO> rechercherClients(String nom, Pageable pageable) {
         return userRepository.rechercherClients(nom.trim(), pageable)
                 .map(userMapper::toDto);
     }
 
     @Override
+    @Cacheable(value = "users", key = "'supportsByService:' + #p0 + ':' + #p1.toString()")
     public Page<UserResponseDTO> filtrerSupportsParService(ServiceType serviceType, Pageable pageable) {
         return userRepository.findSupportsByServiceType(serviceType, pageable)
                 .map(userMapper::toDto);
     }
     @Override
+    @Cacheable(value = "users", key = "'searchUsers:' + #p0.trim() + ':' + #p1.toString()")
     public Page<UserResponseDTO> rechercherUsers(String keyword, Pageable pageable) {
         return userRepository.rechercherUsers(keyword.trim(), pageable).map(userMapper::toDto);
     }
 
     @Override
+    @Cacheable(value = "users", key = "'usersByRole:' + #p0 + ':' + #p1.toString()")
     public Page<UserResponseDTO> filtrerUsers(String role, Pageable pageable) {
         Class<? extends Person> type;
         if (role.equalsIgnoreCase("ADMIN")) {
@@ -214,7 +246,7 @@ public class UserImpl implements UserInterface {
         } else if (role.equalsIgnoreCase(ROLE_CLIENT)) {
             type = Client.class;
         } else {
-            throw new RuntimeException("Rôle invalide : " + role);
+            throw new BusinessException("Rôle invalide : " + role);
         }
         return userRepository.filtrerUsers(type, pageable)
                 .map(userMapper::toDto);

@@ -7,12 +7,14 @@ import com.example.QuickFixersBackend.entity.Message;
 import com.example.QuickFixersBackend.entity.Person;
 import com.example.QuickFixersBackend.entity.Support;
 import com.example.QuickFixersBackend.entity.Ticket;
+import com.example.QuickFixersBackend.exception.NotFoundException;
 import com.example.QuickFixersBackend.mapper.MessageMapper;
 import com.example.QuickFixersBackend.repository.MessageRepository;
 import com.example.QuickFixersBackend.repository.TicketRepository;
 import com.example.QuickFixersBackend.repository.UserRepository;
 import com.example.QuickFixersBackend.services.serviceInterfce.MessageInterface;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,21 +29,21 @@ public class MessageImpl implements MessageInterface {
     public MessageResponseDTO createMessage(MessageRequestDTO messageDTO, String email) {
 
         Ticket ticket = ticketRepository.findById(messageDTO.getTicketId())
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new NotFoundException("Ticket not found"));
 
 
         Person sender = userRepository.findByEmail(email)
-                .orElseThrow(()-> new RuntimeException("email not found"));
+                .orElseThrow(()-> new NotFoundException("email not found"));
 
 
         if (sender instanceof Client &&
                 !ticket.getCreatedBy().getId().equals(sender.getId())) {
-            throw new RuntimeException("Access denied");
+            throw new AccessDeniedException("Access denied");
         }
 
         if (sender instanceof Support &&
                 !ticket.getAssignedTo().getId().equals(sender.getId())) {
-            throw new RuntimeException("Access denied");
+            throw new AccessDeniedException("Access denied");
         }
 
         Message message = messageMapper.toEntity(messageDTO);

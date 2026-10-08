@@ -1,11 +1,18 @@
 services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
   backend:
     build: .
     ports:
       - "8082:8081"
     env_file:
       - .env
-
+    environment:
+      REDIS_HOST: redis
+    extra_hosts:
+      - "mysql-6c116ce-ayoubhadi856-0346.i.aivencloud.com:164.92.151.83"
   frontend:
     build:
       context: ../QuickFixersFrontend
