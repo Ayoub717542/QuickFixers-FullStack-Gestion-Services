@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Bot, X, Send } from "lucide-react";
+import { Bot, X, Send, Plus, Mic } from "lucide-react";
 import { sendChatMessage } from "../../api/chatbotApi";
 
 const GREETING =
@@ -152,9 +152,9 @@ function ChatBotButton() {
     return (
         <>
             {open && (
-                <div className="fixed bottom-36 right-3 z-50 flex h-[min(70dvh,540px)] max-h-[calc(100dvh-11rem)] w-[calc(100vw-1.5rem)] max-w-sm flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 sm:right-6 sm:h-[560px] sm:w-[380px]">
+                <div className="fixed inset-x-0 top-0 z-50 flex h-[100dvh] flex-col overflow-hidden bg-white sm:inset-auto sm:bottom-36 sm:right-6 sm:h-[560px] sm:max-h-[calc(100dvh-11rem)] sm:w-[380px] sm:rounded-2xl sm:shadow-2xl sm:ring-1 sm:ring-black/5">
                     {/* En-tête */}
-                    <div className="flex items-center justify-between gap-2 bg-gradient-to-r from-orange-500 to-yellow-500 px-3 py-2.5 text-white sm:px-4 sm:py-3">
+                    <div className="flex items-center justify-between gap-2 bg-gradient-to-r from-orange-500 to-yellow-500 px-3 pb-2.5 pt-[calc(0.625rem_+_env(safe-area-inset-top))] text-white sm:px-4 sm:py-3">
                         <div className="flex items-center gap-2.5">
                             <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-white/20 sm:h-10 sm:w-10">
                                 <Bot size={20} />
@@ -215,8 +215,16 @@ function ChatBotButton() {
                     {/* Saisie */}
                     <form
                         onSubmit={handleSubmit}
-                        className="flex items-center gap-2 border-t border-gray-100 bg-white p-2.5 sm:p-3"
+                        className="flex items-center gap-1.5 border-t border-gray-100 bg-white px-2.5 pb-[calc(0.625rem_+_env(safe-area-inset-bottom))] pt-2.5 sm:gap-2 sm:p-3"
                     >
+                        <button
+                            type="button"
+                            title="Joindre un fichier (bientôt disponible)"
+                            aria-label="Joindre un fichier"
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100 hover:text-orange-500 sm:h-10 sm:w-10"
+                        >
+                            <Plus size={18} />
+                        </button>
                         <input
                             ref={inputRef}
                             type="text"
@@ -230,12 +238,20 @@ function ChatBotButton() {
                             className="min-w-0 flex-1 rounded-full border border-gray-200 bg-gray-50 px-3.5 py-2 text-sm text-gray-800 outline-none transition-colors focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-400/30 disabled:opacity-60 sm:px-4 sm:py-2.5"
                         />
                         <button
+                            type="button"
+                            title="Message vocal (bientôt disponible)"
+                            aria-label="Message vocal"
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100 hover:text-orange-500 sm:h-10 sm:w-10"
+                        >
+                            <Mic size={18} />
+                        </button>
+                        <button
                             type="submit"
                             disabled={sending || input.trim() === ""}
                             aria-label="Envoyer"
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50 sm:h-11 sm:w-11"
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50 sm:h-10 sm:w-10"
                         >
-                            <Send size={18} />
+                            <Send size={17} />
                         </button>
                     </form>
                 </div>
@@ -246,7 +262,7 @@ function ChatBotButton() {
                 type="button"
                 onClick={() => setOpen((o) => !o)}
                 aria-label={open ? "Fermer le chat" : "Ouvrir le chat"}
-                className="fixed bottom-20 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-yellow-500 text-white shadow-lg shadow-orange-500/30 transition-transform hover:scale-105"
+                className={`fixed bottom-20 right-6 z-[60] h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-yellow-500 text-white shadow-lg shadow-orange-500/30 transition-transform hover:scale-105 ${open ? "hidden sm:flex" : "flex"}`}
             >
                 {open ? <X size={24} /> : <Bot size={26} />}
 
