@@ -33,7 +33,7 @@ public class ChatbotServiceImpl implements ChatbotService {
             throws IOException {
 
         return Map.of(
-                "model", "gemini-3.8-flash",
+                "model", "gemini-3.1-flash-lite",
                 "system_instruction", readGuide(),
                 "input", message,
                 "store", false
