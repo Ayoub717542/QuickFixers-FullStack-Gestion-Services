@@ -39,6 +39,7 @@ jobs:
       JWT_SECRET: dev-ci-secret-key-for-tests-only
       MAIL_USERNAME: fake@test.com
       MAIL_APP_PASSWORD: fake
+      GEMINI_API_KEY: fake-key-for-tests
 
     defaults:
         run:
@@ -115,7 +116,6 @@ jobs:
 
     - name: Trigger Render frontend deploy
       env:
-        GEMINI_API_KEY: fake-key-for-tests
         RENDER_FRONTEND_HOOK_URL: ${{ secrets.RENDER_FRONTEND_HOOK_URL }}
       if: ${{ env.RENDER_FRONTEND_HOOK_URL != '' }}
       run: curl -sS "$RENDER_FRONTEND_HOOK_URL"
