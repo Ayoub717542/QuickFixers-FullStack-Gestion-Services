@@ -3,6 +3,7 @@ package com.example.QuickFixersBackend.services.serviceImpl;
 import com.example.QuickFixersBackend.dto.ticket.TicketRequestDTO;
 import com.example.QuickFixersBackend.dto.ticket.TicketResponseDTO;
 
+import com.example.QuickFixersBackend.enums.Priority;
 import com.example.QuickFixersBackend.enums.Statut;
 import com.example.QuickFixersBackend.exception.NotFoundException;
 import com.example.QuickFixersBackend.mapper.TicketMapper;
@@ -41,7 +42,7 @@ public class TicketImpl implements TicketInterface {
 
     @Override
     @CacheEvict(
-            value = {"tickets", "ticketsByStatus", "ticketSearch", "ticketCount"},
+            value = {"tickets", "ticketsByStatus", "ticketsByPriority", "ticketSearch", "ticketCount"},
             allEntries = true
     )
     public TicketResponseDTO ajouterTeckit(TicketRequestDTO ticketRequestDTO , Long serviceId, String email) {
@@ -57,6 +58,11 @@ public class TicketImpl implements TicketInterface {
         ticket.setService(service);
         ticket.setStatut(Statut.OUVERT);
         ticket.setDateCreation(LocalDateTime.now());
+
+        // Priorité choisie par le client, sinon valeur par défaut.
+        if (ticket.getPriority() == null) {
+            ticket.setPriority(Priority.MOYENNE);
+        }
 
         List<Support> supports = userRepository.findSupportOrderByOpenTicketsAsc(service.getType());
         if (supports.isEmpty()) {
@@ -75,6 +81,7 @@ public class TicketImpl implements TicketInterface {
                         "Bonjour " + support.getNom() + ",\n\n" +
                                 "Un nouveau ticket vous a été assigné :\n" +
                                 "Titre : " + savedTicket.getTitre() + "\n" +
+                                "Priorité : " + savedTicket.getPriority().getLabel() + "\n" +
                                 "Description : " + savedTicket.getDescription() + "\n\n" +
                                 "Merci de vous connecter pour le traiter."
                 );
@@ -82,12 +89,12 @@ public class TicketImpl implements TicketInterface {
                 log.warn("Email non envoyé au support : {}", e.getMessage());
             }
         }
-            return ticketMapper.toDto(savedTicket);
+            return toDto(savedTicket);
     }
 
     @Override
     @CacheEvict(
-            value = {"tickets", "ticketsByStatus", "ticketSearch", "ticketCount"},
+            value = {"tickets", "ticketsByStatus", "ticketsByPriority", "ticketSearch", "ticketCount"},
             allEntries = true
     )
         public TicketResponseDTO modifieTeckit(Long id, Person person, TicketRequestDTO ticketRequestDTO){
@@ -104,7 +111,7 @@ public class TicketImpl implements TicketInterface {
 
             Ticket savedTicket = ticketRepository.save(ticket);
 
-            return ticketMapper.toDto(savedTicket);
+            return toDto(savedTicket);
         }
 
     @Override
@@ -112,13 +119,13 @@ public class TicketImpl implements TicketInterface {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Ticket Not Found"));
         if (person instanceof Admin) {
-            return ticketMapper.toDto(ticket);
+            return toDto(ticket);
         }
         if (ticket.getCreatedBy() != null && ticket.getCreatedBy().getEmail().equals(person.getEmail())) {
-            return ticketMapper.toDto(ticket);
+            return toDto(ticket);
         }
         if (ticket.getAssignedTo() != null && ticket.getAssignedTo().getEmail().equals(person.getEmail())) {
-            return ticketMapper.toDto(ticket);
+            return toDto(ticket);
         }
         throw new AccessDeniedException("Access denied");
     }
@@ -139,15 +146,15 @@ public class TicketImpl implements TicketInterface {
         }
 
         if (person instanceof Support) {
-            return ticketRepository.findByAssignedTo(person , pageable).map(ticketMapper::toDto);
+            return ticketRepository.findByAssignedTo(person , pageable).map(this::toDto);
         }
 
-        return tickets.map(ticketMapper::toDto);
+        return tickets.map(this::toDto);
     }
 
     @Override
     @CacheEvict(
-            value = {"tickets", "ticketsByStatus", "ticketSearch", "ticketCount"},
+            value = {"tickets", "ticketsByStatus", "ticketsByPriority", "ticketSearch", "ticketCount"},
             allEntries = true
     )
     public TicketResponseDTO modifierStatut(Person person, Long ticketId, Statut statut) {
@@ -165,7 +172,25 @@ public class TicketImpl implements TicketInterface {
         }else{
             throw new AccessDeniedException("Access denied");
         }
-        return ticketMapper.toDto(ticketRepository.save(ticket));
+        return toDto(ticketRepository.save(ticket));
+    }
+
+    @Override
+    @CacheEvict(
+            value = {"tickets", "ticketsByStatus", "ticketsByPriority", "ticketSearch", "ticketCount"},
+            allEntries = true
+    )
+    public TicketResponseDTO modifierPriorite(Person person, Long ticketId, Priority priority) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new NotFoundException("Ticket Not Found"));
+
+        // Seul un administrateur peut (re)définir la priorité d'un ticket.
+        if (!(person instanceof Admin)) {
+            throw new AccessDeniedException("Access denied: only an admin can change the priority");
+        }
+
+        ticket.setPriority(priority);
+        return toDto(ticketRepository.save(ticket));
     }
 
     @Override
@@ -177,17 +202,38 @@ public class TicketImpl implements TicketInterface {
     public Page<TicketResponseDTO> filtrerParStatut(Person person,Statut statut,Pageable pageable) {
         if (person instanceof Admin) {
             return ticketRepository.findByStatut(statut, pageable)
-                    .map(ticketMapper::toDto);
+                    .map(this::toDto);
         }
 
         if (person instanceof Support) {
             return ticketRepository.findByAssignedToAndStatut(
                     person, statut, pageable
-            ).map(ticketMapper::toDto);
+            ).map(this::toDto);
         }
 
         return ticketRepository.findByCreatedByAndStatut(person, statut, pageable)
-                .map(ticketMapper::toDto);
+                .map(this::toDto);
+    }
+
+    @Override
+    @Cacheable(
+            value = "ticketsByPriority",
+            key = "#p0.getClass().getSimpleName() + ':' + #p0.id"
+                    + " + ':' + #p1 + ':' + #p2.toString()"
+    )
+    public Page<TicketResponseDTO> filtrerParPriorite(Person person, Priority priority, Pageable pageable) {
+        if (person instanceof Admin) {
+            return ticketRepository.findByPriority(priority, pageable)
+                    .map(this::toDto);
+        }
+
+        if (person instanceof Support) {
+            return ticketRepository.findByAssignedToAndPriority(person, priority, pageable)
+                    .map(this::toDto);
+        }
+
+        return ticketRepository.findByCreatedByAndPriority(person, priority, pageable)
+                .map(this::toDto);
     }
 
     @Override
@@ -199,16 +245,16 @@ public class TicketImpl implements TicketInterface {
     public Page<TicketResponseDTO> rechercherTickets(Person person,String recherche, Pageable pageable) {
         if (person instanceof Admin) {
             return ticketRepository.searchedTicket(recherche, pageable)
-                    .map(ticketMapper::toDto);
+                    .map(this::toDto);
         }
         if (person instanceof Support) {
             return ticketRepository.searchedAssignedTickets(
                     recherche, person, pageable
-            ).map(ticketMapper::toDto);
+            ).map(this::toDto);
         }
 
         return ticketRepository.searchedUserTickets(recherche, person, pageable)
-                .map(ticketMapper::toDto);
+                .map(this::toDto);
     }
 
     @Override
@@ -229,6 +275,28 @@ public class TicketImpl implements TicketInterface {
         throw new AccessDeniedException("Access denied");
     }
 
+    /**
+     * Mappe un ticket vers son DTO et enrichit la priorité avec sa logique métier :
+     * libellé lisible, délai cible (SLA) et détection automatique du retard.
+     */
+    private TicketResponseDTO toDto(Ticket ticket) {
+        TicketResponseDTO dto = ticketMapper.toDto(ticket);
 
+        Priority priority = ticket.getPriority() != null ? ticket.getPriority() : Priority.MOYENNE;
+        dto.setPriority(priority);
+        dto.setPriorityLabel(priority.getLabel());
+        dto.setSlaHeures(priority.getSlaHeures());
+
+        boolean termine = ticket.getStatut() == Statut.RESOLU || ticket.getStatut() == Statut.FERME;
+        if (ticket.getDateCreation() != null) {
+            LocalDateTime echeance = ticket.getDateCreation().plusHours(priority.getSlaHeures());
+            dto.setEcheance(echeance.toLocalDate());
+            dto.setEnRetard(!termine && LocalDateTime.now().isAfter(echeance));
+        } else {
+            dto.setEnRetard(false);
+        }
+
+        return dto;
+    }
 
 }

@@ -3,6 +3,7 @@ package com.example.QuickFixersBackend.controller;
 import com.example.QuickFixersBackend.dto.ticket.TicketRequestDTO;
 import com.example.QuickFixersBackend.dto.ticket.TicketResponseDTO;
 import com.example.QuickFixersBackend.entity.Person;
+import com.example.QuickFixersBackend.enums.Priority;
 import com.example.QuickFixersBackend.enums.Statut;
 import com.example.QuickFixersBackend.services.serviceInterfce.TicketInterface;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -82,6 +83,30 @@ public class TicketController {
             @AuthenticationPrincipal Person person,
             @PathVariable Long ticketId, @PathVariable Statut statut) {
         return ResponseEntity.ok(ticketInterface.modifierStatut(person,ticketId, statut));
+    }
+
+    // Seul l'administrateur peut changer la priorité d'un ticket.
+    @PatchMapping("/priority/{ticketId}/{priority}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<TicketResponseDTO> modifierPriorite(
+            @AuthenticationPrincipal Person person,
+            @PathVariable Long ticketId, @PathVariable Priority priority) {
+        return ResponseEntity.ok(ticketInterface.modifierPriorite(person, ticketId, priority));
+    }
+
+    @GetMapping("/priority/{priority}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT','SUPPORT')")
+    public ResponseEntity<Page<TicketResponseDTO>> filtrerParPriorite(
+            @AuthenticationPrincipal Person person,
+            @PathVariable Priority priority,
+            @RequestParam (defaultValue = "1") int pageNumber,
+            @RequestParam (defaultValue = "5") int pageSize,
+            @RequestParam (defaultValue = "dateCreation") String sortBy,
+            @RequestParam (defaultValue = "asc") String  sortDir
+    ) {
+        Pageable pageable = creerPageable(pageNumber,pageSize, sortBy, sortDir);
+        Page<TicketResponseDTO> rs = ticketInterface.filtrerParPriorite(person, priority, pageable);
+        return ResponseEntity.ok(rs);
     }
 
     @GetMapping("/statut/{statut}")

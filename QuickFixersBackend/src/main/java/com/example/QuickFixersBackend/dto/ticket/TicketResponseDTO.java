@@ -1,5 +1,6 @@
 package com.example.QuickFixersBackend.dto.ticket;
 
+import com.example.QuickFixersBackend.enums.Priority;
 import com.example.QuickFixersBackend.enums.Statut;
 
 
@@ -25,5 +26,11 @@ public class TicketResponseDTO implements Serializable {
     private String assignedToPrenom;
     private Long serviceId;
     private Long createdById;
-    private String prirority;
+
+    // Priorité + logique associée (SLA / retard)
+    private Priority priority;
+    private String priorityLabel;
+    private Integer slaHeures;
+    private LocalDate echeance;
+    private Boolean enRetard;
 }

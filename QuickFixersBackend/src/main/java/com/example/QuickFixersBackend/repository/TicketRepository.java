@@ -2,6 +2,7 @@ package com.example.QuickFixersBackend.repository;
 
 import com.example.QuickFixersBackend.entity.Person;
 
+import com.example.QuickFixersBackend.enums.Priority;
 import com.example.QuickFixersBackend.enums.Statut;
 import com.example.QuickFixersBackend.entity.Ticket;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,11 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
     Page<Ticket> findByAssignedToAndStatut(Person person, Statut statut, Pageable pageable);
     Page<Ticket> findByAssignedTo(Person person, Pageable pageable);
     Page<Ticket> findByCreatedByAndStatut(Person person, Statut statut, Pageable pageable);
+
+    // Filtrage par priorité (même logique que le filtrage par statut)
+    Page<Ticket> findByPriority(Priority priority, Pageable pageable);
+    Page<Ticket> findByAssignedToAndPriority(Person person, Priority priority, Pageable pageable);
+    Page<Ticket> findByCreatedByAndPriority(Person person, Priority priority, Pageable pageable);
 
     @Query("SELECT t From Ticket t where t.titre Like %:searchedTicket%")
     Page<Ticket> searchedTicket(String searchedTicket,Pageable pageable);

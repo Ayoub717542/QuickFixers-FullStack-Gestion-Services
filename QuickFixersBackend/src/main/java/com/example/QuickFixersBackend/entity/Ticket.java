@@ -1,5 +1,6 @@
 package com.example.QuickFixersBackend.entity;
 
+import com.example.QuickFixersBackend.enums.Priority;
 import com.example.QuickFixersBackend.enums.Statut;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,8 +24,9 @@ public class Ticket {
 
     private String  titre;
     private String description;
-    private String prirority;
 
+    @Enumerated(EnumType.STRING)
+    private Priority priority;
 
     @Column(updatable = false)
     private LocalDateTime dateCreation;

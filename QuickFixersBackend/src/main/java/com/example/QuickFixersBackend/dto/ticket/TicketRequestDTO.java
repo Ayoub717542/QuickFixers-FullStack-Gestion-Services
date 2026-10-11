@@ -1,5 +1,6 @@
 package com.example.QuickFixersBackend.dto.ticket;
 
+import com.example.QuickFixersBackend.enums.Priority;
 import lombok.*;
 
 
@@ -10,5 +11,5 @@ import lombok.*;
 public class TicketRequestDTO {
     private String titre;
     private String description;
-    private String prirority;
+    private Priority priority;
 }
