@@ -14,7 +14,10 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "services")
+@Table(name = "services", indexes = {
+        @Index(name = "idx_services_statut", columnList = "statut"),
+        @Index(name = "idx_services_type", columnList = "type")
+})
 public class ServiceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

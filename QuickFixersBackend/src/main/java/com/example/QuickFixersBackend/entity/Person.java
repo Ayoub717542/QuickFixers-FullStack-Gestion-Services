@@ -16,7 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
-@Table(name = "users")
+@Table(name = "users", indexes = {
+        @Index(name = "idx_users_service_type", columnList = "service_type")
+})
 public abstract class Person implements UserDetails {
 
     @Id

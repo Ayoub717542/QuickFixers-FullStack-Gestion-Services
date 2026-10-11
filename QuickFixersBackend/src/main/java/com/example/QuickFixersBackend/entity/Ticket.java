@@ -16,7 +16,16 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="ticket")
+@Table(name="ticket", indexes = {
+        @Index(name = "idx_ticket_assigned_statut", columnList = "assigned_to, statut"),
+        @Index(name = "idx_ticket_assigned_priority", columnList = "assigned_to, priority"),
+        @Index(name = "idx_ticket_created_statut", columnList = "created_by, statut"),
+        @Index(name = "idx_ticket_created_priority", columnList = "created_by, priority"),
+        @Index(name = "idx_ticket_statut", columnList = "statut"),
+        @Index(name = "idx_ticket_priority", columnList = "priority"),
+        @Index(name = "idx_ticket_date_creation", columnList = "date_creation"),
+        @Index(name = "idx_ticket_service", columnList = "service_id")
+})
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

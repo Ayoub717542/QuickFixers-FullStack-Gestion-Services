@@ -13,6 +13,11 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "message", indexes = {
+        @Index(name = "idx_message_ticket_date", columnList = "ticket_id, date_envoi"),
+        @Index(name = "idx_message_receiver", columnList = "receiver_id"),
+        @Index(name = "idx_message_sender", columnList = "sender_id")
+})
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
