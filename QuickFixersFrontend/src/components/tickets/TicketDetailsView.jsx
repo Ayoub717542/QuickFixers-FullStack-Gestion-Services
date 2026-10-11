@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
-import { fetchTicket, updateTicketStatut, updateTicket } from "../../api/ticketApi";
+import { fetchTicket, updateTicketStatut, updateTicket, updateTicketPriority } from "../../api/ticketApi";
 import { createPayment } from "../../api/paiementApi";
 import ChatWindow from "../chat/ChatWindow";
+import PriorityBadge from "../PriorityBadge";
+import { PRIORITIES, getPriorityMeta } from "../../utils/priority";
 
 const STATUTS = ["OUVERT", "EN_COURS", "RESOLU", "FERME"];
 
@@ -26,7 +28,7 @@ function formatDate(dateStr) {
     });
 }
 
-function TicketDetailsView({ backPath = "/support/tickets", canManage = true, canEdit = false }) {
+function TicketDetailsView({ backPath = "/support/tickets", canManage = true, canEdit = false, canChangePriority = false }) {
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -65,6 +67,21 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true, ca
             toast.success("Statut mis à jour avec succès");
         } catch (err) {
             toast.error("Erreur lors de la modification du statut");
+        } finally {
+            setSaving(false);
+        }
+    }
+
+    async function changePriority(priority) {
+        if (!priority || priority === ticket.priority) return;
+
+        setSaving(true);
+        try {
+            const updated = await updateTicketPriority(ticket.id, priority);
+            setTicket(updated);
+            toast.success("Priorité mise à jour avec succès");
+        } catch (err) {
+            toast.error("Erreur lors de la modification de la priorité");
         } finally {
             setSaving(false);
         }
@@ -137,9 +154,12 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true, ca
                     <div className="bg-gradient-to-r from-orange-500 to-yellow-500 p-6 text-white">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <h1 className="text-xl font-bold">Ticket #{ticket.id}</h1>
-                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statutColors[ticket.statut] || "bg-gray-100 text-gray-600"}`}>
-                                {ticket.statut}
-                            </span>
+                            <div className="flex items-center gap-2">
+                                <PriorityBadge priority={ticket.priority} />
+                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statutColors[ticket.statut] || "bg-gray-100 text-gray-600"}`}>
+                                    {ticket.statut}
+                                </span>
+                            </div>
                         </div>
                         {!editing && (
                             <p className="text-white/90 mt-2 text-base font-medium">{ticket.titre}</p>
@@ -194,6 +214,24 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true, ca
                         )}
 
                         <dl className="space-y-3 text-sm">
+                            <div className="flex items-center justify-between border-b pb-2">
+                                <dt className="text-gray-500">Priorité</dt>
+                                <dd className="flex items-center gap-2">
+                                    <PriorityBadge priority={ticket.priority} />
+                                    {ticket.enRetard && (
+                                        <span className="rounded-full bg-red-100 px-2 py-0.5 text-[11px] font-semibold text-red-600">
+                                            En retard
+                                        </span>
+                                    )}
+                                </dd>
+                            </div>
+                            <div className="flex justify-between border-b pb-2">
+                                <dt className="text-gray-500">Délai cible</dt>
+                                <dd className="text-gray-800 font-medium">
+                                    {ticket.slaHeures != null ? `${ticket.slaHeures}h` : "—"}
+                                    {ticket.echeance ? ` · avant le ${formatDate(ticket.echeance)}` : ""}
+                                </dd>
+                            </div>
                             <div className="flex justify-between border-b pb-2">
                                 <dt className="text-gray-500">Service</dt>
                                 <dd className="text-gray-800 font-medium">#{ticket.serviceId}</dd>
@@ -259,6 +297,38 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true, ca
                                         <option key={s} value={s}>{s}</option>
                                     ))}
                                 </select>
+                            </div>
+                        )}
+
+                        {canChangePriority && (
+                            <div className="mt-5 bg-gray-50 rounded-xl p-4">
+                                <label className="block text-xs font-medium text-gray-600 mb-2">
+                                    Changer la priorité (administrateur)
+                                </label>
+                                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                                    {PRIORITIES.map((p) => {
+                                        const meta = getPriorityMeta(p);
+                                        const active = ticket.priority === p;
+                                        return (
+                                            <button
+                                                key={p}
+                                                type="button"
+                                                disabled={saving}
+                                                onClick={() => changePriority(p)}
+                                                className={`rounded-lg border-2 px-3 py-2 text-center text-sm font-semibold transition-colors disabled:opacity-50 ${
+                                                    active
+                                                        ? meta.accent
+                                                        : "border-gray-200 bg-white text-gray-500 hover:border-gray-300"
+                                                }`}
+                                            >
+                                                {meta.label}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                                <p className="text-xs text-gray-400 mt-2">
+                                    Du plus bas au plus urgent : Basse → Urgente.
+                                </p>
                             </div>
                         )}
                     </div>

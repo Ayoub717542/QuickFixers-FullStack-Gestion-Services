@@ -4,6 +4,12 @@ export async function fetchTicket(id) {
     return response.data;
 }
 
+// Mise à jour de la priorité d'un ticket (réservé à l'administrateur).
+export async function updateTicketPriority(id, priority) {
+    const response = await axiosApi.patch(`/ticket/priority/${id}/${priority}`);
+    return response.data;
+}
+
 export async function updateTicketStatut(ticketId, statut) {
     const response = await axiosApi.patch(`/ticket/statut/${ticketId}/${statut}`);
     return response.data;

@@ -4,7 +4,9 @@ import { toast } from "react-toastify";
 import { axiosApi } from "../../api/axiosApi";
 import Loader from "../Loader";
 import StatusBadge from "../StatusBadge";
+import PriorityBadge from "../PriorityBadge";
 import Pagination from "../Pagination.jsx";
+import { PRIORITIES, getPriorityMeta } from "../../utils/priority";
 
 function TicketTable({ title = "Tickets" , basePath = "/support/tickets"}) {
     const navigate = useNavigate();
@@ -15,6 +17,7 @@ function TicketTable({ title = "Tickets" , basePath = "/support/tickets"}) {
 
     const [recherche, setRecherche] = useState("");
     const [statut, setStatut] = useState("");
+    const [priorite, setPriorite] = useState("");
 
     function fetchTickets() {
         let url = "";
@@ -22,6 +25,8 @@ function TicketTable({ title = "Tickets" , basePath = "/support/tickets"}) {
             url = "/ticket/recherche?recherche=" + recherche + "&pageNumber=" + ticketPage + "&pageSize=4";
         } else if (statut !== "") {
             url = "/ticket/statut/" + statut + "?pageNumber=" + ticketPage + "&pageSize=4";
+        } else if (priorite !== "") {
+            url = "/ticket/priority/" + priorite + "?pageNumber=" + ticketPage + "&pageSize=4";
         } else {
             url = "/ticket/tickets?pageNumber=" + ticketPage + "&pageSize=4&sortBy=dateCreation&sortDir=desc";
         }
@@ -41,7 +46,7 @@ function TicketTable({ title = "Tickets" , basePath = "/support/tickets"}) {
 
     useEffect(() => {
         fetchTickets();
-    }, [ticketPage, recherche, statut]);
+    }, [ticketPage, recherche, statut, priorite]);
 
     function handleRecherche(e) {
         setRecherche(e.target.value);
@@ -50,6 +55,13 @@ function TicketTable({ title = "Tickets" , basePath = "/support/tickets"}) {
 
     function handleStatut(e) {
         setStatut(e.target.value);
+        setPriorite("");
+        setTicketPage(1);
+    }
+
+    function handlePriorite(e) {
+        setPriorite(e.target.value);
+        setStatut("");
         setTicketPage(1);
     }
 
@@ -86,6 +98,17 @@ function TicketTable({ title = "Tickets" , basePath = "/support/tickets"}) {
                         <option value="RESOLU">RESOLU</option>
                         <option value="FERME">FERME</option>
                     </select>
+
+                    <select
+                        value={priorite}
+                        onChange={handlePriorite}
+                        className="border rounded-lg px-3 py-2 text-sm flex-1 min-w-[150px]"
+                    >
+                        <option value="">Toutes les priorités</option>
+                        {PRIORITIES.map((p) => (
+                            <option key={p} value={p}>{getPriorityMeta(p).label}</option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
@@ -96,7 +119,7 @@ function TicketTable({ title = "Tickets" , basePath = "/support/tickets"}) {
                         <th className="p-4 text-left">ID</th>
                         <th className="p-4 text-left">Titre</th>
                         <th className="p-4 text-left">Statut</th>
-                        <th className="p-4 text-left">Prirority</th>
+                        <th className="p-4 text-left">Priorité</th>
                         <th className="p-4 text-left">Date</th>
                         <th className="p-4 text-right">Action</th>
                     </tr>
@@ -108,7 +131,16 @@ function TicketTable({ title = "Tickets" , basePath = "/support/tickets"}) {
                             <td className="p-4">#{ticket.id}</td>
                             <td className="p-4 font-medium">{ticket.titre}</td>
                             <td className="p-4"><StatusBadge status={ticket.statut} /></td>
-                            <td className="p-4">{ticket.prirority}</td>
+                            <td className="p-4">
+                                <div className="flex items-center gap-2">
+                                    <PriorityBadge priority={ticket.priority} />
+                                    {ticket.enRetard && (
+                                        <span className="rounded-full bg-red-100 px-2 py-0.5 text-[11px] font-semibold text-red-600">
+                                            En retard
+                                        </span>
+                                    )}
+                                </div>
+                            </td>
                             <td className="p-4 text-gray-500">{ticket.dateCreation}</td>
                             <td className="p-4 text-right">
                                 <button
