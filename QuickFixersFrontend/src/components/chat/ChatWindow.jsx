@@ -69,8 +69,8 @@ function ChatWindow({ ticketId }) {
             )}
 
             {isOpen && (
-                <div className="fixed bottom-5 right-5 z-50 flex h-[450px] w-[calc(100vw-2.5rem)] max-w-sm flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
-                    <div className="flex items-center justify-between bg-orange-500 p-4 text-white">
+                <div className="fixed inset-0 z-50 flex h-[100dvh] flex-col overflow-hidden bg-white sm:inset-auto sm:bottom-5 sm:right-5 sm:h-[450px] sm:w-[380px] sm:rounded-2xl sm:shadow-2xl">
+                    <div className="flex items-center justify-between bg-orange-500 px-4 pb-4 pt-[calc(1rem_+_env(safe-area-inset-top))] text-white sm:pt-4">
                         <div>
                             <h2 className="font-bold">Conversation</h2>
                             <p className="flex items-center gap-1 text-xs">
@@ -123,7 +123,7 @@ function ChatWindow({ ticketId }) {
                         <div ref={bottomRef} />
                     </div>
 
-                    <div className="flex gap-2 border-t p-3">
+                    <div className="flex gap-2 border-t p-3 pb-[calc(0.75rem_+_env(safe-area-inset-bottom))] sm:pb-3">
                         <input
                             type="text"
                             value={draft}
