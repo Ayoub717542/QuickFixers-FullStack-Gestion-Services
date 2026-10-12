@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { axiosApi } from "../../api/axiosApi";
+import Spinner from "../Spinner.jsx";
 
 function UserForm({ onSuccess,fixedType }) {
     const [typeCompte, setTypeCompte] = useState(fixedType || "CLIENT");
@@ -12,18 +13,17 @@ function UserForm({ onSuccess,fixedType }) {
         formState: { errors, isSubmitting }
     } = useForm();
 
-    function onSubmit(data) {
+    async function onSubmit(data) {
         const url = typeCompte === "SUPPORT" ? "/users/Ajoutersupport" : "/users/ajouterUser";
-        axiosApi.post(url, data)
-            .then(() => {
-                toast.success("Compte ajouté avec succès.");
-                reset();
-                setTypeCompte("CLIENT");
-                onSuccess();
-            })
-            .catch(() => {
-                toast.error("Erreur lors de l'ajout du compte.");
-            });
+        try {
+            await axiosApi.post(url, data);
+            toast.success("Compte ajouté avec succès.");
+            reset();
+            setTypeCompte("CLIENT");
+            onSuccess();
+        } catch {
+            toast.error("Erreur lors de l'ajout du compte.");
+        }
     }
 
     return (
@@ -102,8 +102,9 @@ function UserForm({ onSuccess,fixedType }) {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="bg-green-500 text-white px-4 py-2 rounded-lg"
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
+                    {isSubmitting && <Spinner />}
                     {isSubmitting ? "Ajout..." : "Ajouter"}
                 </button>
 

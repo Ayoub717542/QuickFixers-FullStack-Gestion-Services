@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Plus } from "lucide-react";
 import { createService } from "../../api/serviceApi";
+import Spinner from "../Spinner.jsx";
 
 const TYPES = ["ELECTROMENAGER", "ELECTRONIQUE", "INFORMATIQUE", "TELEPHONIE"];
 
@@ -13,16 +14,15 @@ function ServiceForm({ onSuccess }) {
         formState: { errors, isSubmitting }
     } = useForm();
 
-    function onSubmit(data) {
-        createService(data)
-            .then(() => {
-                toast.success("Service ajouté avec succès.");
-                reset();
-                onSuccess();
-            })
-            .catch(() => {
-                toast.error("Erreur lors de l'ajout du service.");
-            });
+    async function onSubmit(data) {
+        try {
+            await createService(data);
+            toast.success("Service ajouté avec succès.");
+            reset();
+            onSuccess();
+        } catch {
+            toast.error("Erreur lors de l'ajout du service.");
+        }
     }
 
     return (
@@ -72,8 +72,9 @@ function ServiceForm({ onSuccess }) {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-5 py-2 bg-orange-500 text-white rounded-lg text-sm font-medium hover:bg-orange-600 disabled:opacity-50 transition-colors"
+                    className="px-5 py-2 bg-orange-500 text-white rounded-lg text-sm font-medium hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                 >
+                    {isSubmitting && <Spinner />}
                     {isSubmitting ? "Ajout..." : "Ajouter"}
                 </button>
             </div>
