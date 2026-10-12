@@ -21,11 +21,11 @@ function Navbar({ onMenuClick }) {
     }
 
     return (
-        <nav className="sticky top-0 z-10 h-16 bg-white border-b flex items-center justify-between px-6">
+        <nav className="sticky top-0 z-10 flex h-16 items-center border-b bg-white px-6">
             <Menu size={22} onClick={onMenuClick}
                   className="lg:hidden p-2 box-content cursor-pointer text-gray-500" />
 
-            <div className="flex items-center gap-4">
+            <div className="ml-auto flex items-center gap-4">
                 <div className="relative">
                     <button
                         type="button"
