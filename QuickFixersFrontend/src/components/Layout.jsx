@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "./NavBar";
+import ChatNotifications from "./chat/ChatNotifications";
+import { UnreadProvider } from "../context/UnreadContext";
 
 function Layout({ sidebar }) {
     const [open, setOpen] = useState(false);
 
     return (
-        <div className="flex min-h-screen">
+        <UnreadProvider>
+            <ChatNotifications />
+
+            <div className="flex min-h-screen">
             <div className="hidden lg:block">
                 {sidebar}
             </div>
@@ -28,7 +33,8 @@ function Layout({ sidebar }) {
                     </div>
                 </>
             )}
-        </div>
+            </div>
+        </UnreadProvider>
     );
 }
 

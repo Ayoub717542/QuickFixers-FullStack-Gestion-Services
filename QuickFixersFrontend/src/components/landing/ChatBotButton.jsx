@@ -18,7 +18,7 @@ function now() {
     });
 }
 
-// Bulle de message (assistant à gauche, visiteur à droite).
+
 function Message({ message }) {
     const isUser = message.role === "user";
 
@@ -82,7 +82,6 @@ function ChatBotButton() {
     const scrollRef = useRef(null);
     const inputRef = useRef(null);
 
-    // Message d'accueil au premier affichage, puis focus sur le champ.
     useEffect(() => {
         if (!open) return;
 
@@ -94,7 +93,6 @@ function ChatBotButton() {
         return () => clearTimeout(id);
     }, [open]);
 
-    // Défilement automatique vers le dernier message.
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     }, [messages, sending, open]);
@@ -153,7 +151,7 @@ function ChatBotButton() {
         <>
             {open && (
                 <div className="fixed inset-x-0 top-0 z-50 flex h-[100dvh] flex-col overflow-hidden bg-white sm:inset-auto sm:bottom-36 sm:right-6 sm:h-[560px] sm:max-h-[calc(100dvh-11rem)] sm:w-[380px] sm:rounded-2xl sm:shadow-2xl sm:ring-1 sm:ring-black/5">
-                    {/* En-tête */}
+
                     <div className="flex items-center justify-between gap-2 bg-gradient-to-r from-orange-500 to-yellow-500 px-3 pb-2.5 pt-[calc(0.625rem_+_env(safe-area-inset-top))] text-white sm:px-4 sm:py-3">
                         <div className="flex items-center gap-2.5">
                             <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-white/20 sm:h-10 sm:w-10">
@@ -181,7 +179,7 @@ function ChatBotButton() {
                         </button>
                     </div>
 
-                    {/* Messages */}
+
                     <div
                         role="log"
                         aria-live="polite"
@@ -196,7 +194,7 @@ function ChatBotButton() {
                         <div ref={scrollRef} />
                     </div>
 
-                    {/* Suggestions de départ */}
+
                     {messages.length <= 1 && !sending && (
                         <div className="flex gap-2 overflow-x-auto border-t border-gray-100 bg-white px-3 py-2 [scrollbar-width:none] sm:px-4 [&::-webkit-scrollbar]:hidden">
                             {SUGGESTIONS.map((s) => (
@@ -212,7 +210,6 @@ function ChatBotButton() {
                         </div>
                     )}
 
-                    {/* Saisie */}
                     <form
                         onSubmit={handleSubmit}
                         className="flex items-center gap-1.5 border-t border-gray-100 bg-white px-2.5 pb-[calc(0.625rem_+_env(safe-area-inset-bottom))] pt-2.5 sm:gap-2 sm:p-3"
@@ -257,7 +254,7 @@ function ChatBotButton() {
                 </div>
             )}
 
-            {/* Bouton flottant */}
+
             <button
                 type="button"
                 onClick={() => setOpen((o) => !o)}
