@@ -75,15 +75,13 @@ public class TicketImpl implements TicketInterface {
 
         if (support != null) {
             try {
-                emailService.sendEmail(
+                emailService.sendTicketAssigned(
                         support.getEmail(),
-                        "Nouveau ticket #" + savedTicket.getId(),
-                        "Bonjour " + support.getNom() + ",\n\n" +
-                                "Un nouveau ticket vous a été assigné :\n" +
-                                "Titre : " + savedTicket.getTitre() + "\n" +
-                                "Priorité : " + savedTicket.getPriority().getLabel() + "\n" +
-                                "Description : " + savedTicket.getDescription() + "\n\n" +
-                                "Merci de vous connecter pour le traiter."
+                        support.getNom(),
+                        savedTicket.getId(),
+                        savedTicket.getTitre(),
+                        savedTicket.getPriority().getLabel(),
+                        savedTicket.getDescription()
                 );
             } catch (Exception e) {
                 log.warn("Email non envoyé au support : {}", e.getMessage());
