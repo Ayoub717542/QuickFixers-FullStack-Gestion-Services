@@ -15,6 +15,8 @@ function ServiceList() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [showForm, setShowForm] = useState(false);
+    const [busyId, setBusyId] = useState(null);
+    const [busyAction, setBusyAction] = useState(null);
     const navigate = useNavigate();
     const canManage = getUserRole() === "ADMIN";
     const basePath = canManage ? "/admin/services" : "/user/services";
@@ -38,30 +40,42 @@ function ServiceList() {
         fetchList();
     }, [page]);
 
-    function handleDelete(service) {
+    async function handleDelete(service) {
         if (!window.confirm("Voulez-vous vraiment supprimer ce service ?")) {
             return;
         }
-        deleteService(service.id)
-            .then(() => {
-                toast.success("Service supprimé.");
-                fetchList();
-            })
-            .catch(() => {
-                toast.error("Erreur lors de la suppression.");
-            });
+
+        setBusyId(service.id);
+        setBusyAction("delete");
+
+        try {
+            await deleteService(service.id);
+            toast.success("Service supprimé.");
+            fetchList();
+        } catch (error) {
+            toast.error("Erreur lors de la suppression.");
+        } finally {
+            setBusyId(null);
+            setBusyAction(null);
+        }
     }
 
-    function handleToggleStatut(service) {
+    async function handleToggleStatut(service) {
         const newStatut = service.statut === "ACTIVE" ? "INACTIVE" : "ACTIVE";
-        updateServiceStatut(service.id, newStatut)
-            .then(() => {
-                toast.success("Statut modifié.");
-                fetchList();
-            })
-            .catch(() => {
-                toast.error("Erreur lors du changement de statut.");
-            });
+
+        setBusyId(service.id);
+        setBusyAction("statut");
+
+        try {
+            await updateServiceStatut(service.id, newStatut);
+            toast.success("Statut modifié.");
+            fetchList();
+        } catch (error) {
+            toast.error("Erreur lors du changement de statut.");
+        } finally {
+            setBusyId(null);
+            setBusyAction(null);
+        }
     }
 
     if (loading) {
@@ -102,6 +116,8 @@ function ServiceList() {
                             key={service.id}
                             service={service}
                             canManage={canManage}
+                            busy={busyId === service.id}
+                            busyAction={busyAction}
                             onDelete={handleDelete}
                             onToggleStatut={handleToggleStatut}
                         />

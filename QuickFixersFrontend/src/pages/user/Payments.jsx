@@ -4,6 +4,7 @@ import Loader from "../../components/Loader";
 import Pagination from "../../components/Pagination";
 import { fetchPayments } from "../../api/paiementApi";
 import { axiosApi } from "../../api/axiosApi";
+import Spinner from "../../components/Spinner.jsx";
 
 const statutColors = {
     EN_ATTENTE: "bg-yellow-100 text-yellow-700",
@@ -45,6 +46,16 @@ function Payments() {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
+    const [busyId, setBusyId] = useState(null);
+
+    async function telecharger(paiement) {
+        setBusyId(paiement.id);
+        try {
+            await telechargerRecu(paiement);
+        } finally {
+            setBusyId(null);
+        }
+    }
 
     function fetchList() {
         setLoading(true);
@@ -105,10 +116,12 @@ function Payments() {
                                     <td className="p-4 text-gray-500">#{p.ticketId}</td>
                                     <td className="p-4">
                                         <button
-                                            onClick={() => telechargerRecu(p)}
-                                            className="px-3 py-1 rounded-lg text-sm font-medium bg-blue-50 text-blue-600 hover:bg-blue-100"
+                                            onClick={() => telecharger(p)}
+                                            disabled={busyId === p.id}
+                                            className="px-3 py-1 rounded-lg text-sm font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
-                                            Télécharger le reçu
+                                            {busyId === p.id && <Spinner />}
+                                            {busyId === p.id ? "Téléchargement..." : "Télécharger le reçu"}
                                         </button>
                                     </td>
                                 </tr>

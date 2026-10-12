@@ -1,4 +1,5 @@
 import { Wrench, Trash2, Power } from "lucide-react";
+import Spinner from "../Spinner.jsx";
 
 // Couleurs des badges selon le statut
 const statutColors = {
@@ -6,7 +7,10 @@ const statutColors = {
     INACTIVE: "bg-gray-100 text-gray-500 ring-1 ring-gray-200"
 };
 
-function ServiceCard({ service, canManage = false, onDelete, onToggleStatut ,onClick}) {
+function ServiceCard({ service, canManage = false, busy = false, busyAction = null, onDelete, onToggleStatut ,onClick}) {
+    const isToggling = busy && busyAction === "statut";
+    const isDeleting = busy && busyAction === "delete";
+
     return (
         <div onClick={onClick} className="cursor-pointer bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow p-5 flex flex-col gap-4">
             <div className="flex items-start justify-between gap-3">
@@ -36,21 +40,25 @@ function ServiceCard({ service, canManage = false, onDelete, onToggleStatut ,onC
                 <div className="flex gap-2 pt-1 mt-auto">
                     <button
                         onClick={(e) => {e.stopPropagation(); onToggleStatut(service)}}
-                        className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        disabled={busy}
+                        className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                             service.statut === "ACTIVE"
                                 ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
                                 : "bg-emerald-500 text-white hover:bg-emerald-600"
                         }`}
                     >
-                        <Power size={14} />
-                        {service.statut === "ACTIVE" ? "Désactiver" : "Activer"}
+                        {isToggling ? <Spinner /> : <Power size={14} />}
+                        {isToggling
+                            ? "En cours..."
+                            : service.statut === "ACTIVE" ? "Désactiver" : "Activer"}
                     </button>
                     <button
                         onClick={(e) => { e.stopPropagation(); onDelete(service)}}
-                        className="px-3 py-2 flex items-center justify-center gap-1.5 rounded-lg text-sm font-medium text-red-500 bg-red-50 hover:bg-red-100 transition-colors"
+                        disabled={busy}
+                        className="px-3 py-2 flex items-center justify-center gap-1.5 rounded-lg text-sm font-medium text-red-500 bg-red-50 hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        <Trash2 size={14} />
-                        Supprimer
+                        {isDeleting ? <Spinner /> : <Trash2 size={14} />}
+                        {isDeleting ? "Suppression..." : "Supprimer"}
                     </button>
                 </div>
             )}

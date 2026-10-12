@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { axiosApi } from "../../api/axiosApi";
 import Loader from "../Loader";
 import Pagination from "../Pagination.jsx";
+import Spinner from "../Spinner.jsx";
 
 function ClientTable() {
     const [clients, setClients] = useState([]);
@@ -13,6 +14,7 @@ function ClientTable() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [busyId, setBusyId] = useState(null);
 
     const navigate = useNavigate();
     const { register, handleSubmit } = useForm();
@@ -52,12 +54,16 @@ function ClientTable() {
             return;
         }
 
+        setBusyId(client.id);
+
         try {
             await axiosApi.delete(`/users/supprimerUser/${client.id}`);
             toast.success("Client supprimé.");
             fetchClients();
         } catch (error) {
             toast.error("Erreur lors de la suppression.");
+        } finally {
+            setBusyId(null);
         }
     }
 
@@ -74,8 +80,10 @@ function ClientTable() {
 
                     <button
                         type="submit"
-                        className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                        disabled={loading}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
+                        {loading && <Spinner />}
                         Rechercher
                     </button>
                 </form>
@@ -128,9 +136,11 @@ function ClientTable() {
 
                                                 <button
                                                     onClick={() => supprimerClient(client)}
-                                                    className="bg-red-500 text-white px-3 py-1.5 rounded-lg"
+                                                    disabled={busyId === client.id}
+                                                    className="bg-red-500 text-white px-3 py-1.5 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
-                                                    Supprimer
+                                                    {busyId === client.id && <Spinner />}
+                                                    {busyId === client.id ? "Suppression..." : "Supprimer"}
                                                 </button>
                                             </td>
                                         </tr>

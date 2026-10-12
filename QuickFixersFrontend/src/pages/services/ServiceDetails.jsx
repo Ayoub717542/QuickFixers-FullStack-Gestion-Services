@@ -13,6 +13,7 @@ function ServiceDetails() {
 
     const [service, setService] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
 
     const isAdmin = getUserRole() === "ADMIN";
 
@@ -33,6 +34,7 @@ function ServiceDetails() {
 
     async function changeStatut(statut) {
         if (statut === service.statut) return;
+        setSaving(true);
         try {
             const updatedService = await updateServiceStatut(
                 service.id,
@@ -43,6 +45,8 @@ function ServiceDetails() {
             toast.success("Statut mis à jour.");
         } catch (error) {
             toast.error("Erreur lors de la modification.");
+        } finally {
+            setSaving(false);
         }
     }
 
@@ -167,15 +171,16 @@ function ServiceDetails() {
                             </h3>
 
                             <label className="block text-sm text-gray-500 mb-2">
-                                Modifier le statut
+                                {saving ? "Enregistrement..." : "Modifier le statut"}
                             </label>
 
                             <select
                                 value={service.statut}
+                                disabled={saving}
                                 onChange={(e) =>
                                     changeStatut(e.target.value)
                                 }
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <option value="ACTIVE">
                                     ACTIVE

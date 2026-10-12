@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { axiosApi } from "../../api/axiosApi";
 import Loader from "../Loader";
 import Pagination from "../Pagination.jsx";
+import Spinner from "../Spinner.jsx";
 
 function SupportTable() {
     const [supports, setSupports] = useState([]);
@@ -13,6 +14,7 @@ function SupportTable() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [busyId, setBusyId] = useState(null);
 
     const navigate = useNavigate();
     const [recherche, setRecherche] = useState("");
@@ -58,12 +60,16 @@ function SupportTable() {
             return;
         }
 
+        setBusyId(support.id);
+
         try {
             await axiosApi.delete(`/users/supprimerUser/${support.id}`);
             toast.success("Support supprimé.");
             fetchSupports();
         } catch (error) {
             toast.error("Erreur lors de la suppression.");
+        } finally {
+            setBusyId(null);
         }
     }
     function handleRecherche(e) {
@@ -152,9 +158,11 @@ function SupportTable() {
                                                 onClick={() =>
                                                     supprimerSupport(support)
                                                 }
-                                                className="bg-red-500 text-white px-3 py-1.5 rounded-lg"
+                                                disabled={busyId === support.id}
+                                                className="bg-red-500 text-white px-3 py-1.5 rounded-lg inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
-                                                Supprimer
+                                                {busyId === support.id && <Spinner />}
+                                                {busyId === support.id ? "Suppression..." : "Supprimer"}
                                             </button>
                                         </td>
                                     </tr>

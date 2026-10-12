@@ -6,6 +6,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import { axiosApi } from "../../api/axiosApi";
 import Loader from "../../components/Loader";
+import Spinner from "../../components/Spinner.jsx";
 
 
 
@@ -106,8 +107,9 @@ function EditUser() {
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="bg-green-500 text-white px-4 py-2 rounded-lg"
+                        className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
+                        {isSubmitting && <Spinner />}
                         {isSubmitting ? "Enregistrement..." : "Enregistrer"}
                     </button>
 
