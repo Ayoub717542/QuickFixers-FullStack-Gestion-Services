@@ -40,7 +40,8 @@ public class SecurityConfig {
                             "/swagger-ui.html",
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**",
-                                "/api/chatbot"
+                                "/api/chatbot",
+                                "/ws/**"
                         ).permitAll()
                         .requestMatchers("/login", "/error").permitAll()
                 .anyRequest().authenticated()

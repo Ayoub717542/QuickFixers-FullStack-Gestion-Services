@@ -12,8 +12,10 @@ public interface MessageMapper {
 
     @Mapping(source = "sender.id", target = "senderId")
     @Mapping(source = "sender.nom", target = "senderNom")
+    @Mapping(source = "sender.email", target = "senderEmail")
     @Mapping(source = "receiver.id", target = "receiverId")
     @Mapping(source = "receiver.nom", target = "receiverNom")
+    @Mapping(source = "receiver.email", target = "receiverEmail")
     @Mapping(source = "ticket.id", target = "ticketId")
     MessageResponseDTO toDto(Message message);
 }

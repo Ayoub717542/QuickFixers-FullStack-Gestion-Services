@@ -13,7 +13,9 @@ public class MessageResponseDTO {
     private LocalDateTime dateEnvoi;
     private Long senderId;
     private String senderNom;
+    private String senderEmail;
     private Long receiverId;
     private String receiverNom;
+    private String receiverEmail;
     private Long ticketId;
 }

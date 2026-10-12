@@ -5,54 +5,53 @@ import com.example.QuickFixersBackend.dto.message.MessageResponseDTO;
 import com.example.QuickFixersBackend.entity.Client;
 import com.example.QuickFixersBackend.entity.Message;
 import com.example.QuickFixersBackend.entity.Person;
-import com.example.QuickFixersBackend.entity.Support;
 import com.example.QuickFixersBackend.entity.Ticket;
-import com.example.QuickFixersBackend.exception.NotFoundException;
 import com.example.QuickFixersBackend.mapper.MessageMapper;
 import com.example.QuickFixersBackend.repository.MessageRepository;
-import com.example.QuickFixersBackend.repository.TicketRepository;
-import com.example.QuickFixersBackend.repository.UserRepository;
+import com.example.QuickFixersBackend.services.TicketAccessService;
 import com.example.QuickFixersBackend.services.serviceInterfce.MessageInterface;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MessageImpl implements MessageInterface {
-    private final TicketRepository ticketRepository;
-    private final UserRepository  userRepository;
+
     private final MessageMapper messageMapper;
     private final MessageRepository messageRepository;
+    private final TicketAccessService ticketAccessService;
 
     @Override
     public MessageResponseDTO createMessage(MessageRequestDTO messageDTO, String email) {
+        Ticket ticket = ticketAccessService.requireTicket(messageDTO.getTicketId());
 
-        Ticket ticket = ticketRepository.findById(messageDTO.getTicketId())
-                .orElseThrow(() -> new NotFoundException("Ticket not found"));
+        Person sender = ticketAccessService.requireUser(email);
 
-
-        Person sender = userRepository.findByEmail(email)
-                .orElseThrow(()-> new NotFoundException("email not found"));
-
-
-        if (sender instanceof Client &&
-                !ticket.getCreatedBy().getId().equals(sender.getId())) {
-            throw new AccessDeniedException("Access denied");
-        }
-
-        if (sender instanceof Support &&
-                !ticket.getAssignedTo().getId().equals(sender.getId())) {
-            throw new AccessDeniedException("Access denied");
-        }
+        ticketAccessService.requireMember(ticket, sender);
 
         Message message = messageMapper.toEntity(messageDTO);
-        message.setContenu(messageDTO.getContenu());
         message.setTicket(ticket);
         message.setSender(sender);
+        message.setReceiver(findReceiver(ticket, sender));
 
-Message saveMessage =messageRepository.save(message);
+        return messageMapper.toDto(messageRepository.save(message));
+    }
 
-        return messageMapper.toDto(saveMessage);
+    @Override
+    public List<MessageResponseDTO> getTicketMessages(Long ticketId, String email) {
+        Ticket ticket = ticketAccessService.requireTicket(ticketId);
+        Person user = ticketAccessService.requireUser(email);
+        ticketAccessService.requireMember(ticket, user);
+
+        return messageRepository.findByTicketIdOrderByDateEnvoiAsc(ticketId)
+                .stream()
+                .map(messageMapper::toDto)
+                .toList();
+    }
+
+    private Person findReceiver(Ticket ticket, Person sender) {
+        return sender instanceof Client ? ticket.getAssignedTo() : ticket.getCreatedBy();
     }
 }

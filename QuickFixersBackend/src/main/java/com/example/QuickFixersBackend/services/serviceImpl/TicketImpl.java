@@ -58,8 +58,8 @@ public class TicketImpl implements TicketInterface {
         ticket.setService(service);
         ticket.setStatut(Statut.OUVERT);
         ticket.setDateCreation(LocalDateTime.now());
+        ticket.setPrix(service.getPrix());
 
-        // Priorité choisie par le client, sinon valeur par défaut.
         if (ticket.getPriority() == null) {
             ticket.setPriority(Priority.MOYENNE);
         }
@@ -275,10 +275,6 @@ public class TicketImpl implements TicketInterface {
         throw new AccessDeniedException("Access denied");
     }
 
-    /**
-     * Mappe un ticket vers son DTO et enrichit la priorité avec sa logique métier :
-     * libellé lisible, délai cible (SLA) et détection automatique du retard.
-     */
     private TicketResponseDTO toDto(Ticket ticket) {
         TicketResponseDTO dto = ticketMapper.toDto(ticket);
 
