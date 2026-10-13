@@ -30,6 +30,7 @@
 		<java.version>21</java.version>
         <sonar.projectKey>QuickFixers-Backend</sonar.projectKey>
         <sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.organization>ayoub717542</sonar.organization>
 	</properties>
 	<dependencies>
 		<dependency>
