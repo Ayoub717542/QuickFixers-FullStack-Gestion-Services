@@ -6,6 +6,7 @@ import com.example.QuickFixersBackend.entity.Ticket;
 import com.example.QuickFixersBackend.enums.PaiementStatut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,13 +15,14 @@ import java.util.List;
 
 
 public interface PaiementRepository  extends JpaRepository<Paiement,Long> {
+    @EntityGraph(attributePaths = {"ticket", "client"})
     Page<Paiement> findByStatut(PaiementStatut statut, Pageable pageable);
+    @EntityGraph(attributePaths = {"ticket", "client"})
     Page<Paiement> findByClient(Person client,Pageable pageable);
-    @Override
-    long count();
 
     long countByClient(Person client);
     long countByStatut(PaiementStatut statut);
+    @EntityGraph(attributePaths = {"ticket", "client"})
     Page<Paiement> findByTicketAssignedTo(Person agent, Pageable pageable);
 
     @Query("select FUNCTION('DATE', p.dateCreation) AS jour, SUM(p.montant) AS total " +
@@ -38,7 +40,9 @@ public interface PaiementRepository  extends JpaRepository<Paiement,Long> {
          ORDER BY FUNCTION('DATE', p.dateCreation)
          """)
     List<Object[]> incomeByDayForSupport(@Param("statut") PaiementStatut statut, @Param("agent") Person agent);
-
     boolean existsByTicketAndStatut(Ticket ticket, PaiementStatut statut);
+    @Override
+    @EntityGraph(attributePaths = {"ticket", "client"})
+    Page<Paiement> findAll(Pageable pageable);
 
 }
