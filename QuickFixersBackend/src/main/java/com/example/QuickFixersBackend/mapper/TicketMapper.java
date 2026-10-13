@@ -12,6 +12,7 @@ Ticket toEntity(TicketRequestDTO dto);
 @Mapping(source = "assignedTo.id", target = "assignedToId")
 @Mapping(source = "assignedTo.nom", target = "assignedToNom")
 @Mapping(source = "assignedTo.prenom", target = "assignedToPrenom")
+@Mapping(source = "assignedTo.email", target = "assignedToEmail")
 @Mapping(source = "service.id", target = "serviceId")
 @Mapping(source = "createdBy.id", target = "createdById")
 @Mapping(target = "priorityLabel", ignore = true)

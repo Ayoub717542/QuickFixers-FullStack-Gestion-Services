@@ -117,7 +117,7 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true, ca
         try {
             await createPayment(ticket.id, ticket.prix);
             toast.success("Paiement effectué avec succès.");
-            loadTicket(); // recharger → statut FERME → le bouton disparaît
+            loadTicket();
         } catch (err) {
             toast.error("Erreur lors du paiement.");
         } finally {
@@ -133,11 +133,8 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true, ca
         <div className="p-6">
             <button
                 onClick={() => navigate(backPath)}
-                className="mb-4 text-sm text-orange-600 hover:underline"
-            >
-                ← Retour à mes tickets
+                className="mb-4 text-sm text-orange-600 hover:underline">← Retour à mes tickets
             </button>
-
             {error ? (
                 <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-md p-6 text-center">
                     <p className="text-red-500 text-sm mb-3">{error}</p>
@@ -243,8 +240,8 @@ function TicketDetailsView({ backPath = "/support/tickets", canManage = true, ca
                             <div className="flex justify-between border-b pb-2">
                                 <dt className="text-gray-500">Assigné à</dt>
                                 <dd className="text-gray-800 font-medium">
-                                    {ticket.assignedToNom
-                                        ? `${ticket.assignedToNom} ${ticket.assignedToPrenom || ""}`.trim()
+                                    {ticket.assignedToEmail
+                                        ? ticket.assignedToEmail
                                         : ticket.assignedToId
                                             ? `#${ticket.assignedToId}`
                                             : "—"}

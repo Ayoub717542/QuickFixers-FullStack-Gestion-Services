@@ -24,6 +24,7 @@ public class TicketResponseDTO implements Serializable {
     private Long assignedToId;
     private String assignedToNom;
     private String assignedToPrenom;
+    private String assignedToEmail;
     private Long serviceId;
     private Long createdById;
 
