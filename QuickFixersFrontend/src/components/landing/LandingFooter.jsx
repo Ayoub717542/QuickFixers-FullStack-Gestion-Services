@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Wrench, Mail, MapPin, Phone } from "lucide-react";
+import { Wrench, Mail, Phone } from "lucide-react";
 
 function LandingFooter() {
     return (
@@ -38,15 +38,13 @@ function LandingFooter() {
                     <ul className="mt-4 space-y-3 text-sm">
                         <li className="flex items-center gap-2">
                             <Mail size={16} className="text-orange-400" />
-                            contact@quickfixers.com
+                            <a href="mailto:quickfixers9@gmail.com" className="hover:text-orange-400">
+                                quickfixers9@gmail.com
+                            </a>
                         </li>
                         <li className="flex items-center gap-2">
                             <Phone size={16} className="text-orange-400" />
                             +212 5 00 00 00 00
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <MapPin size={16} className="text-orange-400" />
-                            Casablanca, Maroc
                         </li>
                     </ul>
                 </div>
