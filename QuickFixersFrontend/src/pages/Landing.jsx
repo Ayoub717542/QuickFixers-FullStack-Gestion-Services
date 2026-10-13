@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
     Cpu,
@@ -15,6 +16,7 @@ import {
     CheckCircle2,
 } from "lucide-react";
 import heroBg from "../assets/Atelier de réparation électronique.png";
+import heroBlur from "../assets/hero-blur.png";
 import LandingNav from "../components/landing/LandingNav.jsx";
 import LandingFooter from "../components/landing/LandingFooter.jsx";
 import ChatBotButton from "../components/landing/ChatBotButton.jsx";
@@ -72,6 +74,9 @@ const highlights = [
 ];
 
 function Landing() {
+    // Affiche l'image en fondu dès qu'elle est chargée (gère aussi le cas "déjà en cache").
+    const [heroLoaded, setHeroLoaded] = useState(false);
+
     return (
         <div className="min-h-screen bg-white">
             <LandingNav />
@@ -80,9 +85,32 @@ function Landing() {
                 {/* Hero */}
                 <section
                     id="accueil"
-                    className="relative flex min-h-[80vh] scroll-mt-20 items-center bg-cover bg-center"
-                    style={{ backgroundImage: `url(${heroBg})` }}
+                    className="relative flex min-h-[80vh] scroll-mt-20 items-center overflow-hidden bg-neutral-800"
                 >
+                    {/* Version floue (quelques centaines d'octets) : affichage instantané */}
+                    <div
+                        className={`absolute inset-0 scale-110 bg-cover bg-center blur-xl transition-opacity duration-700 ${
+                            heroLoaded ? "opacity-0" : "opacity-100"
+                        }`}
+                        style={{ backgroundImage: `url(${heroBlur})` }}
+                        aria-hidden="true"
+                    />
+
+                    {/* Image d'origine, intacte, qui apparaît en fondu */}
+                    <img
+                        src={heroBg}
+                        alt=""
+                        fetchPriority="high"
+                        decoding="async"
+                        ref={(el) => {
+                            if (el && el.complete) setHeroLoaded(true);
+                        }}
+                        onLoad={() => setHeroLoaded(true)}
+                        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+                            heroLoaded ? "opacity-100" : "opacity-0"
+                        }`}
+                    />
+
                     <div className="absolute inset-0 bg-black/40" />
 
                     <div className="relative mx-auto w-full max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
