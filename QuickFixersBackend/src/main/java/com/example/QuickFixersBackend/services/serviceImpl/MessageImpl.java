@@ -35,6 +35,7 @@ public class MessageImpl implements MessageInterface {
         message.setTicket(ticket);
         message.setSender(sender);
         message.setReceiver(findReceiver(ticket, sender));
+        message.setLu(false);
 
         return messageMapper.toDto(messageRepository.save(message));
     }
@@ -49,6 +50,23 @@ public class MessageImpl implements MessageInterface {
                 .stream()
                 .map(messageMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public List<MessageResponseDTO> getUnreadMessages(String email) {
+        return messageRepository.findTop50ByReceiverEmailAndLuFalseOrderByDateEnvoiDesc(email)
+                .stream()
+                .map(messageMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public void markTicketRead(Long ticketId, String email) {
+        Ticket ticket = ticketAccessService.requireTicket(ticketId);
+        Person user = ticketAccessService.requireUser(email);
+        ticketAccessService.requireMember(ticket, user);
+
+        messageRepository.markTicketRead(ticketId, email);
     }
 
     private Person findReceiver(Ticket ticket, Person sender) {

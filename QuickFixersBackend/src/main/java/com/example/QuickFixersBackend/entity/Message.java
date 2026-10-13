@@ -28,6 +28,11 @@ public class Message {
 
     private LocalDateTime dateEnvoi = LocalDateTime.now();
 
+    // null = ancien message (considere comme lu, evite un deluge de notifications)
+    // false = non lu par le destinataire | true = lu
+    @Column(name = "lu")
+    private Boolean lu;
+
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

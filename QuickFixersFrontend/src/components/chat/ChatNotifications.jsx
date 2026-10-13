@@ -7,7 +7,7 @@ import getUserRole from "../../utils/auth";
 
 function ChatNotifications() {
     const navigate = useNavigate();
-    const { addNotification, clearTicket } = useUnread();
+    const { addNotification, clearTicket, refresh } = useUnread();
     const subscriptionRef = useRef(null);
 
     useEffect(() => {
@@ -39,6 +39,9 @@ function ChatNotifications() {
 
         const client = createStompClient({
             onConnect: () => {
+                // A la (re)connexion, on recharge les non-lus pour rattraper les messages recus hors ligne.
+                refresh();
+
                 subscriptionRef.current = client.subscribe(USER_QUEUE, (frame) => {
                     try {
                         handleMessage(JSON.parse(frame.body));
@@ -55,7 +58,7 @@ function ChatNotifications() {
             subscriptionRef.current = null;
             client.deactivate();
         };
-    }, [addNotification, clearTicket, navigate]);
+    }, [addNotification, clearTicket, navigate, refresh]);
 
     return null;
 }
