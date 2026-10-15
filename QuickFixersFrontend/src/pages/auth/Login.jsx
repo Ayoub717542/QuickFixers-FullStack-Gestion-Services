@@ -74,7 +74,7 @@ function Login() {
                     <div className="mb-4">
                         <div className="flex justify-between items-center mb-2">
                             <label htmlFor="password" className="text-xs font-semibold text-gray-700">Mot de passe</label>
-                            <button type="button" className="text-xs text-orange-500 hover:text-orange-600">Mot de passe oublié ?</button>
+                            <button type="button" onClick={() => navigate("/reset-password")} className="text-xs text-orange-500 hover:text-orange-600">Mot de passe oublié ?</button>
                         </div>
                         <div className="relative">
                             <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
