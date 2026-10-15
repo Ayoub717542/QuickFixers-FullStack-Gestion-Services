@@ -3,12 +3,13 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { axiosApi } from "../../api/axiosApi.js";
 import { toast } from "react-toastify";
-import { Wrench, User, Mail, Lock, ArrowRight } from "lucide-react";
+import { Wrench, User, Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
 
 function Register() {
     const {register, handleSubmit, formState: { errors, isSubmitting }} = useForm();
     const navigate = useNavigate();
     const [registerError, setRegisterError] = useState(null);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleRegister = async (data) => {
         setRegisterError(null);
@@ -93,12 +94,20 @@ function Register() {
                         <div className="relative">
                             <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
                             <input
-                                type="password" id="password" placeholder="Minimum 8 caractères"
+                                type={showPassword ? "text" : "password"} id="password" placeholder="Minimum 8 caractères"
                                 {...register("password", {
                                     required: "Mot de passe requis",
                                 })}
-                                className="w-full h-10 pl-9 pr-3 border border-orange-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                className="w-full h-10 pl-9 pr-10 border border-orange-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                             />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-500"
+                            >
+                                {showPassword ? <EyeOff size={15}/> : <Eye size={15}/>}
+                            </button>
                         </div>
                         {errors.password && (<p className="text-red-500 text-xs mt-1">{errors.password.message}</p>)}
                     </div>
